@@ -1,0 +1,42 @@
+<component name="libraryTable">
+  <library name="authlib-1.5.21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/mc/authlib-1.5.21.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/codecjorbis-20101023.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/codecwav-20101023.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/commons-codec-1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/commons-compress-1.8.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/commons-lang3-3.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/commons-logging-1.1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/gson-2.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/guava-17.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/httpclient-4.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/httpcore-4.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/icu4j-core-mojang-51.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/jinput-2.0.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/jinput-platform-2.0.5-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/jna-3.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/jopt-simple-4.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/jutils-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/libraryjavasound-20101123.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/librarylwjglopenal-20100824.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/log4j-api-2.0-beta9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/log4j-core-2.0-beta9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/lwjgl_util-2.9.4-nightly-20150209.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/lwjgl-2.9.4-nightly-20150209.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/lwjgl-platform-2.9.4-nightly-20150209-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/netty-1.8.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/netty-all-4.0.23.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/oshi-core-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/platform-3.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/realms-1.7.59.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/soundsystem-20120107.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/twitch-6.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/twitch-external-platform-4.5-natives-windows-64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/mc/twitch-platform-6.5-natives-windows-64.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
