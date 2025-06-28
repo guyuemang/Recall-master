@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -1971,18 +1973,15 @@ public abstract class EntityLivingBase extends Entity
             this.motionZ *= 0.98D;
         }
 
-        if (Math.abs(this.motionX) < 0.005D)
-        {
+        if (Math.abs(this.motionX) < (ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.005D : 0.003D)) {
             this.motionX = 0.0D;
         }
 
-        if (Math.abs(this.motionY) < 0.005D)
-        {
+        if (Math.abs(this.motionY) < (ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.005D : 0.003D)) {
             this.motionY = 0.0D;
         }
 
-        if (Math.abs(this.motionZ) < 0.005D)
-        {
+        if (Math.abs(this.motionZ) < (ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.005D : 0.003D)) {
             this.motionZ = 0.0D;
         }
 

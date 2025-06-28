@@ -6,6 +6,8 @@ import com.mojang.authlib.GameProfile;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockDirectional;
@@ -1770,15 +1772,17 @@ public abstract class EntityPlayer extends EntityLivingBase
     public void jump()
     {
         super.jump();
+        float f = ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.8F : 0.2F;
+        float f2 = ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.2F : 0.05F;
         this.triggerAchievement(StatList.jumpStat);
 
         if (this.isSprinting())
         {
-            this.addExhaustion(0.8F);
+            this.addExhaustion(f);
         }
         else
         {
-            this.addExhaustion(0.2F);
+            this.addExhaustion(f2);
         }
     }
 

@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
+
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
@@ -479,7 +481,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 d0 = 6.0D;
                 d1 = 6.0D;
             }
-            else if (d0 > 3.0D)
+            else if (d0 > (ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 3.0D : 2.9D))
             {
                 flag = true;
             }

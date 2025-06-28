@@ -189,6 +189,8 @@ import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import recall.Client;
+import recall.event.EventManager;
+import recall.event.impl.events.misc.KeyPressEvent;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -573,7 +575,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.checkGLError("Post startup");
         this.ingameGUI = new GuiIngame(this);
 
-        Client.Init();
+        Client.Instance.Init();
 
         if (this.serverName != null)
         {
@@ -1950,6 +1952,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
+                        Client.Instance.getEventManager().call(new KeyPressEvent(k));
+
                         if (k == 1)
                         {
                             this.displayInGameMenu();

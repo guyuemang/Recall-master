@@ -10,6 +10,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="authlib-1.5.21" level="project" />
-    <orderEntry type="library" name="ViaBackwards-5.3.0-downgraded" level="project" />
   </component>
 </module>

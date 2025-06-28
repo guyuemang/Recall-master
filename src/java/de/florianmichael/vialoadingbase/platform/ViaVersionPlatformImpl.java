@@ -58,6 +58,30 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
     }
 
     @Override
+    public ViaCommandSender[] getOnlinePlayers() {
+        return new ViaCommandSender[0];
+    }
+
+    @Override
+    public void sendMessage(UUID uuid, String msg) {
+        if (uuid == null) {
+            this.getLogger().info(msg);
+        } else {
+            this.getLogger().info("[" + uuid + "] " + msg);
+        }
+    }
+
+    @Override
+    public boolean kickPlayer(UUID uuid, String s) {
+        return false;
+    }
+
+    @Override
+    public boolean disconnect(UserConnection connection, String message) {
+        return ViaPlatform.super.disconnect(connection, message);
+    }
+
+    @Override
     public VLBTask runAsync(Runnable runnable) {
         return new VLBTask(Via.getManager().getScheduler().execute(runnable));
     }
@@ -124,6 +148,11 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
     @Override
     public String getPlatformVersion() {
         return ViaLoadingBase.VERSION;
+    }
+
+    @Override
+    public boolean isPluginEnabled() {
+        return true;
     }
 
     public VLBViaConfig getConfig() {

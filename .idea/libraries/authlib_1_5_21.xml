@@ -35,6 +35,10 @@
       <root url="jar://$PROJECT_DIR$/libs/mc/twitch-6.5.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/mc/twitch-external-platform-4.5-natives-windows-64.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/mc/twitch-platform-6.5-natives-windows-64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/ViaBackwards-5.2.0-downgraded.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/ViaRewind-4.0.4-downgraded.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/ViaVersion-5.2.0-downgraded.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/lombok.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
