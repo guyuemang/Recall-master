@@ -51,7 +51,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
     private static final Splitter NEWLINE_SPLITTER = Splitter.on('\n');
 
     /** Reference to the Minecraft object. */
-    protected Minecraft mc;
+    protected static Minecraft mc;
 
     /**
      * Holds a instance of RenderItem, used to draw the achievement icons on screen (is based on ItemStack)

@@ -1,6 +1,7 @@
 package recall.utils;
 
 import net.minecraft.client.Minecraft;
+import recall.Client;
 
 /**
  * @Author：Guyuemang
@@ -8,4 +9,5 @@ import net.minecraft.client.Minecraft;
  */
 public interface Instance {
     Minecraft mc = Minecraft.getMinecraft();
+    Client INSTANCE = Client.Instance;
 }

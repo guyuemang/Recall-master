@@ -43,6 +43,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
+import recall.Client;
+import recall.event.impl.events.render.Render2DEvent;
 
 public class GuiIngame extends Gui
 {
@@ -359,6 +361,8 @@ public class GuiIngame extends Gui
         {
             this.overlayPlayerList.updatePlayerList(false);
         }
+
+        Client.Instance.getEventManager().call(new Render2DEvent(scaledresolution,partialTicks));
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableLighting();

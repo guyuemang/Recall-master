@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.opengl.Display;
 import recall.event.EventManager;
+import recall.gui.clickgui.fac.FatalityClickGui;
 import recall.module.ModuleManager;
 import recall.utils.Instance;
 
@@ -30,6 +31,7 @@ public class Client implements Instance {
 
     private EventManager eventManager;
     private ModuleManager moduleManager;
+    private FatalityClickGui fatalityClickGui;
 
     public void Init(){
         ViaMCP.create();
@@ -44,6 +46,9 @@ public class Client implements Instance {
         moduleManager = new ModuleManager();
         moduleManager.Init();
         System.out.println("Module Init");
+
+        fatalityClickGui = new FatalityClickGui();
+        System.out.println("FacClickGui Init");
 
         System.out.println("Client Init");
     }

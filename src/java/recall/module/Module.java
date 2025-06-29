@@ -6,6 +6,10 @@ import org.lwjgl.input.Keyboard;
 import recall.Client;
 import recall.event.EventManager;
 import recall.utils.Instance;
+import recall.utils.animations.Animation;
+import recall.utils.animations.Direction;
+import recall.utils.animations.impl.DecelerateAnimation;
+import recall.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,8 @@ public class Module implements Instance {
     public String suffix;
     public boolean State;
     private int key = Keyboard.KEY_NONE;
+    private final List<Value<?>> settings = new ArrayList<>();
+    private final Animation animations = new DecelerateAnimation(250, 1).setDirection(Direction.BACKWARDS);
 
     public Module(String name,Category category){
         this.name = name;

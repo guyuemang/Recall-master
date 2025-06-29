@@ -39,6 +39,7 @@
       <root url="jar://$PROJECT_DIR$/libs/client/ViaRewind-4.0.4-downgraded.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/ViaVersion-5.2.0-downgraded.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/lombok.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/fastutil-8.5.13.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

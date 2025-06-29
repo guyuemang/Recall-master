@@ -1,7 +1,12 @@
 package recall.module;
 
+import recall.Client;
 import recall.event.annotations.EventTarget;
 import recall.event.impl.events.misc.KeyPressEvent;
+import recall.module.impl.render.ClickGui;
+import recall.module.impl.render.ESP;
+import recall.module.impl.render.InterFace;
+import recall.value.Value;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -19,12 +24,18 @@ public class ModuleManager {
     private final Map<Class<? extends Module>, Module> modules = new ConcurrentHashMap<>();
 
     public void Init() {
+        Client.Instance.getEventManager().register(this);
+        registerModule(new InterFace());
+        registerModule(new ClickGui());
+        registerModule(new ESP());
     }
+
     public void registerModule(Module module) {
         for (final Field field : module.getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);
                 final Object obj = field.get(module);
+                if (obj instanceof Value<?>) module.getSettings().add((Value<?>) obj);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
