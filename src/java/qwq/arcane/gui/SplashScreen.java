@@ -103,10 +103,10 @@ public class SplashScreen implements Instance {
 
 
             float rcanAlpha = progress4Anim.getOutput().floatValue();
-            FontManager.Bold.get(80).drawString("A", width / 2 - aWidth / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) * progress3Anim.getOutput(), height / 2 - 50, ColorUtil.applyOpacity(InterFace.color(1),1).getRGB());
-            FontManager.Bold.get(80).drawString("rcane",width / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) + aWidth / 2, height / 2 - 50 - 120 * progress3Anim.getOutput() + 120, ColorUtil.applyOpacity(-1,progress4Anim.getOutput().floatValue()));
+            FontManager.Bold.get(80).drawString("A", 5 + width / 2 - aWidth / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) * progress3Anim.getOutput() - 5,7 + height / 2 - 50, ColorUtil.applyOpacity(InterFace.color(1),1).getRGB());
+            FontManager.Bold.get(80).drawString("rcane",width / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) + aWidth / 2, 7 + height / 2 - 50 - 120 * progress3Anim.getOutput() + 120, ColorUtil.applyOpacity(-1,progress4Anim.getOutput().floatValue()));
         } else {
-            FontManager.Bold.get(80).drawStringDynamic("A", width / 2 - aWidth / 2, height / 2 - 50, -1, 7);
+            FontManager.Bold.get(80).drawStringDynamic("A",5 + width / 2 - aWidth / 2, height / 2 - 50 + 7 , -1, 7);
         }
 
         RoundedUtil.drawRound(width / 2 - 170 / 2, height / 2 + 15, 170, 5, 2, new Color(221, 228, 255));
