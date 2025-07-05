@@ -28,6 +28,7 @@ import net.optifine.render.GlBlendState;
 import net.optifine.util.FontUtils;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
+import qwq.arcane.utils.render.RenderUtil;
 
 public class FontRenderer implements IResourceManagerReloadListener
 {
@@ -1128,5 +1129,44 @@ public class FontRenderer implements IResourceManagerReloadListener
     protected InputStream getResourceInputStream(ResourceLocation p_getResourceInputStream_1_) throws IOException
     {
         return Minecraft.getMinecraft().getResourceManager().getResource(p_getResourceInputStream_1_).getInputStream();
+    }
+
+    public void drawOutlinedString(final String string, final float x, final float y, final float width, final int color, final int outlineColor) {
+        GlStateManager.pushMatrix();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        this.drawOutlinedString(RenderUtil.stripColor(string), x - width, y, outlineColor);
+        this.drawOutlinedString(RenderUtil.stripColor(string), x, y - width, outlineColor);
+        this.drawOutlinedString(RenderUtil.stripColor(string), x + width, y, outlineColor);
+        this.drawOutlinedString(RenderUtil.stripColor(string), x, y + width, outlineColor);
+        this.drawOutlinedString(string, x, y, color);
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.popMatrix();
+    }
+
+    private void drawOutlinedString(String text, final float x, final float y, int color) {
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        if (this.bidiFlag) {
+            text = this.bidiReorder(text);
+        }
+        if ((color & 0xFC000000) == 0x0) {
+            color |= 0xFF000000;
+        }
+        GL11.glPushMatrix();
+        GL11.glEnable(3042);
+        GL11.glBlendFunc(770, 771);
+        GlStateManager.resetColor();
+        this.red = (color >> 16 & 0xFF) / 255.0f;
+        this.blue = (color >> 8 & 0xFF) / 255.0f;
+        this.green = (color & 0xFF) / 255.0f;
+        this.alpha = (color >> 24 & 0xFF) / 255.0f;
+        GlStateManager.color(this.red, this.blue, this.green, this.alpha);
+        this.posX = x;
+        this.posY = y;
+        this.renderStringAtPos(text, false);
+        GL11.glDisable(3042);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GL11.glPopMatrix();
     }
 }

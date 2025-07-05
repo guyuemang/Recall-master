@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -188,9 +189,12 @@ import net.minecraft.world.chunk.storage.AnvilSaveConverter;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import recall.Client;
-import recall.event.EventManager;
-import recall.event.impl.events.misc.KeyPressEvent;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.misc.KeyPressEvent;
+import qwq.arcane.gui.MainMenu;
+import qwq.arcane.gui.SplashScreen;
+import qwq.arcane.gui.VideoPlayer;
+import qwq.arcane.utils.animations.AnimationUtils;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -227,7 +231,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     /** True if the player is connected to a realms server */
     private boolean connectedToRealms = false;
-    private Timer timer = new Timer(20.0F);
+    public Timer timer = new Timer(20.0F);
 
     /** Instance of PlayerUsageSnooper. */
     private PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getCurrentTimeMillis());
@@ -240,7 +244,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private Entity renderViewEntity;
     public Entity pointedEntity;
     public EffectRenderer effectRenderer;
-    private final Session session;
+    public Session session;
     private boolean isGamePaused;
 
     /** The font renderer used for displaying and measuring text */
@@ -504,7 +508,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.refreshResources();
         this.renderEngine = new TextureManager(this.mcResourceManager);
         this.mcResourceManager.registerReloadListener(this.renderEngine);
-        this.drawSplashScreen(this.renderEngine);
         this.initStream();
         this.skinManager = new SkinManager(this.renderEngine, new File(this.fileAssets, "skins"), this.sessionService);
         this.saveLoader = new AnvilSaveConverter(new File(this.mcDataDir, "saves"));
@@ -518,6 +521,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             this.fontRendererObj.setUnicodeFlag(this.isUnicode());
             this.fontRendererObj.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
         }
+        this.gameSettings.guiScale = 2;
+        SplashScreen.drawScreen();
 
         this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
         this.mcResourceManager.registerReloadListener(this.fontRendererObj);
@@ -579,11 +584,11 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         if (this.serverName != null)
         {
-            this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+            this.displayGuiScreen(new GuiConnecting(new MainMenu(), this, this.serverName, this.serverPort));
         }
         else
         {
-            this.displayGuiScreen(new GuiMainMenu());
+            this.displayGuiScreen(new MainMenu());
         }
 
         this.renderEngine.deleteTexture(this.mojangLogo);
@@ -672,6 +677,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
         else
         {
+            this.displayWidth = 1920;
+            this.displayHeight = 1080;
             Display.setDisplayMode(new DisplayMode(this.displayWidth, this.displayHeight));
         }
     }
@@ -1001,14 +1008,14 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         if (guiScreenIn == null && this.theWorld == null)
         {
-            guiScreenIn = new GuiMainMenu();
+            guiScreenIn = new MainMenu();
         }
         else if (guiScreenIn == null && this.thePlayer.getHealth() <= 0.0F)
         {
             guiScreenIn = new GuiGameOver();
         }
 
-        if (guiScreenIn instanceof GuiMainMenu)
+        if (guiScreenIn instanceof MainMenu)
         {
             this.gameSettings.showDebugInfo = false;
             this.ingameGUI.getChatGUI().clearChatMessages();
@@ -1059,6 +1066,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         try
         {
+            Client.Instance.getConfigManager().saveConfig("config",Client.INSTANCE.getModuleManager());
+            try {
+                VideoPlayer.stop();
+            } catch (FFmpegFrameGrabber.Exception e) {
+                throw new RuntimeException(e);
+            }
             this.stream.shutdownStream();
             logger.info("Stopping!");
 
@@ -1084,18 +1097,33 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
 
         System.gc();
+
     }
 
     /**
      * Called repeatedly from run()
      */
+    private long lastFrame = getTime();
+    public long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
     private void runGameLoop() throws IOException
     {
         long i = System.nanoTime();
         this.mcProfiler.startSection("root");
+        final long currentTime = getTime();
+        final int deltaTime = (int) (currentTime - lastFrame);
+        lastFrame = currentTime;
+        AnimationUtils.setDelta(deltaTime);
 
         if (Display.isCreated() && Display.isCloseRequested())
         {
+            Client.Instance.getConfigManager().saveConfig("config",Client.INSTANCE.getModuleManager());
+            try {
+                VideoPlayer.stop();
+            } catch (FFmpegFrameGrabber.Exception e) {
+                throw new RuntimeException(e);
+            }
             this.shutdown();
         }
 
@@ -1711,7 +1739,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     /**
      * Called to resize the current screen.
      */
-    private void resize(int width, int height)
+    public void resize(int width, int height)
     {
         this.displayWidth = Math.max(1, width);
         this.displayHeight = Math.max(1, height);

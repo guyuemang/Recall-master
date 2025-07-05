@@ -43,8 +43,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
-import recall.Client;
-import recall.event.impl.events.render.Render2DEvent;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.render.Render2DEvent;
 
 public class GuiIngame extends Gui
 {

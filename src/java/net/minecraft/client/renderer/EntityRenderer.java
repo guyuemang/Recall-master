@@ -98,6 +98,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.render.Render3DEvent;
+import qwq.arcane.utils.animations.impl.LayeringAnimation;
 
 public class EntityRenderer implements IResourceManagerReloadListener
 {
@@ -1430,6 +1433,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
         }
 
+        LayeringAnimation.drawAnimation();
         this.frameFinish();
         this.waitForServerThread();
         MemoryMonitor.update();
@@ -1899,6 +1903,8 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
 
         this.mc.mcProfiler.endStartSection("hand");
+
+        Client.Instance.getEventManager().call(new Render3DEvent(partialTicks,new ScaledResolution(mc)));
 
         if (this.renderHand && !Shaders.isShadowPass)
         {

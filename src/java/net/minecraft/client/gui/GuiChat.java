@@ -14,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.render.ChatGUIEvent;
 
 public class GuiChat extends GuiScreen
 {
@@ -86,6 +88,17 @@ public class GuiChat extends GuiScreen
      */
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
+
+        if (keyCode == Keyboard.KEY_RETURN) {
+            String message = inputField.getText().trim();
+            if (message.startsWith(".")) {
+                if (Client.Instance.getCommandManager().executeCommand(message)) {
+                    inputField.setText("");
+                    return;
+                }
+            }
+        }
+
         this.waitingOnAutocomplete = false;
 
         if (keyCode == 15)
@@ -308,6 +321,7 @@ public class GuiChat extends GuiScreen
         {
             this.handleComponentHover(ichatcomponent, mouseX, mouseY);
         }
+        Client.Instance.getEventManager().call(new ChatGUIEvent(mouseX, mouseY));
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
