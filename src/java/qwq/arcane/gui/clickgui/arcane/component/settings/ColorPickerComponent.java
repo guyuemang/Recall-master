@@ -12,7 +12,7 @@ package qwq.arcane.gui.clickgui.arcane.component.settings;
 
 import net.minecraft.util.MathHelper;
 import qwq.arcane.gui.clickgui.Component;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;

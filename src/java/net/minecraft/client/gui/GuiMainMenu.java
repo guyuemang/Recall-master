@@ -540,7 +540,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
     /**
      * Renders the skybox in the main menu
      */
-    private void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_)
+    public void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_)
     {
         this.mc.getFramebuffer().unbindFramebuffer();
         GlStateManager.viewport(0, 0, 256, 256);

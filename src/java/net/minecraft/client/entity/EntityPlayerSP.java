@@ -51,6 +51,8 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.UpdateEvent;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -166,7 +168,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * Called to update the entity's position/logic.
      */
     public void onUpdate()
-    {	
+    {
+        Client.Instance.getEventManager().call(new UpdateEvent());
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ)))
         {
             super.onUpdate();

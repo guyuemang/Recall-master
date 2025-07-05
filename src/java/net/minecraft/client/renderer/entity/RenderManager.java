@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
@@ -108,6 +109,7 @@ import net.optifine.player.PlayerItemsLayer;
 import net.optifine.reflect.Reflector;
 import net.optifine.shaders.Shaders;
 
+@Getter
 public class RenderManager
 {
     private Map<Class, Render> entityRenderMap = Maps.newHashMap();
@@ -116,9 +118,9 @@ public class RenderManager
 
     /** Renders fonts */
     private FontRenderer textRenderer;
-    private double renderPosX;
-    private double renderPosY;
-    private double renderPosZ;
+    public static double renderPosX;
+    public static double renderPosY;
+    public static double renderPosZ;
     public TextureManager renderEngine;
 
     /** Reference to the World object. */
@@ -132,9 +134,9 @@ public class RenderManager
 
     /** Reference to the GameSettings object. */
     public GameSettings options;
-    public double viewerPosX;
-    public double viewerPosY;
-    public double viewerPosZ;
+    public static double viewerPosX;
+    public static double viewerPosY;
+    public static double viewerPosZ;
     private boolean renderOutlines = false;
     private boolean renderShadow = true;
 

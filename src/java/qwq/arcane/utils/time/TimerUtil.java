@@ -34,16 +34,24 @@ public class TimerUtil {
 
         return false;
     }
+    private long currentMs;
 
     public boolean hasTimeElapsed(long time) {
         return System.currentTimeMillis() - this.lastMS > time;
     }
-
+    public boolean hasElapsed(long milliseconds) {
+        return elapsed() > milliseconds;
+    }
+    public long elapsed() {
+        return System.currentTimeMillis() - currentMs;
+    }
     public boolean delay(float time) {
         return System.currentTimeMillis() - this.lastMS >= time;
 
     }
-
+    public void reset2() {
+        currentMs = System.currentTimeMillis();
+    }
     public boolean hasTimeElapsed(double time) {
         return hasTimeElapsed((long) time);
     }

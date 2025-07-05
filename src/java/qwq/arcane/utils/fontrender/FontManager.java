@@ -10,6 +10,8 @@ import java.io.InputStream;
 public enum FontManager {
     Bold("bold"),
     Icon("icon"),
+    Regular("regular"),
+    Light("light"),
     Semibold("semibold");
 
     private final String fontFileName;

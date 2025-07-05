@@ -33,6 +33,8 @@ import paulscode.sound.SoundSystemLogger;
 import paulscode.sound.Source;
 import paulscode.sound.codecs.CodecJOrbis;
 import paulscode.sound.libraries.LibraryLWJGLOpenAL;
+import qwq.arcane.Client;
+import qwq.arcane.module.impl.visuals.Hitmarkers;
 
 public class SoundManager
 {
@@ -539,5 +541,12 @@ public class SoundManager
                 }
             }
         }
+    }
+    public void playSoundFromFile(String fileName, double x, double y , double z) {
+        SoundSystemConfig.setSoundFilesPackage("assets/minecraft/nothing/sounds/");
+        sndSystem.loadSound(fileName);
+        sndSystem.newSource(false, "hitmarker", fileName, false, (float) x, (float) y, (float) z, SoundSystemConfig.ATTENUATION_NONE, SoundSystemConfig.getDefaultRolloff());
+        sndSystem.setVolume("hitmarker", (float) (Client.Instance.getModuleManager().getModule(Hitmarkers.class).volumeProperty.getValue() / 100));
+        sndSystem.play("hitmarker");
     }
 }

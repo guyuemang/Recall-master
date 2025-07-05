@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class Gui
 {
@@ -47,6 +48,38 @@ public class Gui
     /**
      * Draws a solid color rectangle with the specified coordinates and color (ARGB format). Args: x1, y1, x2, y2, color
      */
+    public static void drawRect(float left, float top, float right, float bottom, int color) {
+        int alpha = (color >> 24 & 255);
+        boolean needBlend = alpha < 0xFF;
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        if (needBlend) {
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GlStateManager.enableBlend();
+            GL11.glColor4ub(
+                    (byte) (color >> 16 & 255),
+                    (byte) (color >> 8 & 255),
+                    (byte) (color & 255),
+                    (byte) alpha);
+        } else
+            GL11.glColor3ub(
+                    (byte) (color >> 16 & 255),
+                    (byte) (color >> 8 & 255),
+                    (byte) (color & 255));
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glVertex2f(left, top);
+        GL11.glVertex2f(left, bottom);
+        GL11.glVertex2f(right, bottom);
+        GL11.glVertex2f(right, top);
+        GL11.glEnd();
+        if (needBlend) {
+            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.disableBlend();
+        }
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+
     public static void drawRect(int left, int top, int right, int bottom, int color)
     {
         if (left < right)
@@ -212,6 +245,19 @@ public class Gui
         worldrenderer.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * f), (double)((v + (float)vHeight) * f1)).endVertex();
         worldrenderer.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * f), (double)(v * f1)).endVertex();
         worldrenderer.pos((double)x, (double)y, 0.0D).tex((double)(u * f), (double)(v * f1)).endVertex();
+        tessellator.draw();
+    }
+    public static void drawScaledCustomSizeModalRect(float x, float y, float u, float v, int uWidth, int vHeight, float width, float height, float tileWidth, float tileHeight)
+    {
+        float f = 1.0F / tileWidth;
+        float f1 = 1.0F / tileHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + (float)vHeight) * f1).endVertex();
+        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + (float)uWidth) * f, (v + (float)vHeight) * f1).endVertex();
+        worldrenderer.pos(x + width, y, 0.0D).tex((u + (float)uWidth) * f, v * f1).endVertex();
+        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
         tessellator.draw();
     }
 }

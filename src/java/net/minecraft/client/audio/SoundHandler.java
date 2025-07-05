@@ -280,7 +280,9 @@ public class SoundHandler implements IResourceManagerReloadListener, ITickable
             return (SoundEventAccessorComposite)list.get((new Random()).nextInt(list.size()));
         }
     }
-
+    public void playSoundFromFile(String fileName, double x, double y , double z) {
+        sndManager.playSoundFromFile(fileName, x, y ,z);
+    }
     public boolean isSoundPlaying(ISound sound)
     {
         return this.sndManager.isSoundPlaying(sound);

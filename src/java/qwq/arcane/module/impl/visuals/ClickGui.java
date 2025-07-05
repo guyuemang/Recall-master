@@ -1,4 +1,4 @@
-package qwq.arcane.module.impl.render;
+package qwq.arcane.module.impl.visuals;
 
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.Client;

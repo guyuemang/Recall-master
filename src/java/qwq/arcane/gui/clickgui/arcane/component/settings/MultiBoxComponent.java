@@ -61,15 +61,6 @@ public class MultiBoxComponent extends Component {
             float outlineHeight = (float) ((setting.getValues().size() * 20 + 2) * open.getOutput());
             float y = (getY() + 12 + getHalfTotalHeight()) < INSTANCE.getArcaneClickGui().getY() + 49 ? INSTANCE.getArcaneClickGui().getY() + 49 : (getY() + 12 + getHalfTotalHeight());
 
-            if (setting.getValues().size() > 6){
-                GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-                GL11.glEnable(GL11.GL_SCISSOR_TEST);
-                RenderUtil.scissor(getX() + 115,
-                        y,
-                        80f,
-                        getVisibleHeight());
-            }
-
             RoundedUtil.drawRound(getX() + 10, getY() + 32, 145, outlineHeight, 2, INSTANCE.getArcaneClickGui().smallbackgroundColor2);
 
             for (BooleanValue boolValue : setting.getValues()) {

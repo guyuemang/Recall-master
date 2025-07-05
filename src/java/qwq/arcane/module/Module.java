@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.Client;
 import qwq.arcane.gui.notification.Notification;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
@@ -13,6 +14,7 @@ import qwq.arcane.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author：Guyuemang
@@ -23,7 +25,7 @@ import java.util.List;
 public class Module implements Instance {
     public String name;
     public Category category;
-    public String suffix;
+    private String suffix = "";
     public boolean State;
     private int key = Keyboard.KEY_NONE;
     private final List<Value<?>> settings = new ArrayList<>();
@@ -39,10 +41,6 @@ public class Module implements Instance {
     public void onDisable(){
     }
 
-    public boolean hasMode() {
-        return suffix != null;
-    }
-
     public <M extends Module> M getModule(Class<M> clazz) {
         return Client.Instance.getModuleManager().getModule(clazz);
     }
@@ -51,7 +49,29 @@ public class Module implements Instance {
         Module mod = Client.Instance.getModuleManager().getModule(module);
         return mod != null && mod.isEnabled();
     }
-
+    public void setsuffix(String tag) {
+        if (tag != null && !tag.isEmpty()) {
+            String tagStyle = Optional.ofNullable(getModule(qwq.arcane.module.impl.display.ArrayList.class))
+                    .map(m -> m.tags.get())
+                    .orElse("")
+                    .toLowerCase();
+            switch (tagStyle) {
+                case "simple":
+                    this.suffix = "§7 " + tag;
+                    break;
+                case "dash":
+                    this.suffix = "§7 - " + tag;
+                    break;
+                case "bracket":
+                    this.suffix = "§7 [" + tag + "]";
+                    break;
+                default:
+                    this.suffix = "";
+            }
+        } else {
+            this.suffix = "";
+        }
+    }
     public boolean isEnabled() {
         return State;
     }
@@ -66,14 +86,14 @@ public class Module implements Instance {
                 Client.Instance.getEventManager().register(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Enabled", Notification.Type.SUCCESS);
+                    Client.Instance.getNotification().add("Toggle", "Module " + this.name + " Enabled", Notification.Type.SUCCESS);
                 }
                 onEnable();
             } else {
                 Client.Instance.getEventManager().unregister(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Disabled", Notification.Type.ERROR);
+                    Client.Instance.getNotification().add("Toggle", "Module " + this.name + " Disabled", Notification.Type.ERROR);
                 }
                 onDisable();
             }

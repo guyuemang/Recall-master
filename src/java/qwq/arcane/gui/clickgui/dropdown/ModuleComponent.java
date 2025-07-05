@@ -14,7 +14,7 @@ import qwq.arcane.gui.clickgui.Component;
 import qwq.arcane.gui.clickgui.IComponent;
 import qwq.arcane.gui.clickgui.dropdown.setting.impl.*;
 import qwq.arcane.module.Module;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.EaseInOutQuad;
 import qwq.arcane.utils.animations.impl.EaseOutSine;

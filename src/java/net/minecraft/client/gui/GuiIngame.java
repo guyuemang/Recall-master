@@ -45,6 +45,7 @@ import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
+import qwq.arcane.module.impl.visuals.InterFace;
 
 public class GuiIngame extends Gui
 {
@@ -186,7 +187,9 @@ public class GuiIngame extends Gui
         GlStateManager.enableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         this.mc.mcProfiler.startSection("bossHealth");
-        this.renderBossHealth();
+        if (InterFace.renderBossHealth.get()) {
+            this.renderBossHealth();
+        }
         this.mc.mcProfiler.endSection();
 
         if (this.mc.playerController.shouldDrawHUD())

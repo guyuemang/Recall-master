@@ -17,6 +17,8 @@ import net.minecraft.world.storage.WorldInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bytedeco.javacv.FrameGrabber;
+import qwq.arcane.gui.VideoPlayer;
 
 public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
 {
@@ -234,6 +236,12 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        ScaledResolution sr = new ScaledResolution(mc);
+        try {
+            VideoPlayer.render(0, 0, sr.getScaledWidth(), sr.getScaledHeight());
+        } catch (FrameGrabber.Exception e) {
+            throw new RuntimeException(e);
+        }
         this.availableWorlds.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);

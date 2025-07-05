@@ -1,13 +1,11 @@
 package qwq.arcane.gui.notification;
 
-import qwq.arcane.Client;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.color.ColorUtil;
-import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.utils.time.Timer;

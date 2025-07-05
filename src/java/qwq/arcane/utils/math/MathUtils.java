@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.MathHelper;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
@@ -127,4 +128,16 @@ public class MathUtils {
         return Math.max(0, bigDecimal.stripTrailingZeros().scale());
     }
 
+    public static double roundToDecimalPlace(double value, double inc) {
+        final double halfOfInc = inc / 2.0D;
+        final double floored = StrictMath.floor(value / inc) * inc;
+        if (value >= floored + halfOfInc)
+            return new BigDecimal(StrictMath.ceil(value / inc) * inc, MathContext.DECIMAL64).
+                    stripTrailingZeros()
+                    .doubleValue();
+        else
+            return new BigDecimal(floored, MathContext.DECIMAL64)
+                    .stripTrailingZeros()
+                    .doubleValue();
+    }
 }

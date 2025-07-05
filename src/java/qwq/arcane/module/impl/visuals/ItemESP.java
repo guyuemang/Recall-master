@@ -1,4 +1,4 @@
-package qwq.arcane.module.impl.render;
+package qwq.arcane.module.impl.visuals;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;

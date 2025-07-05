@@ -31,6 +31,8 @@ import net.optifine.shaders.Shaders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.render.RenderNameTagEvent;
 
 public abstract class RendererLivingEntity<T extends EntityLivingBase> extends Render<T>
 {
@@ -632,6 +634,9 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         {
             if (this.canRenderName(entity))
             {
+                RenderNameTagEvent event = new RenderNameTagEvent(entity);
+                Client.Instance.getEventManager().call(event);
+                if (event.isCancelled()) return;
                 double d0 = entity.getDistanceSqToEntity(this.renderManager.livingPlayer);
                 float f = entity.isSneaking() ? NAME_TAG_RANGE_SNEAK : NAME_TAG_RANGE;
 

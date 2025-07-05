@@ -9,7 +9,7 @@ import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.impl.combat.KillAura;
 import qwq.arcane.module.impl.display.ArrayList;
 import qwq.arcane.module.impl.display.Notification;
-import qwq.arcane.module.impl.render.*;
+import qwq.arcane.module.impl.visuals.*;
 import qwq.arcane.value.Value;
 
 import java.lang.reflect.Field;
@@ -31,6 +31,8 @@ public class ModuleManager {
         Client.Instance.getEventManager().register(this);
         registerModule(new InterFace());
         registerModule(new ClickGui());
+        registerModule(new Hitmarkers());
+        registerModule(new WorldColor());
         registerModule(new ESP());
         registerModule(new KillAura());
         registerModule(new ItemESP());

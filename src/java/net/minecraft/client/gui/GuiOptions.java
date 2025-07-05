@@ -14,6 +14,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.EnumDifficulty;
+import org.bytedeco.javacv.FrameGrabber;
+import qwq.arcane.gui.VideoPlayer;
 
 public class GuiOptions extends GuiScreen implements GuiYesNoCallback
 {
@@ -234,7 +236,12 @@ public class GuiOptions extends GuiScreen implements GuiYesNoCallback
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        ScaledResolution sr = new ScaledResolution(mc);
+        try {
+            VideoPlayer.render(0, 0, sr.getScaledWidth(), sr.getScaledHeight());
+        } catch (FrameGrabber.Exception e) {
+            throw new RuntimeException(e);
+        }
         this.drawCenteredString(this.fontRendererObj, this.field_146442_a, this.width / 2, 15, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

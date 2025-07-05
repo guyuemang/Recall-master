@@ -4,7 +4,7 @@ import qwq.arcane.Client;
 import qwq.arcane.gui.clickgui.IComponent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.EaseInOutQuad;
@@ -16,8 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-
-import java.awt.*;
 
 /**
  * @Author: Guyuemang

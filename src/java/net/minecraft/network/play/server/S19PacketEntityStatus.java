@@ -1,12 +1,15 @@
 package net.minecraft.network.play.server;
 
 import java.io.IOException;
+
+import lombok.Getter;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.world.World;
 
+@Getter
 public class S19PacketEntityStatus implements Packet<INetHandlerPlayClient>
 {
     private int entityId;

@@ -48,11 +48,7 @@ public class ModeComponent extends Component {
             float y = (getY() + 12 - getHalfTotalHeight()) < INSTANCE.getArcaneClickGui().getY() + 49 ? INSTANCE.getArcaneClickGui().getY() + 49 : (getY() + 12 - getHalfTotalHeight());
 
             GlStateManager.translate(0, 0, 2f);
-            if (setting.getModes().length > 6) {
-                GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-                glEnable(GL11.GL_SCISSOR_TEST);
-                RenderUtil.scissor(getX() + 115, y, 80f, getVisibleHeight());
-            }
+
 
             RoundedUtil.drawRound(getX() + 10, getY() + 32, 145, totalHeight, 2, INSTANCE.getArcaneClickGui().smallbackgroundColor2);
             for (String str : setting.getModes()) {

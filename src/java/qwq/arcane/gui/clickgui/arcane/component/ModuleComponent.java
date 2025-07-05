@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import qwq.arcane.gui.clickgui.Component;
 import qwq.arcane.gui.clickgui.arcane.component.settings.*;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
@@ -16,8 +16,6 @@ import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.value.Value;
 import qwq.arcane.value.impl.*;
-
-import java.awt.*;
 
 /**
  * @Author：Guyuemang
@@ -63,8 +61,8 @@ public class ModuleComponent extends Component {
 
         RoundedUtil.drawRound(getX(), y, 165, getHeight(), 2, INSTANCE.getArcaneClickGui().backgroundColor);
         FontManager.Bold.get(18).drawString(module.name, getX() + 10, y + 5,ColorUtil.applyOpacity(INSTANCE.getArcaneClickGui().fontcolor.getRGB(),0.4f));
-        RoundedUtil.drawRound(getX() + 135, y + 4, 20, 10, 4, ColorUtil.applyOpacity(InterFace.mainColor.get(),0.4f));
-        RenderUtil.drawCircleCGUI(getX() + 141 + moduleAnimation.getOutput().floatValue() * 9f, y + 9, 8, InterFace.mainColor.get().darker().getRGB());
+        RoundedUtil.drawRound(getX() + 135, y + 4, 20, 10, 4, ColorUtil.applyOpacity(InterFace.color(1),0.4f));
+        RenderUtil.drawCircleCGUI(getX() + 141 + moduleAnimation.getOutput().floatValue() * 9f, y + 9, 8, InterFace.color(1).darker().getRGB());
         RoundedUtil.drawRound(getX() + 10, y + 20, 145, 1, 0, INSTANCE.getArcaneClickGui().linecolor);
 
         float componentY = y + 22;

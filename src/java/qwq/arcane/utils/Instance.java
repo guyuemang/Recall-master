@@ -13,4 +13,6 @@ public interface Instance {
     Client INSTANCE = Client.Instance;
     FontManager Semibold = FontManager.Semibold;
     FontManager Bold = FontManager.Bold;
+    FontManager Light = FontManager.Light;
+    FontManager Regular = FontManager.Regular;
 }

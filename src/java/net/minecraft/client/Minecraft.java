@@ -191,6 +191,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.misc.KeyPressEvent;
+import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.gui.MainMenu;
 import qwq.arcane.gui.SplashScreen;
 import qwq.arcane.gui.VideoPlayer;
@@ -521,8 +522,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             this.fontRendererObj.setUnicodeFlag(this.isUnicode());
             this.fontRendererObj.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
         }
-        this.gameSettings.guiScale = 2;
-        SplashScreen.drawScreen();
+
 
         this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
         this.mcResourceManager.registerReloadListener(this.fontRendererObj);
@@ -581,7 +581,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.ingameGUI = new GuiIngame(this);
 
         Client.Instance.Init();
-
+        this.gameSettings.guiScale = 2;
+        SplashScreen.drawScreen();
         if (this.serverName != null)
         {
             this.displayGuiScreen(new GuiConnecting(new MainMenu(), this, this.serverName, this.serverPort));
@@ -2455,6 +2456,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             this.thePlayer.movementInput = new MovementInputFromOptions(this.gameSettings);
             this.playerController.setPlayerCapabilities(this.thePlayer);
             this.renderViewEntity = this.thePlayer;
+            Client.Instance.getEventManager().call(new WorldLoadEvent());
         }
         else
         {

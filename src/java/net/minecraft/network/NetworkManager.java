@@ -55,6 +55,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
+import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 
 public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 {
@@ -155,15 +158,18 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 
     protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet p_channelRead0_2_) throws Exception
     {
-        if (this.channel.isOpen())
-        {
-            try
-            {
+        if (this.channel.isOpen()) {
+            Packet<INetHandler> p = (Packet<INetHandler>) p_channelRead0_2_;
+            try {
+                PacketReceiveEvent event = new PacketReceiveEvent(p_channelRead0_2_);
+                Client.Instance.getEventManager().call(event);
+
+                if (event.isCancelled()) {
+                    return;
+                }
+
                 p_channelRead0_2_.processPacket(this.packetListener);
-            }
-            catch (ThreadQuickExitException var4)
-            {
-                ;
+            }catch (final ThreadQuickExitException var4) {
             }
         }
     }
@@ -181,6 +187,10 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 
     public void sendPacket(Packet packetIn)
     {
+        PacketSendEvent event = new PacketSendEvent(packetIn);
+        Client.Instance.getEventManager().call(event);
+        if (event.isCancelled()) return;
+
         if (this.isChannelOpen())
         {
             this.flushOutboundQueue();

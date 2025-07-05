@@ -9,7 +9,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
 
@@ -44,8 +44,8 @@ public abstract class ModuleWidget extends Module {
         super(name, category);
         this.x = 0f;
         this.y = 0f;
-        this.width = 100f;
-        this.height = 100f;
+        this.width = 0f;
+        this.height = 0f;
     }
 
     public abstract void onShader(Shader2DEvent event);
@@ -59,8 +59,11 @@ public abstract class ModuleWidget extends Module {
 
         renderX = x * sr.getScaledWidth();
         renderY = y * sr.getScaledHeight();
-
-        }
+        if (renderX < 0f) x = 0f;
+        if (renderX > sr.getScaledWidth() - width) x = (sr.getScaledWidth() - width) / sr.getScaledWidth();
+        if (renderY < 0f) y = 0f;
+        if (renderY > sr.getScaledHeight() - height) y = (sr.getScaledHeight() - height) / sr.getScaledHeight();
+    }
     public final void onChatGUI(int mouseX, int mouseY, boolean drag) {
         boolean hovering = RenderUtil.isHovering(renderX, renderY, width, height, mouseX, mouseY);
 

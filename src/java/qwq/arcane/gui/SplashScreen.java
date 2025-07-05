@@ -1,11 +1,10 @@
 package qwq.arcane.gui;
 
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
 import org.lwjgl.opengl.GL11;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;

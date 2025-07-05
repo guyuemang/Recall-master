@@ -5,6 +5,13 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import qwq.arcane.module.impl.visuals.InterFace;
+import qwq.arcane.utils.animations.Animation;
+import qwq.arcane.utils.animations.Direction;
+import qwq.arcane.utils.animations.impl.DecelerateAnimation;
+import qwq.arcane.utils.color.ColorUtil;
+import qwq.arcane.utils.fontrender.FontManager;
+import qwq.arcane.utils.render.RoundedUtil;
 
 public class GuiButton extends Gui
 {
@@ -75,6 +82,7 @@ public class GuiButton extends Gui
     /**
      * Draws this button to the screen.
      */
+    private Animation Animation = new DecelerateAnimation(100, 1);
     public void drawButton(Minecraft mc, int mouseX, int mouseY)
     {
         if (this.visible)
@@ -87,21 +95,12 @@ public class GuiButton extends Gui
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + i * 20, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+            RoundedUtil.drawRound(this.xPosition, this.yPosition, this.width, this.height, 5, ColorUtil.applyOpacity(InterFace.color(1),0.2f + 0.2f * Animation.getOutput().floatValue()));
+            Animation.setDirection(hovered ? Direction.FORWARDS : Direction.BACKWARDS);
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
 
-            if (!this.enabled)
-            {
-                j = 10526880;
-            }
-            else if (this.hovered)
-            {
-                j = 16777120;
-            }
-
-            this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+            FontManager.Bold.get(18).drawCenteredString(this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 6) / 2, j);
         }
     }
 

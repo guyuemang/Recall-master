@@ -1,4 +1,4 @@
-package qwq.arcane.module.impl.render;
+package qwq.arcane.module.impl.visuals;
 
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;

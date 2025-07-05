@@ -136,8 +136,8 @@ public class ArcaneClickGui extends GuiScreen {
         FontManager.Icon.get(20).drawStringDynamic("S", x + w - 28, y + 54.5f, 1,6);
         RoundedUtil.drawRound(x + w - 90, y + h - 35, 80, 25, 5, smallbackgroundColor);
         FontManager.Bold.get(16).drawStringDynamic("DEV", x + w - 86, y + h - 30, 1,6);
-        FontManager.Semibold.get(16).drawString("剩余订阅时间:", x + w - 86, y + h - 20, fontcolor.getRGB());
-        FontManager.Semibold.get(16).drawStringDynamic("18天", x + w - 86 + FontManager.Semibold.get(16).getStringWidth("剩余订阅时间:"), y + h - 20, 1,6);
+        FontManager.Semibold.get(16).drawString("Time remaining:", x + w - 86, y + h - 20, fontcolor.getRGB());
+        FontManager.Semibold.get(16).drawStringDynamic("30D", x + w - 86 + FontManager.Semibold.get(16).getStringWidth("Time remaining:"), y + h - 20, 1,6);
 
 
         FontManager.Icon.get(20).drawStringDynamic("T", x + 16, y + 54.5f, 1,6);

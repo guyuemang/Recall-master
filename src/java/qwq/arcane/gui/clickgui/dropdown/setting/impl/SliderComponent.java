@@ -11,7 +11,7 @@
 package qwq.arcane.gui.clickgui.dropdown.setting.impl;
 
 import qwq.arcane.gui.clickgui.Component;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.render.RenderUtil;

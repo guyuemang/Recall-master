@@ -2,7 +2,7 @@ package qwq.arcane.utils.fontrender;
 
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.render.GradientUtil;
 import qwq.arcane.utils.render.RenderUtil;

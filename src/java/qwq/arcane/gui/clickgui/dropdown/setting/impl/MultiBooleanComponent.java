@@ -11,7 +11,7 @@
 package qwq.arcane.gui.clickgui.dropdown.setting.impl;
 
 import qwq.arcane.gui.clickgui.Component;
-import qwq.arcane.module.impl.render.InterFace;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.EaseOutSine;
 import qwq.arcane.utils.color.ColorUtil;
@@ -50,7 +50,7 @@ public class MultiBooleanComponent extends Component {
             select.putIfAbsent(boolValue, new EaseOutSine(250, 1));
             select.get(boolValue).setDirection(boolValue.get() ? Direction.FORWARDS : Direction.BACKWARDS);
 
-            FontManager.Bold.get(13).drawString(boolValue.getName(), getX() + offset, getY() + FontManager.Bold.get(15).getHeight() + 2 + heightoff, ColorUtil.interpolateColor2(InterFace.mainColor.get().brighter(), InterFace.mainColor.get().brighter().brighter().brighter(), (float) select.get(boolValue).getOutput().floatValue()));
+            FontManager.Bold.get(13).drawString(boolValue.getName(), getX() + offset, getY() + FontManager.Bold.get(15).getHeight() + 2 + heightoff, ColorUtil.interpolateColor2(InterFace.mainColor.get().brighter(), InterFace.mainColor.get().brighter().brighter(), (float) select.get(boolValue).getOutput().floatValue()));
 
             offset += off;
         }
