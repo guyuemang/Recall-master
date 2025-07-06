@@ -42,16 +42,11 @@ import net.minecraft.potion.Potion;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatFileWriter;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MovementInput;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 
 public class EntityPlayerSP extends AbstractClientPlayer
@@ -189,18 +184,20 @@ public class EntityPlayerSP extends AbstractClientPlayer
     /**
      * called every tick when the player is on foot. Performs all the things that normally happen during movement.
      */
-    public void onUpdateWalkingPlayer()
-    {
+    public int offGroundTicks;
+    public void onUpdateWalkingPlayer() {
+        if (this.onGround) {
+            offGroundTicks = 0;
+        } else {
+            offGroundTicks++;
+        }
         boolean flag = this.isSprinting();
-
-        if (flag != this.serverSprintState)
-        {
-            if (flag)
-            {
+        MotionEvent eventMotion = new MotionEvent(posX, posY, posZ, this.rotationYaw, this.rotationPitch, onGround, MotionEvent.State.PRE);
+        Client.Instance.getEventManager().call(eventMotion);
+        if (flag != this.serverSprintState) {
+            if (flag) {
                 this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SPRINTING));
-            }
-            else
-            {
+            } else {
                 this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SPRINTING));
             }
 
@@ -209,71 +206,58 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
         boolean flag1 = this.isSneaking();
 
-        if (flag1 != this.serverSneakState)
-        {
-            if (flag1)
-            {
+        if (flag1 != this.serverSneakState) {
+            if (flag1) {
                 this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SNEAKING));
-            }
-            else
-            {
+            } else {
                 this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SNEAKING));
             }
 
             this.serverSneakState = flag1;
         }
 
-        if (this.isCurrentViewEntity())
-        {
-            double d0 = this.posX - this.lastReportedPosX;
-            double d1 = this.getEntityBoundingBox().minY - this.lastReportedPosY;
-            double d2 = this.posZ - this.lastReportedPosZ;
-            double d3 = (double)(this.rotationYaw - this.lastReportedYaw);
-            double d4 = (double)(this.rotationPitch - this.lastReportedPitch);
+        if (this.isCurrentViewEntity()) {
+            double d0 = eventMotion.getX() - this.lastReportedPosX;
+            double d1 = eventMotion.getY() - this.lastReportedPosY;
+            double d2 = eventMotion.getZ() - this.lastReportedPosZ;
+            double d3 = (double) (eventMotion.getYaw() - this.lastReportedYaw);
+            double d4 = (double) (eventMotion.getPitch() - this.lastReportedPitch);
             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.positionUpdateTicks >= 20;
             boolean flag3 = d3 != 0.0D || d4 != 0.0D;
 
-            if (this.ridingEntity == null)
-            {
-                if (flag2 && flag3)
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround));
+            if (this.ridingEntity == null) {
+                if (flag2 && flag3) {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(eventMotion.getX(), eventMotion.getY(), eventMotion.getZ(), eventMotion.getYaw(), eventMotion.getPitch(), eventMotion.isOnGround()));
+                } else if (flag2) {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(eventMotion.getX(), eventMotion.getY(), eventMotion.getZ(), eventMotion.isOnGround()));
+                } else if (flag3) {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(eventMotion.getYaw(), eventMotion.getPitch(), eventMotion.isOnGround()));
+                } else {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer(eventMotion.isOnGround()));
                 }
-                else if (flag2)
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.onGround));
-                }
-                else if (flag3)
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
-                }
-                else
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer(this.onGround));
-                }
-            }
-            else
-            {
-                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, this.rotationYaw, this.rotationPitch, this.onGround));
+            } else {
+                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, eventMotion.getYaw(), eventMotion.getPitch(), eventMotion.isOnGround()));
                 flag2 = false;
             }
 
             ++this.positionUpdateTicks;
 
-            if (flag2)
-            {
-                this.lastReportedPosX = this.posX;
-                this.lastReportedPosY = this.getEntityBoundingBox().minY;
-                this.lastReportedPosZ = this.posZ;
+            if (flag2) {
+                this.lastReportedPosX = eventMotion.getX();
+                this.lastReportedPosY = eventMotion.getY();
+                this.lastReportedPosZ = eventMotion.getZ();
                 this.positionUpdateTicks = 0;
             }
 
-            if (flag3)
-            {
-                this.lastReportedYaw = this.rotationYaw;
-                this.lastReportedPitch = this.rotationPitch;
+            if (flag3) {
+                this.lastReportedYaw = eventMotion.getYaw();
+                this.lastReportedPitch = eventMotion.getPitch();
             }
+            mc.thePlayer.rotationYawHead = eventMotion.getYaw();
+            mc.thePlayer.rotationPitchHead = eventMotion.getPitch();
+
         }
+        Client.Instance.getEventManager().call(new MotionEvent(MotionEvent.State.POST));
     }
 
     /**
@@ -909,5 +893,27 @@ public class EntityPlayerSP extends AbstractClientPlayer
             this.capabilities.isFlying = false;
             this.sendPlayerAbilities();
         }
+    }
+    public static net.minecraft.util.Vec3 getNearestPointBB(final net.minecraft.util.Vec3 eye, final AxisAlignedBB box) {
+        final double[] origin = { eye.xCoord, eye.yCoord, eye.zCoord };
+        final double[] destMins = { box.minX, box.minY, box.minZ };
+        final double[] destMaxs = { box.maxX, box.maxY, box.maxZ };
+        for (int i = 0; i < 3; ++i) {
+            if (origin[i] > destMaxs[i]) {
+                origin[i] = destMaxs[i];
+            }
+            else if (origin[i] < destMins[i]) {
+                origin[i] = destMins[i];
+            }
+        }
+        return new net.minecraft.util.Vec3(origin[0], origin[1], origin[2]);
+    }
+    public float getClosestDistanceToEntity(Entity entityIn) {
+        Vec3 eyes = this.getPositionEyes(1F);
+        Vec3 pos = getNearestPointBB(eyes, entityIn.getEntityBoundingBox());
+        double xDist = Math.abs(pos.xCoord - eyes.xCoord);
+        double yDist = Math.abs(pos.yCoord - eyes.yCoord);
+        double zDist = Math.abs(pos.zCoord - eyes.zCoord);
+        return (float) Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2) + Math.pow(zDist, 2));
     }
 }

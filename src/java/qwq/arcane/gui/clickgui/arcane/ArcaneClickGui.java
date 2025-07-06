@@ -7,6 +7,7 @@ import org.lwjgl.input.Mouse;
 import qwq.arcane.Client;
 import qwq.arcane.gui.clickgui.arcane.panel.CategoryPanel;
 import qwq.arcane.module.Category;
+import qwq.arcane.module.impl.visuals.ESP;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
@@ -47,6 +48,8 @@ public class ArcaneClickGui extends GuiScreen {
     private final Animation animations = new DecelerateAnimation(250, 1);
     private final Animation animations2 = new DecelerateAnimation(250, 1);
     private Animation hoverAnimation = new DecelerateAnimation(1000, 1);;
+    public final ESPComponent espPreviewComponent = new ESPComponent();
+    boolean sb = false;
 
     public ArcaneClickGui(){
         Arrays.stream(Category.values()).forEach(moduleCategory -> {
@@ -96,13 +99,19 @@ public class ArcaneClickGui extends GuiScreen {
             if (RenderUtil.isHovering(x + 10, y + 44, 96 / 2, 25, mouseX, mouseY)) {
                 animations2.setDirection(Direction.BACKWARDS);
                 for (CategoryPanel panel : categoryPanels) {
-                    panel.setSelected(panel.getCategory() == Category.Combat);
+                    panel.setSelected(panel.getCategory() == Category.Visuals);
+                    sb = true;
                 }
             }else if (RenderUtil.isHovering(x + 10 + 96 / 2, y + 44, 96 / 2, 25, mouseX, mouseY)){
                 animations2.setDirection(Direction.FORWARDS);
+                sb = false;
             }
         }
         RoundedUtil.drawRound(x + 10 + (96 / 2) * animations2.getOutput().floatValue(), y + 44, 96 / 2, 25, 5, smallbackgroundColor2);
+
+        if (Client.Instance.getModuleManager().getModule(ESP.class).isEnabled() && sb){
+            espPreviewComponent.drawScreen(mouseX, mouseY);
+        }
 
         Animation moduleAnimation = animations;
         if (Mouse.isButtonDown(0)){
@@ -140,9 +149,9 @@ public class ArcaneClickGui extends GuiScreen {
         FontManager.Semibold.get(16).drawStringDynamic("30D", x + w - 86 + FontManager.Semibold.get(16).getStringWidth("Time remaining:"), y + h - 20, 1,6);
 
 
-        FontManager.Icon.get(20).drawStringDynamic("T", x + 16, y + 54.5f, 1,6);
+        FontManager.Icon.get(25).drawStringDynamic("M", x + 14, y + 53.5f, 1,6);
         FontManager.Icon.get(20).drawStringDynamic("G", x + 60, y + 54.5f, 1,6);
-        FontManager.Bold.get(16).drawString("Home", x + 28, y + 54.5f, fontcolor.getRGB());
+        FontManager.Bold.get(16).drawString("ESP", x + 28, y + 54.5f, fontcolor.getRGB());
 
         Color rectColor = smallbackgroundColor2;
         rectColor = ColorUtil.interpolateColorC(rectColor, ColorUtil.brighter(rectColor, 0.6f),this.hoverAnimation.getOutput().floatValue());
@@ -206,6 +215,7 @@ public class ArcaneClickGui extends GuiScreen {
             dragX = x - mouseX;
             dragY = y - mouseY;
         }
+        espPreviewComponent.mouseClicked(mouseX, mouseY,mouseButton);
         if (mouseButton == 0){
             for (CategoryPanel panel : categoryPanels) {
                 if (handleCategoryPanel(panel, mouseX, mouseY)) {
@@ -251,6 +261,7 @@ public class ArcaneClickGui extends GuiScreen {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
+        espPreviewComponent.mouseReleased(mouseX, mouseY,state);
         if (state == 0){
             dragging = false;
         }

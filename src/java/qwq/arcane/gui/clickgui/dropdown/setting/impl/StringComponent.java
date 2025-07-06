@@ -26,6 +26,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public class StringComponent extends Component {
     private final TextValue setting;
     private final Animation input = new DecelerateAnimation(250, 1);

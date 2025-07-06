@@ -20,6 +20,10 @@ import qwq.arcane.value.impl.*;
 
 import java.awt.*;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public final class Hitmarkers extends Module {
     public Hitmarkers() {
         super("Hitmarkers",Category.Visuals);
@@ -118,8 +122,6 @@ public final class Hitmarkers extends Module {
             }
         }
     };
-
-
 
     private static int removeAlphaComponent(int color) {
         int r = color >> 16 & 0xFF;

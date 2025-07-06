@@ -260,4 +260,21 @@ public class Gui
         worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
         tessellator.draw();
     }
+    public static void drawTexturedModalRect2(float xCoord, float yCoord, int minU, int minV, int maxU, int maxV)
+    {
+        float tx = minU * 0.00390625f;
+        float txw = (minU + maxU) * 0.00390625f;
+        float ty = minV * 0.00390625f;
+        float tyh = (minV + maxV) * 0.00390625f;
+        GL11.glBegin(7);
+        GL11.glTexCoord2f(tx, tyh);
+        GL11.glVertex2f(xCoord, (yCoord + maxV));
+        GL11.glTexCoord2f(txw, tyh);
+        GL11.glVertex2f((xCoord + maxU), (yCoord + maxV));
+        GL11.glTexCoord2f(txw, ty);
+        GL11.glVertex2f((xCoord + maxU), yCoord);
+        GL11.glTexCoord2f(tx, ty);
+        GL11.glVertex2f(xCoord, yCoord);
+        GL11.glEnd();
+    }
 }

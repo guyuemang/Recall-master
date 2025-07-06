@@ -29,14 +29,14 @@ public class InterFace extends Module {
         super("InterFace", Category.Visuals);
         setState(true);
     }
-    public static ModeValue colorMode = new ModeValue("Color Mode", "Fade", new String[]{"Fade", "Rainbow", "Astolfo","Tenacity", "Static", "Double"});
+    public static ModeValue colorMode = new ModeValue("Color Mode", "Fade", new String[]{"Fade", "Rainbow", "Astolfo", "Dynamic","Tenacity", "Static", "Double"});
     public static final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> colorMode.is("Tenacity"), 4, 1, 10, 1);
     public static ColorValue mainColor = new ColorValue("MainColor", new Color(183, 109, 250));
     public static ColorValue secondColor = new ColorValue("SecondColor", new Color(115, 75, 109));
     public static BooleanValue waterMark = new BooleanValue("WaterMark",false);
     public static ModeValue waterMarkmode = new ModeValue("WaterMarkMode",()-> waterMark.get(),"Exhi",new String[]{"Exhi","Arcane"});
     public static BooleanValue info = new BooleanValue("Info",true);
-    public static final ModeValue infomode = new ModeValue("InfoMode",()->info.get(),"Exhi",new String[]{"Exhi"});
+    public static final ModeValue infomode = new ModeValue("InfoMode",()->info.get(),"Exhi",new String[]{"Exhi","Arcane"});
     public static BooleanValue renderBossHealth = new BooleanValue("BossHealth",false);
     private final DecimalFormat bpsFormat = new DecimalFormat("0.00");
     private final DecimalFormat xyzFormat = new DecimalFormat("0");
@@ -47,35 +47,34 @@ public class InterFace extends Module {
             LocalTime currentTime1 = LocalTime.now();
             DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("HH:mm");
             DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern(" a");
-            String formattedTime1 = currentTime1.format(formatter1);
-            String formattedTime2 = currentTime1.format(formatter2);
             boolean shouldChange = RenderUtil.COLOR_PATTERN.matcher(Client.name).find();
             String text = shouldChange ? "§r" + Client.name : Client.name.charAt(0) + "§r§f" + Client.name.substring(1) +
                     "§7[§f" + Minecraft.getDebugFPS() + " FPS§7]§r ";
+            String text2 = shouldChange ? "§r" + Client.name : Client.name.charAt(0) + "§r§f" + Client.name.substring(1);
             switch (waterMarkmode.get()) {
                 case "Exhi":
                     mc.fontRendererObj.drawStringWithShadow(text, 2.0f, 2.0f, color(1).getRGB());
                     break;
                 case "Arcane":
-                    RoundedUtil.drawRound(4,4,Bold.get(22).getStringWidth(text) + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS") + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS"),30,6,new Color(1,1,1,190));
-                    Bold.get(22).drawString("ARC", 12, 10,-1);
-                    Bold.get(22).drawStringDynamic("ANE", 12 + Bold.get(22).getStringWidth("ARC"), 10,1,7);
-                    Semibold.get(18).drawString(mc.getDebugFPS() + "" + EnumChatFormatting.GRAY + "FPS", 12, 22,-1);
-                    Semibold.get(18).drawString( this.bpsFormat.format(getBPS()) + EnumChatFormatting.GRAY + "BPS", 22 + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS"), 22,-1);
-                    Semibold.get(18).drawString(formattedTime1, 42 + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS") + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS"), 22,-1);
-                    Semibold.get(18).drawString(EnumChatFormatting.GRAY + formattedTime2, 42 + Semibold.get(18).getStringWidth(formattedTime1) + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS") + Bold.get(18).getStringWidth(mc.getDebugFPS() + "FPS"), 22,-1);
+                    Bold.get(40).drawString(text2, 5, 5,color(1).getRGB());
                     break;
             }
         }
         if (info.get()){
             switch (infomode.get()) {
                 case "Exhi":
-                    float textY = (event.getScaledResolution().getScaledHeight() - 9) + (mc.currentScreen instanceof GuiChat ? -14.0f : -3.0f);
                     mc.fontRendererObj.drawStringWithShadow("XYZ: " + EnumChatFormatting.WHITE +
                                     xyzFormat.format(mc.thePlayer.posX) + " " +
                                     xyzFormat.format(mc.thePlayer.posY) + " " +
                                     xyzFormat.format(mc.thePlayer.posZ) + " " + EnumChatFormatting.RESET + "BPS: " + EnumChatFormatting.WHITE + this.bpsFormat.format(getBPS())
-                            , 2, textY, color());
+                            , 2, (int) ((event.getScaledResolution().getScaledHeight() - 9) + (mc.currentScreen instanceof GuiChat ? -14.0f : -3.0f)), color());
+                    break;
+                case "Arcane":
+                    Bold.get(18).drawString("XYZ: " + EnumChatFormatting.WHITE +
+                            xyzFormat.format(mc.thePlayer.posX) + " " +
+                            xyzFormat.format(mc.thePlayer.posY) + " " +
+                            xyzFormat.format(mc.thePlayer.posZ) + " " + EnumChatFormatting.RESET,5,event.getScaledResolution().getScaledHeight() - 20,color());
+                    Bold.get(18).drawString("BPS: " + EnumChatFormatting.WHITE + this.bpsFormat.format(getBPS()),5,event.getScaledResolution().getScaledHeight() - 30,color());
                     break;
             }
         }
@@ -116,6 +115,9 @@ public class InterFace extends Module {
                 break;
             case "Tenacity":
                 textColor = ColorUtil.interpolateColorsBackAndForth(colorspeed.getValue().intValue(), Client.Instance.getModuleManager().getAllModules().size() * tick, mainColor.get(), secondColor.get(), false);
+                break;
+            case "Dynamic":
+                textColor = new Color(ColorUtil.swapAlpha(ColorUtil.colorSwitch(mainColor.get(), new Color(ColorUtil.darker(mainColor.get().getRGB(), 0.25F)), 2000.0F, 0, 1 * 10, colorspeed.get()).getRGB(), 255));
                 break;
             case "Double":
                 tick *= 200;

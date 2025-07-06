@@ -21,6 +21,10 @@ import qwq.arcane.value.impl.ColorValue;
 
 import java.awt.*;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public class ColorPickerComponent extends Component {
 
     private final ColorValue setting;

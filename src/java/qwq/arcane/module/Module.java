@@ -51,25 +51,38 @@ public class Module implements Instance {
     }
     public void setsuffix(String tag) {
         if (tag != null && !tag.isEmpty()) {
-            String tagStyle = Optional.ofNullable(getModule(qwq.arcane.module.impl.display.ArrayList.class))
-                    .map(m -> m.tags.get())
-                    .orElse("")
-                    .toLowerCase();
-            switch (tagStyle) {
-                case "simple":
-                    this.suffix = "§7 " + tag;
-                    break;
-                case "dash":
-                    this.suffix = "§7 - " + tag;
-                    break;
-                case "bracket":
-                    this.suffix = "§7 [" + tag + "]";
-                    break;
-                default:
-                    this.suffix = "";
+            String tagStyle = Optional.ofNullable(getModule(qwq.arcane.module.impl.display.ArrayList.class)).map(m -> m.tags.get()).orElse("").toLowerCase();
+            if (getModule(qwq.arcane.module.impl.display.ArrayList.class).suffixColor.getValue()){
+                switch (tagStyle) {
+                    case "simple":
+                        suffix = " " + tag;
+                        break;
+                    case "dash":
+                        suffix = " - " + tag;
+                        break;
+                    case "bracket":
+                        suffix = " [" + tag + "]";
+                        break;
+                    default:
+                        suffix = "";
+                }
+            }else {
+                switch (tagStyle) {
+                    case "simple":
+                        suffix = "§f " + tag;
+                        break;
+                    case "dash":
+                        suffix = "§f - " + tag;
+                        break;
+                    case "bracket":
+                        suffix = "§f [" + tag + "]";
+                        break;
+                    default:
+                        suffix = "";
+                }
             }
         } else {
-            this.suffix = "";
+            suffix = "";
         }
     }
     public boolean isEnabled() {

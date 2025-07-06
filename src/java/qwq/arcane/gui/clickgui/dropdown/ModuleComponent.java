@@ -29,6 +29,10 @@ import lombok.Setter;
 import java.awt.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 @Getter
 @Setter
 public class ModuleComponent implements IComponent {

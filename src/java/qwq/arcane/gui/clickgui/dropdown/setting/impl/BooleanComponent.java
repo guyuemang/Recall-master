@@ -21,6 +21,10 @@ import qwq.arcane.value.impl.BooleanValue;
 
 import java.awt.*;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public class BooleanComponent extends Component {
     private final BooleanValue setting;
     private final SmoothStepAnimation toggleAnimation = new SmoothStepAnimation(175, 1);

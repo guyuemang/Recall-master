@@ -19,6 +19,10 @@ import qwq.arcane.value.impl.ModeValue;
 
 import java.awt.*;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public class ModeComponent extends Component {
     private final ModeValue setting;
 

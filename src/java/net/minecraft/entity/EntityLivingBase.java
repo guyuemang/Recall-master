@@ -14,6 +14,7 @@ import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
@@ -52,6 +53,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import qwq.arcane.Client;
+import qwq.arcane.module.impl.visuals.Animations;
+
+import static net.minecraft.potion.Potion.digSlowdown;
+import static net.minecraft.potion.Potion.digSpeed;
 
 public abstract class EntityLivingBase extends Entity
 {
@@ -188,6 +194,8 @@ public abstract class EntityLivingBase extends Entity
     private int jumpTicks;
     private float absorptionAmount;
 
+    public float rotationPitchHead;
+    public float prevRotationPitchHead;
     /**
      * Called by the /kill command.
      */
@@ -380,6 +388,7 @@ public abstract class EntityLivingBase extends Entity
         this.updatePotionEffects();
         this.prevMovedDistance = this.movedDistance;
         this.prevRenderYawOffset = this.renderYawOffset;
+        this.prevRotationPitchHead = this.rotationPitchHead;
         this.prevRotationYawHead = this.rotationYawHead;
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
@@ -1333,9 +1342,12 @@ public abstract class EntityLivingBase extends Entity
      * Returns an integer indicating the end point of the swing animation, used by {@link #swingProgress} to provide a
      * progress indicator. Takes dig speed enchantments into account.
      */
-    private int getArmSwingAnimationEnd()
-    {
-        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) * 1 : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
+    private int getArmSwingAnimationEnd() {
+        if (Client.Instance.getModuleManager().getModule(Animations.class).getState() && this == Minecraft.getMinecraft().thePlayer) {
+            return (int) (6 + Client.Instance.getModuleManager().getModule(Animations.class).getSlowdown().get());
+        } else {
+            return this.isPotionActive(digSpeed) ? 6 - (1 + this.getActivePotionEffect(digSpeed).getAmplifier()) : this.isPotionActive(digSlowdown) ? 6 + (1 + this.getActivePotionEffect(digSlowdown).getAmplifier()) * 2 : 6;
+        }
     }
 
     /**

@@ -21,6 +21,10 @@ import net.minecraft.util.MathHelper;
 
 import java.awt.*;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public class SliderComponent extends Component {
 
     private final NumberValue setting;

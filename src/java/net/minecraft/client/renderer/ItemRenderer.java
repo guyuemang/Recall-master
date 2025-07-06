@@ -31,6 +31,10 @@ import net.optifine.DynamicLights;
 import net.optifine.reflect.Reflector;
 import net.optifine.shaders.Shaders;
 import org.lwjgl.opengl.GL11;
+import qwq.arcane.Client;
+import qwq.arcane.module.impl.combat.KillAura;
+import qwq.arcane.module.impl.visuals.Animations;
+import qwq.arcane.module.impl.visuals.NoHurtCam;
 
 public class ItemRenderer
 {
@@ -74,6 +78,12 @@ public class ItemRenderer
                 if (this.isBlockTranslucent(block) && (!Config.isShaders() || !Shaders.renderItemKeepDepthMask))
                 {
                     GlStateManager.depthMask(false);
+                }
+            } else {
+                Animations animations = Client.Instance.getModuleManager().getModule(Animations.class);
+                if (animations.getState()) {
+                    double factor = 1 - animations.getDownscaleFactor().get();
+                    GlStateManager.scale(factor, factor, factor);
                 }
             }
 
@@ -363,20 +373,30 @@ public class ItemRenderer
     /**
      * Renders the active item in the player's hand when in first person mode. Args: partialTickTime
      */
+    private int i = 0;
     public void renderItemInFirstPerson(float partialTicks)
     {
         if (!Config.isShaders() || !Shaders.isSkipRenderHand())
         {
+            Animations animations = Client.Instance.getModuleManager().getModule(Animations.class);
             float f = 1.0F - (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
             AbstractClientPlayer abstractclientplayer = this.mc.thePlayer;
             float f1 = abstractclientplayer.getSwingProgress(partialTicks);
             float f2 = abstractclientplayer.prevRotationPitch + (abstractclientplayer.rotationPitch - abstractclientplayer.prevRotationPitch) * partialTicks;
             float f3 = abstractclientplayer.prevRotationYaw + (abstractclientplayer.rotationYaw - abstractclientplayer.prevRotationYaw) * partialTicks;
+            float var9 = MathHelper.sin(MathHelper.sqrt_float(f1) * MathHelper.PI);
             this.rotateArroundXAndY(f2, f3);
             this.setLightMapFromPlayer(abstractclientplayer);
             this.rotateWithPlayerRotations((EntityPlayerSP)abstractclientplayer, partialTicks);
             GlStateManager.enableRescaleNormal();
             GlStateManager.pushMatrix();
+            KillAura aura = Client.Instance.getModuleManager()
+                    .getModule(KillAura.class);
+            i++;
+            if (animations.getState()){
+                if (mc.thePlayer.getHeldItem() != null)
+                    GL11.glTranslated(animations.getX().get(), animations.getY().get(), animations.getZ().get());
+            }
 
             if (this.itemToRender != null)
             {
@@ -384,7 +404,8 @@ public class ItemRenderer
                 {
                     this.renderItemMap(abstractclientplayer, f2, f, f1);
                 }
-                else if (abstractclientplayer.getItemInUseCount() > 0)
+
+                else if (abstractclientplayer.getItemInUseCount() > 0 || aura.blocking || animations.getBlockWhenSwing().get() && mc.thePlayer.isSwingInProgress)
                 {
                     EnumAction enumaction = this.itemToRender.getItemUseAction();
 
@@ -397,23 +418,234 @@ public class ItemRenderer
                         case EAT:
                         case DRINK:
                             this.performDrinking(abstractclientplayer, partialTicks);
-                            this.transformFirstPersonItem(f, 0.0F);
+                            this.transformFirstPersonItem(f, animations.getState() && animations.getOld().get() ? f1 : 0);
                             break;
 
                         case BLOCK:
-                            this.transformFirstPersonItem(f, 0.0F);
-                            this.doBlockTransformations();
+                            if (animations.getState()) {
+                                if (mc.thePlayer.getHeldItem() != null)
+                                    GL11.glTranslated(animations.getBx().get(), animations.getBy().get(), animations.getBz().get());
+                                if (animations.getRotating().get()){
+                                    GL11.glRotated(i, 0, 0, 1);
+                                }
+                                float var151 = MathHelper.sin((float) (MathHelper.sqrt_float(f1) * Math.PI));
+
+                                if(animations.getOld().get()){
+                                    transformFirstPersonItem(f, f1);
+                                    doBlockTransformations();
+                                } else {
+                                    switch (animations.getType().get()) {
+                                        case "Push":
+                                            GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+                                            GlStateManager.translate(0.0F, f1 * -0.6F, 0.0F);
+
+                                            GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+
+                                            GlStateManager.rotate(var9 * -20.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(var151 * -20.0F, 0.0F, 0.0F, 1.0F);
+
+                                            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+                                            this.doBlockTransformations();
+                                            break;
+                                        case "Punch":
+                                            transformFirstPersonItem(f, 0.0f);
+                                            doBlockTransformations();
+                                            GlStateManager.translate(0.1f, 0.2f, 0.3f);
+                                            GlStateManager.rotate(-var9 * 30.0f, -5.0f, 0.0f, 9.0f);
+                                            GlStateManager.rotate(-var9 * 10.0f, 1.0f, -0.4f, -0.5f);
+                                            break;
+                                        case "Stella":
+                                            transformFirstPersonItem(-0.1f, f1);
+                                            GlStateManager.translate(-0.5F, 0.4F, -0.2F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-70.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(40.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Moon":
+                                            final float var8 = MathHelper.sin(MathHelper.sqrt_float(this.mc.thePlayer.getSwingProgress(partialTicks)) * 3.1415927F);
+                                            GL11.glTranslated(0.0D, 0.0D, 0.0D);
+                                            this.transformFirstPersonItem(0.0F, 0.0F);
+                                            GlStateManager.translate(-0.08F, 0.12f, 0.0F);
+                                            GlStateManager.rotate(-var8 * 65.0F / 2.0F, var8 / 2.0F, 1.0F, 4.0F);
+                                            GlStateManager.rotate(-var8 * 60.0F, 1.0F, var8 / 3.0F, -0.0F);
+                                            doBlockTransformations();
+                                            break;
+                                        case "Leaked":
+                                            final float var = MathHelper.sin((float) (MathHelper.sqrt_float(f1) * Math.PI));
+                                            transformFirstPersonItem(0.0F, 0.0f);
+                                            GlStateManager.translate(0.08F, 0.02f, 0.0F);
+                                            doBlockTransformations();
+                                            GlStateManager.rotate(-var * 41F, 1.1F, 0.8F, -0.3F);
+                                            break;
+                                        case "Astolfo":
+                                            final float var7 = MathHelper.sin(MathHelper.sqrt_float(this.mc.thePlayer.getSwingProgress(partialTicks)) * 3.1415927F);
+                                            GL11.glTranslated(0.0D, 0.0D, 0.0D);
+                                            this.transformFirstPersonItem(0.0F, 0.0F);
+                                            GlStateManager.translate(-0.08F, 0.12f, 0.0F);
+                                            GlStateManager.rotate(-var7 * 58.0F / 2.0F, var7 / 2.0F, 1.0F, 0.5F);
+                                            GlStateManager.rotate(-var7 * 43.0F, 1.0F, var7 / 3.0F, -0.0F);
+                                            doBlockTransformations();
+                                            break;
+                                        case "Virtue": {
+                                            transformFirstPersonItem(f - 0.30F, f1);
+                                            this.doBlockTransformations();
+                                            break;
+                                        }
+                                        case "Small":
+                                            GlStateManager.translate(-0.01F, 0.03f, -0.24F);
+                                            this.transformFirstPersonItem(0.0F, f1);
+                                            this.doBlockTransformations();
+                                            break;
+                                        case "1.7":
+                                            this.transformFirstPersonItem(f, f1);
+                                            this.doBlockTransformations();
+                                            break;
+                                        case "Styles":
+                                            this.transformFirstPersonItem(f, 0.0F);
+                                            this.doBlockTransformations();
+                                            float var11 = MathHelper.sin((float) (MathHelper.sqrt_float(f1) * Math.PI));
+                                            GlStateManager.translate(-0.05f, 0.2f, 0.0f);
+                                            GlStateManager.rotate(-var11 * 70.0f / 2.0f, -8.0f, -0.0f, 9.0f);
+                                            GlStateManager.rotate(-var11 * 70.0f, 1.0f, -0.4f, -0.0f);
+                                            break;
+                                        case "Swank":
+                                            this.transformFirstPersonItem(f / 2.0F, f1);
+                                            GlStateManager.rotate(var151 * 30.0F, -var151, -0.0F, 9.0F);
+                                            GlStateManager.rotate(var151 * 40.0F, 1.0F, -var151, -0.0F);
+                                            GlStateManager.translate(-0.5F, 0.4f, 0.0F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Swang":
+                                            this.transformFirstPersonItem(f / 2.0F, f1);
+                                            float var152 = MathHelper.sin((float) (MathHelper.sqrt_float(f1) * Math.PI));
+                                            GlStateManager.rotate(var152 * 30.0F / 2.0F, -var152, -0.0F, 9.0F);
+                                            GlStateManager.rotate(var152 * 40.0F, 1.0F, -var152 / 2.0F, -0.0F);
+                                            GlStateManager.translate(-0.5F, 0.4f, 0.0F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Swong":
+                                            this.transformFirstPersonItem(f / 2.0F, 0.0F);
+                                            float var153 = MathHelper.sin((float) (f1 * f1 * Math.PI));
+                                            GlStateManager.rotate(-var153 * 40.0F / 2.0F, var153 / 2.0F, -0.0F, 9.0F);
+                                            GlStateManager.rotate(-var153 * 30.0F, 1.0F, var153 / 2.0F, -0.0F);
+                                            GlStateManager.translate(-0.5F, 0.4f, 0.0F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Swaing":
+                                            this.transformFirstPersonItem(f / 2.0F, -0.2F);
+                                            float var154 = MathHelper.sin((float) (f1 * f1 * Math.PI));
+                                            GlStateManager.rotate(-var154 / 19.0F, var154 / 20.0F, -0.0F, 9.0F);
+                                            GlStateManager.rotate(-var154 * 30.0F, 10.0F, var154 / 50.0F, 0.0F);
+                                            GlStateManager.translate(-0.5F, 0.4f, 0.0F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Swing":
+                                            this.transformFirstPersonItem(f / 2.0F, f1);
+                                            GlStateManager.translate(-0.5F, 0.4f, 0.0F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Smooth":
+                                            transformFirstPersonItem(f / 1.5F, 0.0f);
+                                            doBlockTransformations();
+                                            GlStateManager.translate(-0.05f, 0.3f, 0.3f);
+                                            GlStateManager.rotate(-var9 * 140.0f, 8.0f, 0.0f, 8.0f);
+                                            GlStateManager.rotate(var9 * 90.0f, 8.0f, 0.0f, 8.0f);
+                                            break;
+                                        case "Sigma":
+                                            transformFirstPersonItem(f * 0.5f, 0);
+                                            GlStateManager.rotate(-var9 * 55 / 2.0F, -8.0F, -0.0F, 9.0F);
+                                            GlStateManager.rotate(-var9 * 45, 1.0F, var9 / 2, -0.0F);
+                                            doBlockTransformations();
+                                            GL11.glTranslated(1.2, 0.3, 0.5);
+                                            GL11.glTranslatef(-1, this.mc.thePlayer.isSneaking() ? -0.1F : -0.2F, 0.2F);
+                                            break;
+                                        case "Slide":
+                                            this.transformFirstPersonItem(f, 0.0f);
+                                            this.doBlockTransformations();
+                                            GlStateManager.translate(-0.4f, 0.3f, 0.0f);
+                                            GlStateManager.rotate(-var9 * 35.0f, -8.0f, -0.0f, 9.0f);
+                                            GlStateManager.rotate(-var9 * 70.0f, 1.0f, -0.4f, -0.0f);
+                                            GL11.glTranslatef(-0.05f, this.mc.thePlayer.isSneaking() ? -0.2f : 0.0f, 0.1f);
+                                            break;
+                                        case "Interia":
+                                            transformFirstPersonItem(0.05f, f1);
+                                            GlStateManager.translate(-0.5F, 0.5F, 0.0F);
+                                            GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                                            GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                                            GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                                            break;
+                                        case "Ethereal":
+                                            transformFirstPersonItem(f, 0.0f);
+                                            doBlockTransformations();
+                                            GlStateManager.translate(-0.05f, 0.2f, 0.2f);
+                                            GlStateManager.rotate(-var9 * 70.0f / 2.0f, -8.0f, -0.0f, 9.0f);
+                                            GlStateManager.rotate(-var9 * 70.0f, 1.0f, -0.4f, -0.0f);
+                                            break;
+                                        case "Old Exhibition":
+                                            GL11.glTranslated(-0.04D, 0.13D, 0.0D);
+                                            transformFirstPersonItem(f / 2.5F, 0.0f);
+                                            GlStateManager.rotate(-var9 * 40.0F / 2.0F, var9 / 2.0F, 1.0F, 4.0F);
+                                            GlStateManager.rotate(-var9 * 30.0F, 1.0F, var9 / 3.0F, -0.0F);
+                                            doBlockTransformations();
+                                            break;
+                                        case "Exhibition":
+                                            GL11.glTranslated(-0.03, var151 * 0.062f, var151 * 0);
+                                            GL11.glTranslated(0.025D, 0.09615D, 0.0D);
+                                            transformFirstPersonItem(f / 3, 0.0F);
+                                            GlStateManager.rotate(-var151 * 9f, -var151 / 20F, -var151 / 20F, 1);
+                                            GlStateManager.rotate(-var151 * 55F, 1.2F, var151 / 4F, 0.36F);
+                                            if (mc.thePlayer.isSneaking()) {
+                                                GlStateManager.translate(-0.05, -0.05, 0);
+                                            }
+                                            this.doBlockTransformations();
+                                            break;
+                                        case "Spinning":
+                                            GL11.glTranslated(-0.04D, 0.1, 0.0D);
+                                            transformFirstPersonItem(f / 2.5F, 0.0f);
+                                            GlStateManager.rotate(-90, 1, 0, 0.2f);
+                                            GlStateManager.rotate(i, 0, -1, 0);
+                                            break;
+                                    }
+                                }
+                                break;
+                            } else {
+                                transformFirstPersonItem(f, 0.0F);
+                                doBlockTransformations();
+                            }
                             break;
 
                         case BOW:
-                            this.transformFirstPersonItem(f, 0.0F);
+                            this.transformFirstPersonItem(f, animations.getState() && animations.getOld().get() ? f1 : 0);
                             this.doBowTransformations(partialTicks, abstractclientplayer);
                     }
                 }
                 else
                 {
-                    this.doItemUsedTransformations(f1);
+                    if (animations.getState()) {
+                        if (!animations.getHit().is("Smooth")) {
+                            this.doItemUsedTransformations(f1);
+                        }
+                    } else {
+                        this.doItemUsedTransformations(f1);
+                    }
                     this.transformFirstPersonItem(f, f1);
+                }
+
+                if (animations.getState() && animations.getOld().get() && !itemRenderer.shouldRenderItemIn3D(itemToRender)) {
+                    float scale = 1.5F / 1.7F;
+                    GlStateManager.scale(scale, scale, scale);
+                    GlStateManager.rotate(5.0F, 0.0F, 1.0F, 0.0F);
+                    GlStateManager.translate(-0.29F, 0.149F, -0.0328F);
                 }
 
                 this.renderItem(abstractclientplayer, this.itemToRender, ItemCameraTransforms.TransformType.FIRST_PERSON);
@@ -562,6 +794,9 @@ public class ItemRenderer
      */
     private void renderFireInFirstPerson(float partialTicks)
     {
+        if (Client.Instance.getModuleManager().getModule(NoHurtCam.class).getState()) {
+            return;
+        }
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F);

@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.RenderNameTagEvent;
+import qwq.arcane.module.impl.visuals.Chams;
 
 public abstract class RendererLivingEntity<T extends EntityLivingBase> extends Render<T>
 {
@@ -162,7 +163,12 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                     f2 = f1 - f;
                 }
 
-                float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+                float f7;
+                if(entity == Minecraft.getMinecraft().thePlayer) {
+                    f7 = entity.prevRotationPitchHead + (entity.rotationPitchHead - entity.prevRotationPitchHead) * partialTicks;
+                }else {
+                    f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+                }
                 this.renderLivingAt(entity, x, y, z);
                 float f8 = this.handleRotationFloat(entity, partialTicks);
                 this.rotateCorpse(entity, f8, f, partialTicks);
@@ -341,6 +347,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
         if (flag || flag1)
         {
+            final Chams instance = Client.Instance.getModuleManager().getModule(Chams.class);
             if (!this.bindEntityTexture(entitylivingbaseIn))
             {
                 return;
@@ -356,7 +363,39 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 GlStateManager.alphaFunc(516, 0.003921569F);
             }
 
-            this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+            if(instance.getState()) {
+                if (entitylivingbaseIn instanceof EntityPlayer) {
+                    boolean visibleFlat = instance.visibleFlatProperty.get();
+                    boolean occludedFlat = instance.occludedFlatProperty.get();
+                    int visibleColor = instance.visibleColorProperty.get().getRGB();
+                    int occludedColor = instance.occludedColorProperty.get().getRGB();
+
+                    boolean isTextureActive = true;
+
+                    final boolean textureVisible = instance.textureVisibleProperty.get();
+                    final boolean textureOccluded = instance.textureOccludedProperty.get();
+
+                    Chams.preRenderOccluded(!textureOccluded, occludedColor, occludedFlat);
+
+                    if (!textureOccluded) {
+                        isTextureActive = false;
+                    }
+
+                    this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+
+                    Chams.preRenderVisible(!textureVisible && isTextureActive, textureVisible && !isTextureActive, visibleColor, visibleFlat, occludedFlat);
+
+                    isTextureActive = textureVisible;
+
+                    this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                    Chams.postRender(!isTextureActive, visibleFlat);
+                } else {
+                    this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                }
+            } else {
+                this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+            }
+
 
             if (flag1)
             {

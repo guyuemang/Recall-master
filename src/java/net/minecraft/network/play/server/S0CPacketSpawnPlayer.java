@@ -14,7 +14,7 @@ import net.minecraft.util.MathHelper;
 
 public class S0CPacketSpawnPlayer implements Packet<INetHandlerPlayClient>
 {
-    private int entityId;
+    public int entityId;
     private UUID playerId;
     private int x;
     private int y;

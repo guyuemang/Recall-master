@@ -18,8 +18,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 
 /**
- * @Author: Guyuemang
- * 2025/5/17
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
  */
 @Getter
 @Setter

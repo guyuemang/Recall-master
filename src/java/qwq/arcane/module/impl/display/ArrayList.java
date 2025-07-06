@@ -34,12 +34,12 @@ public class ArrayList extends ModuleWidget {
     public static BooleanValue importantModules = new BooleanValue("Important", false);
     public ModeValue fontmode = new ModeValue("FontMode","Custom",new String[]{"Custom","Bold","Semibold","Regular","Light"});
     public ModeValue textShadow = new ModeValue("Text Shadow","None", new String[]{"Black", "Colored", "None"});
-    public BooleanValue suffix = new BooleanValue("Suffix",false);
+    public BooleanValue suffixColor = new BooleanValue("SuffixColor",false);
     public final ModeValue tags = new ModeValue("Suffix","Bracket", new String[]{"None", "Simple", "Bracket", "Dash"});
     public ModeValue animation = new ModeValue("Animation", "Move In",new String[]{"Move In","Scale In"});
     public final ModeValue color = new ModeValue("Color Setting","Fade", new String[]{"Custom", "Rainbow", "Dynamic","Double","Astolfo","Tenacity"});
     public final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> color.is("Dynamic") || color.is("Fade") || color.is("Tenacity"), 4, 1, 10, 1);
-    public final NumberValue colorIndex = new NumberValue("Color Seperation", 20, 5, 100, 1);
+    public final NumberValue colorIndex = new NumberValue("Color Seperation", 1, 1, 50, 1);
     public ColorValue FirstColor = new ColorValue("MainColor", new Color(167, 59, 255));
     public ColorValue SecondColor = new ColorValue("SecondColor", new Color(217, 191, 255));
     public BooleanValue background = new BooleanValue("BackGround",false);
@@ -109,7 +109,7 @@ public class ArrayList extends ModuleWidget {
             }
 
             int index = (int) (counts * colorIndex.getValue());
-            int textcolor = ColorUtil.swapAlpha(color(counts), (int) 255);
+            int textcolor = ColorUtil.swapAlpha(color(index), (int) 255);
             if (color.is("Tenacity")) {
                 textcolor = ColorUtil.interpolateColorsBackAndForth(colorspeed.getValue().intValue(), index, FirstColor.get(), SecondColor.get(), false).getRGB();
             }
@@ -195,7 +195,7 @@ public class ArrayList extends ModuleWidget {
         int colors = FirstColor.get().getRGB();
         colors = switch (color.get()) {
             case "Rainbow" -> RenderUtil.getRainbow(System.currentTimeMillis(), 2000, counter);
-            case "Dynamic" -> ColorUtil.swapAlpha(ColorUtil.colorSwitch(FirstColor.get(), new Color(ColorUtil.darker(FirstColor.get().getRGB(), 0.25F)), 2000.0F, counter, 75L, colorspeed.get()).getRGB(), alpha);
+            case "Dynamic" -> ColorUtil.swapAlpha(ColorUtil.colorSwitch(FirstColor.get(), new Color(ColorUtil.darker(FirstColor.get().getRGB(), 0.25F)), 2000.0F, counter, counter * 10, colorspeed.get()).getRGB(), alpha);
             case "Double"->new Color(RenderUtil.colorSwitch(FirstColor.get(), SecondColor.get(), 2000, -counter / 40, 75, 2)).getRGB();
             case "Astolfo" -> ColorUtil.swapAlpha(astolfoRainbow(counter, FirstColor.getSaturation(), FirstColor.getBrightness()), alpha);
             case "Custom" -> ColorUtil.swapAlpha(FirstColor.get().getRGB(), alpha);

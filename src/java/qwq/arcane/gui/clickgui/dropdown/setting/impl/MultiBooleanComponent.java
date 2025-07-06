@@ -25,6 +25,10 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @Author：Guyuemang
+ * @Date：2025/7/3 12:31
+ */
 public class MultiBooleanComponent extends Component {
     private final MultiBooleanValue setting;
     private final Map<BooleanValue, EaseOutSine> select = new HashMap<>();

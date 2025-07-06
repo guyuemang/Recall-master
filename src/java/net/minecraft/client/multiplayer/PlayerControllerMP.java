@@ -28,6 +28,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.AttackEvent;
 
 public class PlayerControllerMP
 {
@@ -494,6 +496,11 @@ public class PlayerControllerMP
      */
     public void attackEntity(EntityPlayer playerIn, Entity targetEntity)
     {
+        AttackEvent event = new AttackEvent(targetEntity);
+        Client.Instance.getEventManager().call(event);
+        if (event.isCancelled())
+            return;
+
         this.syncCurrentPlayItem();
         this.netClientHandler.addToSendQueue(new C02PacketUseEntity(targetEntity, C02PacketUseEntity.Action.ATTACK));
 
