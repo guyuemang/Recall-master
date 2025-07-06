@@ -20,6 +20,11 @@ public abstract class CancellableEvent implements Event, Cancellable {
 		this.cancelled = cancelled;
 	}
 
+	@Override
+	public void setCancelled() {
+		this.cancelled = true;
+	}
+
 	/**
 	 * Checks if the event has been cancelled.
 	 *

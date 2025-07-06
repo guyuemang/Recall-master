@@ -96,10 +96,38 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onMotion(MotionEvent event) {
-        if (event.isPre()) return;
         setsuffix(mode.get());
         targets = gettargets();
         if (!targets.isEmpty()) {
+            if (switchTimer.hasTimeElapsed((long) (switchDelayValue.get() * 100L)) && targets.size() > 1) {
+                ++index;
+                switchTimer.reset();
+            }
+            if (index >= targets.size()) {
+                index = 0;
+                switchTimer.reset();
+            }
+
+            if (attackTimer.hasTimeElapsed(cps)) {
+                switch (mode.getValue()) {
+                    case "Single":
+                        target = targets.get(0);
+                        attack(target);
+
+                        break;
+                    case "Switch":
+                        target = targets.get(index);
+                        attack(target);
+                        break;
+                }
+                final int maxValue = (int) ((minCPS.getMax() - maxCPS.getValue()) * 20);
+                final int minValue = (int) ((minCPS.getMax() - minCPS.getValue()) * 20);
+                cps = MathUtils.getRandomInRange(minValue, maxValue);
+                attackTimer.reset();
+            }
+
+            onAutoBlock();
+
             if (targets.size() > 1) {
                 switch (priority.get()) {
                     case "Armor":
@@ -116,30 +144,6 @@ public class KillAura extends Module {
                         break;
                 }
             }
-            if (switchTimer.hasTimeElapsed((long) (switchDelayValue.get() * 100L)) && targets.size() > 1) {
-                ++index;
-                switchTimer.reset();
-            }
-            if (index >= targets.size()) {
-                index = 0;
-            }
-            if (attackTimer.hasTimeElapsed(cps, true)) {
-                final int maxValue = (int) ((minCPS.getMax() - maxCPS.getValue()) * 20);
-                final int minValue = (int) ((minCPS.getMax() - minCPS.getValue()) * 20);
-                cps = MathUtils.getRandomInRange(minValue, maxValue);
-                switch (mode.getValue()) {
-                    case "Single":
-                        target = targets.get(0);
-                        attack(target);
-
-                        break;
-                    case "Switch":
-                        target = targets.get(index);
-                        attack(target);
-                        break;
-                }
-            }
-            onAutoBlock();
         } else {
             targets.clear();
             target = null;

@@ -28,6 +28,14 @@ public class PlayerUtil implements Instance {
         return false;
     }
 
+    public static Block blockRelativeToPlayer(double d, double d2, double d3) {
+        return block(mc.thePlayer.posX + d, mc.thePlayer.posY + d2, mc.thePlayer.posZ + d3);
+    }
+
+    public static Block block(double d, double d2, double d3) {
+        return mc.theWorld.getBlockState(new BlockPos(d, d2, d3)).getBlock();
+    }
+
     public static boolean isMob(Entity entity) {
         return entity instanceof EntityMob
                 || entity instanceof EntityVillager

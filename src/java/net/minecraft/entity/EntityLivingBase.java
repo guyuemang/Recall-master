@@ -54,7 +54,10 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.JumpEvent;
+import qwq.arcane.event.impl.events.player.JumpPostEvent;
 import qwq.arcane.module.impl.visuals.Animations;
+import qwq.arcane.utils.player.MovementUtil;
 
 import static net.minecraft.potion.Potion.digSlowdown;
 import static net.minecraft.potion.Potion.digSpeed;
@@ -1580,21 +1583,35 @@ public abstract class EntityLivingBase extends Entity
      */
     protected void jump()
     {
-        this.motionY = (double)this.getJumpUpwardsMotion();
+        final JumpEvent jumpEvent = new JumpEvent(this.getJumpUpwardsMotion(), this.rotationYaw);
+        Client.Instance.getEventManager().call(jumpEvent);
+        if (jumpEvent.isCancelled())
+            return;
+
+        this.motionY = jumpEvent.getMotionY();
 
         if (this.isPotionActive(Potion.jump))
         {
-            this.motionY += (double)((float)(this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
+            this.motionY += (float)(this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F;
         }
 
         if (this.isSprinting())
         {
-            float f = this.rotationYaw * 0.017453292F;
-            this.motionX -= (double)(MathHelper.sin(f) * 0.2F);
-            this.motionZ += (double)(MathHelper.cos(f) * 0.2F);
+            float f = jumpEvent.getYaw() * 0.017453292F;
+
+            final Minecraft mc = Minecraft.getMinecraft();
+            if (mc.thePlayer.omniSprint) {
+                f = MovementUtil.getRawDirection() * 0.017453292F;
+            }
+
+            this.motionX -= MathHelper.sin(f) * 0.2F;
+            this.motionZ += MathHelper.cos(f) * 0.2F;
         }
 
         this.isAirBorne = true;
+
+        final JumpPostEvent afterJumpEvent = new JumpPostEvent();
+        Client.Instance.getEventManager().call(afterJumpEvent);
     }
 
     /**

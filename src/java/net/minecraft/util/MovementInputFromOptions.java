@@ -1,6 +1,8 @@
 package net.minecraft.util;
 
 import net.minecraft.client.settings.GameSettings;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.MoveInputEvent;
 
 public class MovementInputFromOptions extends MovementInput
 {
@@ -11,38 +13,42 @@ public class MovementInputFromOptions extends MovementInput
         this.gameSettings = gameSettingsIn;
     }
 
-    public void updatePlayerMoveState()
-    {
+    public void updatePlayerMoveState() {
         this.moveStrafe = 0.0F;
         this.moveForward = 0.0F;
 
-        if (this.gameSettings.keyBindForward.isKeyDown())
-        {
+        if (this.gameSettings.keyBindForward.isKeyDown()) {
             ++this.moveForward;
         }
 
-        if (this.gameSettings.keyBindBack.isKeyDown())
-        {
+        if (this.gameSettings.keyBindBack.isKeyDown()) {
             --this.moveForward;
         }
 
-        if (this.gameSettings.keyBindLeft.isKeyDown())
-        {
+        if (this.gameSettings.keyBindLeft.isKeyDown()) {
             ++this.moveStrafe;
         }
 
-        if (this.gameSettings.keyBindRight.isKeyDown())
-        {
+        if (this.gameSettings.keyBindRight.isKeyDown()) {
             --this.moveStrafe;
         }
 
         this.jump = this.gameSettings.keyBindJump.isKeyDown();
         this.sneak = this.gameSettings.keyBindSneak.isKeyDown();
 
-        if (this.sneak)
-        {
-            this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
-            this.moveForward = (float)((double)this.moveForward * 0.3D);
+        MoveInputEvent event = new MoveInputEvent(moveForward,moveStrafe, jump, sneak);
+
+        Client.Instance.getEventManager().call(event);
+
+        this.moveForward = event.getForward();
+        this.moveStrafe = event.getStrafe();
+
+        this.jump = event.isJumping();
+        this.sneak = event.isSneaking();
+
+        if (this.sneak) {
+            this.moveStrafe = (float) ((double) this.moveStrafe * 0.3D);
+            this.moveForward = (float) ((double) this.moveForward * 0.3D);
         }
     }
 }

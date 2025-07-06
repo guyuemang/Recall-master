@@ -192,10 +192,12 @@ import net.minecraft.world.storage.WorldInfo;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.misc.KeyPressEvent;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
+import qwq.arcane.event.impl.events.player.RightClickerEvent;
 import qwq.arcane.gui.MainMenu;
 import qwq.arcane.gui.SplashScreen;
 import qwq.arcane.gui.VideoPlayer;
 import qwq.arcane.utils.animations.AnimationUtils;
+import qwq.arcane.utils.player.MovementInputKeyboard;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -1609,6 +1611,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         if (!this.playerController.getIsHittingBlock())
         {
+            RightClickerEvent rightClickEvent = new RightClickerEvent();
+            Client.INSTANCE.getEventManager().call(rightClickEvent);
+            if (rightClickEvent.isCancelled() || this.playerController.getIsHittingBlock()) {
+                return;
+            }
+
             this.rightClickDelayTimer = 4;
             boolean flag = true;
             ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();
@@ -2454,6 +2462,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             this.thePlayer.preparePlayerToSpawn();
             worldClientIn.spawnEntityInWorld(this.thePlayer);
             this.thePlayer.movementInput = new MovementInputFromOptions(this.gameSettings);
+            this.thePlayer.keyMovementInput = new MovementInputKeyboard();
             this.playerController.setPlayerCapabilities(this.thePlayer);
             this.renderViewEntity = this.thePlayer;
             Client.Instance.getEventManager().call(new WorldLoadEvent());
@@ -2493,6 +2502,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.theWorld.spawnEntityInWorld(this.thePlayer);
         this.playerController.flipPlayer(this.thePlayer);
         this.thePlayer.movementInput = new MovementInputFromOptions(this.gameSettings);
+        this.thePlayer.keyMovementInput = new MovementInputKeyboard();
         this.thePlayer.setEntityId(i);
         this.playerController.setPlayerCapabilities(this.thePlayer);
         this.thePlayer.setReducedDebug(entityplayersp.hasReducedDebug());
