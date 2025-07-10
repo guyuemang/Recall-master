@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
@@ -55,7 +56,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.player.JumpEvent;
-import qwq.arcane.event.impl.events.player.JumpPostEvent;
 import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.utils.player.MovementUtil;
 
@@ -194,7 +194,7 @@ public abstract class EntityLivingBase extends Entity
     private float landMovementFactor;
 
     /** Number of ticks since last jump */
-    private int jumpTicks;
+    public int jumpTicks;
     private float absorptionAmount;
 
     public float rotationPitchHead;
@@ -1581,37 +1581,30 @@ public abstract class EntityLivingBase extends Entity
     /**
      * Causes this entity to do an upwards motion (jumping).
      */
+    public int ticksSinceJump;
     protected void jump()
     {
-        final JumpEvent jumpEvent = new JumpEvent(this.getJumpUpwardsMotion(), this.rotationYaw);
-        Client.Instance.getEventManager().call(jumpEvent);
-        if (jumpEvent.isCancelled())
-            return;
-
-        this.motionY = jumpEvent.getMotionY();
+        this.motionY = (double)this.getJumpUpwardsMotion();
 
         if (this.isPotionActive(Potion.jump))
         {
-            this.motionY += (float)(this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F;
+            this.motionY += (double)((float)(this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
         }
 
         if (this.isSprinting())
         {
-            float f = jumpEvent.getYaw() * 0.017453292F;
+            JumpEvent jumpFixEvent = new JumpEvent(this.rotationYaw);
 
-            final Minecraft mc = Minecraft.getMinecraft();
-            if (mc.thePlayer.omniSprint) {
-                f = MovementUtil.getRawDirection() * 0.017453292F;
+            if (this instanceof EntityPlayerSP) {
+                Client.Instance.getEventManager().call(jumpFixEvent);
             }
 
-            this.motionX -= MathHelper.sin(f) * 0.2F;
-            this.motionZ += MathHelper.cos(f) * 0.2F;
+            float f = jumpFixEvent.getYaw() * 0.017453292F;
+            this.motionX -= (double)(MathHelper.sin(f) * 0.2F);
+            this.motionZ += (double)(MathHelper.cos(f) * 0.2F);
         }
 
         this.isAirBorne = true;
-
-        final JumpPostEvent afterJumpEvent = new JumpPostEvent();
-        Client.Instance.getEventManager().call(afterJumpEvent);
     }
 
     /**
@@ -1634,6 +1627,8 @@ public abstract class EntityLivingBase extends Entity
     {
         if (this.isServerWorld())
         {
+            this.ticksSinceJump++;
+
             if (!this.isInWater() || this instanceof EntityPlayer && ((EntityPlayer)this).capabilities.isFlying)
             {
                 if (!this.isInLava() || this instanceof EntityPlayer && ((EntityPlayer)this).capabilities.isFlying)

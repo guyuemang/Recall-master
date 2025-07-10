@@ -38,17 +38,18 @@ public class AttackOrder {
             mc.thePlayer.swingItem();
             mc.playerController.attackEntity(entityIn, target);
         } else {
-            mc.playerController.attackEntity(entityIn, target);
             mc.thePlayer.swingItem();
+            mc.playerController.attackEntity(entityIn, target);
         }
     }
+
     public static void sendFixedAttackByPacket(Entity target) {
         if (ViaLoadingBase.getInstance().getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
             mc.thePlayer.swingItem();
             mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
         } else {
-            mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
             mc.thePlayer.swingItem();
+            mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
         }
     }
 }

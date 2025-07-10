@@ -191,6 +191,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.misc.KeyPressEvent;
+import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.player.RightClickerEvent;
 import qwq.arcane.gui.MainMenu;
@@ -1786,6 +1787,11 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     public void runTick() throws IOException
     {
+        TickEvent tickEvent = new TickEvent();
+        Client.Instance.getEventManager().call(tickEvent);
+
+
+
         if (this.rightClickDelayTimer > 0)
         {
             --this.rightClickDelayTimer;

@@ -4,7 +4,7 @@ import qwq.arcane.event.impl.Event;
 
 /**
  * @Author：Guyuemang
- * @Date：7/7/2025 12:50 AM
+ * @Date：2025/7/9 23:52
  */
-public class JumpPostEvent implements Event {
+public class PostUpdateEvent implements Event {
 }

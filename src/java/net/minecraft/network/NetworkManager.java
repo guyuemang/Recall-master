@@ -56,6 +56,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.packet.HigherPacketEvent;
 import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 
@@ -541,6 +542,24 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         {
             this.packet = inPacket;
             this.futureListeners = inFutureListeners;
+        }
+    }
+
+    public void sendUnregisteredPacket(final Packet packetIn) {
+        final HigherPacketEvent event = new HigherPacketEvent(packetIn);
+        Client.Instance.getEventManager().call(event);
+
+        if (this.isChannelOpen()) {
+            this.flushOutboundQueue();
+            this.dispatchPacket(packetIn, null);
+        } else {
+            this.readWriteLock.writeLock().lock();
+
+            try {
+                this.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packetIn, (GenericFutureListener[]) null));
+            } finally {
+                this.readWriteLock.writeLock().unlock();
+            }
         }
     }
 }

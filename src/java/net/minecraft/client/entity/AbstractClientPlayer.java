@@ -23,7 +23,9 @@ import net.optifine.player.CapeUtils;
 import net.optifine.player.PlayerConfigurations;
 import net.optifine.reflect.Reflector;
 import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.LookEvent;
 import qwq.arcane.module.impl.visuals.Camera;
+import qwq.arcane.utils.math.Vector2f;
 
 public abstract class AbstractClientPlayer extends EntityPlayer
 {
@@ -218,8 +220,15 @@ public abstract class AbstractClientPlayer extends EntityPlayer
     /**
      * interpolated look vector
      */
-    public Vec3 getLook(float partialTicks)
-    {
-        return this.getVectorForRotation(this.rotationPitch, this.rotationYaw);
+    public Vec3 getLook(final float partialTicks) {
+        float yaw = this.rotationYaw;
+        float pitch = this.rotationPitch;
+
+        LookEvent lookEvent = new LookEvent(new Vector2f(yaw, pitch));
+        Client.INSTANCE.getEventManager().call(lookEvent);
+        yaw = lookEvent.getRotation().x;
+        pitch = lookEvent.getRotation().y;
+
+        return this.getVectorForRotation(pitch, yaw);
     }
 }

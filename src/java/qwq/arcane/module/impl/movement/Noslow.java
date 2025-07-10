@@ -16,8 +16,8 @@ import qwq.arcane.event.impl.events.player.SlowDownEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.combat.KillAura;
-import qwq.arcane.utils.chats.ChatUtils;
 import qwq.arcane.utils.pack.PacketUtil;
+import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.value.impl.BooleanValue;
 
@@ -76,6 +76,7 @@ public class Noslow extends Module {
                 event.setCancelled(true);
             } else if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump();
+                mc.thePlayer.setSprinting(false);
                 event.setCancelled(true);
             }
         }

@@ -5,6 +5,8 @@ import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.src.Config;
 import net.minecraft.util.IThreadListener;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.packet.PacketReceiveSyncEvent;
 
 public class PacketThreadUtil
 {
@@ -19,6 +21,11 @@ public class PacketThreadUtil
                 public void run()
                 {
                     PacketThreadUtil.clientPreProcessPacket(p_180031_0_);
+
+                    PacketReceiveSyncEvent event = new PacketReceiveSyncEvent(p_180031_0_);
+                    Client.Instance.getEventManager().call(event);
+                    if (event.isCancelled()) return;
+
                     p_180031_0_.processPacket(p_180031_1_);
                 }
             });

@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 
 public class ContainerFurnace extends Container
 {
-    private final IInventory tileFurnace;
+    public final IInventory tileFurnace;
     private int cookTime;
     private int totalCookTime;
     private int furnaceBurnTime;

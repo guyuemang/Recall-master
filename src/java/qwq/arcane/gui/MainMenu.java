@@ -75,10 +75,10 @@ public class MainMenu extends GuiScreen {
         }
         RoundedUtil.drawRound(width - 200, height - 50 , 180, 30, 5, new Color(35, 37, 43, 150));
         LocalTime currentTime1 = LocalTime.now();
-        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("HH:mm:ss a");
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("HH:mm:ss");
         String formattedTime1 = currentTime1.format(formatter1);
         FontManager.Bold.get(50).drawCenteredString(formattedTime1, width - 85, 10, -1);
-        RoundedUtil.drawGradientHorizontal(width -180, 40 , 180, 1, 3,  InterFace.color(1).brighter(),InterFace.color(7).brighter());
+        RoundedUtil.drawGradientHorizontal(width - 160, 40 , 160, 1, 3,  InterFace.color(1).brighter(),InterFace.color(7).brighter());
 
         FontManager.Bold.get(18).drawString("Arcane-Client", 10, height - 70, -1);
         FontManager.Bold.get(18).drawString("Made by Guyuemang", 10, height - 60, -1);

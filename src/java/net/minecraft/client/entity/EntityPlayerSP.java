@@ -47,8 +47,10 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.PostUpdateEvent;
 import qwq.arcane.event.impl.events.player.SlowDownEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
+import qwq.arcane.utils.math.Vector2f;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -112,6 +114,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
     public int sprintingTicksLeft;
     public float renderArmYaw;
     public float renderArmPitch;
+    public float renderPitchHead;
+    public float prevRenderPitchHead;
     public float prevRenderArmYaw;
     public float prevRenderArmPitch;
     private int horseJumpPowerCounter;
@@ -171,8 +175,12 @@ public class EntityPlayerSP extends AbstractClientPlayer
         Client.Instance.getEventManager().call(new UpdateEvent());
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ)))
         {
+            prevRenderPitchHead = renderPitchHead;
+            renderPitchHead = rotationPitch;
+
             super.onUpdate();
 
+            Client.Instance.getEventManager().call(new PostUpdateEvent());
             if (this.isRiding())
             {
                 this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
@@ -519,7 +527,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
         this.experienceTotal = maxXP;
         this.experienceLevel = level;
     }
-
+    public Vector2f getPreviousRotation() {
+        return new Vector2f(lastReportedYaw, lastReportedPitch);
+    }
     /**
      * Send a chat message to the CommandSender
      */

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.util.MovingObjectPosition;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
@@ -22,8 +23,13 @@ import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.math.MathUtils;
+import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.rotation.MovementFix;
+import qwq.arcane.utils.rotation.RotationComponent;
+import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.*;
 
@@ -144,6 +150,9 @@ public class KillAura extends Module {
                         break;
                 }
             }
+
+            onRotation();
+
         } else {
             targets.clear();
             target = null;
@@ -153,6 +162,11 @@ public class KillAura extends Module {
             cps = 0;
             StopAutoBlock();
         }
+    }
+
+    public void onRotation(){
+        float[] rotation = RotationUtil.getHVHRotation(target, range.getValue());;
+        RotationComponent.setRotations(new Vector2f(rotation[0], rotation[1]), 180, MovementFix.NORMAL);
     }
 
     public void onAutoBlock(){
@@ -212,7 +226,8 @@ public class KillAura extends Module {
         if (shouldAttack()) {
             AttackEvent attackEvent = new AttackEvent(entity);
             Client.Instance.getEventManager().call(attackEvent);
-            AttackOrder.sendFixedAttack(mc.thePlayer,entity);
+            PacketUtil.sendPacket(new C0APacketAnimation());
+            AttackOrder.sendFixedAttackByPacket(entity);
         }
     }
 

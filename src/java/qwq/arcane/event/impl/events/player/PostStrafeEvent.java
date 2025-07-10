@@ -7,11 +7,10 @@ import qwq.arcane.event.impl.CancellableEvent;
 
 /**
  * @Author：Guyuemang
- * @Date：7/7/2025 12:50 AM
+ * @Date：2025/7/10 00:00
  */
 @Getter
 @Setter
 @AllArgsConstructor
-public class JumpEvent extends CancellableEvent {
-    private float yaw;
+public class PostStrafeEvent extends CancellableEvent {
 }

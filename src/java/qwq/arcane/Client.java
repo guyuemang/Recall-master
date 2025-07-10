@@ -25,6 +25,7 @@ import qwq.arcane.gui.clickgui.dropdown.DropDownClickGui;
 import qwq.arcane.gui.notification.NotificationManager;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
+import qwq.arcane.utils.rotation.RotationComponent;
 
 import java.io.File;
 
@@ -55,15 +56,23 @@ public class Client implements Instance {
         Display.setTitle(name + " " + version);
         eventManager = new EventManager();
         eventManager.register(this);
+        eventManager.register(new RotationComponent());
+
         moduleManager = new ModuleManager();
         moduleManager.Init();
+
         notification = new NotificationManager();
+
         configManager = new ConfigManager();
         configManager.loadConfig("config",moduleManager);
+
+        commandManager = new CommandManager(moduleManager);
+
         arcaneClickGui = new ArcaneClickGui();
         dropDownClickGui = new DropDownClickGui();
+
         this.videoComponent = new VideoComponent();
-        commandManager = new CommandManager(moduleManager);
+
         try {
             VideoPlayer.init(new File(Minecraft.getMinecraft().mcDataDir, "background.mp4"));
         } catch (FFmpegFrameGrabber.Exception e) {

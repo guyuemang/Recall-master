@@ -11,4 +11,8 @@ public class PacketUtil implements Instance {
     public static void sendPacket(Packet<?> packet) {
         mc.getNetHandler().addToSendQueue(packet);
     }
+
+    public static void sendPacketNoEvent(Packet packet) {
+        mc.getNetHandler().addToSendQueueUnregistered(packet);
+    }
 }

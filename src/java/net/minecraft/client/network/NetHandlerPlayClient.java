@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
@@ -1171,24 +1173,22 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
      * Verifies that the server and client are synchronized with respect to the inventory/container opened by the player
      * and confirms if it is the case.
      */
-    public void handleConfirmTransaction(S32PacketConfirmTransaction packetIn)
+    public void handleConfirmTransaction(S32PacketConfirmTransaction s32PacketConfirmTransaction)
     {
-        PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
+        PacketThreadUtil.checkThreadAndEnqueue(s32PacketConfirmTransaction, this, this.gameController);
         Container container = null;
-        EntityPlayer entityplayer = this.gameController.thePlayer;
-
-        if (packetIn.getWindowId() == 0)
-        {
-            container = entityplayer.inventoryContainer;
+        EntityPlayerSP entityPlayerSP = this.gameController.thePlayer;
+        if (s32PacketConfirmTransaction.getWindowId() == 0) {
+            container = entityPlayerSP.inventoryContainer;
+        } else if (s32PacketConfirmTransaction.getWindowId() == entityPlayerSP.openContainer.windowId) {
+            container = entityPlayerSP.openContainer;
         }
-        else if (packetIn.getWindowId() == entityplayer.openContainer.windowId)
-        {
-            container = entityplayer.openContainer;
+        if (container != null && !s32PacketConfirmTransaction.func_148888_e()) {
+            addToSendQueue(new C0FPacketConfirmTransaction(s32PacketConfirmTransaction.getWindowId(), s32PacketConfirmTransaction.getActionNumber(), true));
         }
 
-        if (container != null && !packetIn.func_148888_e())
-        {
-            this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), packetIn.getActionNumber(), true));
+        if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
+            addToSendQueue(new C0FPacketConfirmTransaction(s32PacketConfirmTransaction.getWindowId(), (short) 0, false));
         }
     }
 
@@ -2117,7 +2117,9 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
         return null;
     }
-
+    public void addToSendQueueUnregistered(Packet p_147297_1_) {
+        this.netManager.sendUnregisteredPacket(p_147297_1_);
+    }
     public GameProfile getGameProfile()
     {
         return this.profile;

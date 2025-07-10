@@ -195,7 +195,9 @@ public class MathHelper
     {
         return p_82716_1_ >= p_82716_3_ ? p_82716_1_ : p_82716_0_.nextDouble() * (p_82716_3_ - p_82716_1_) + p_82716_1_;
     }
-
+    public static double getRandomDoubleInRange(double minDouble, double maxDouble) {
+        return minDouble >= maxDouble ? minDouble : new Random().nextDouble() * (maxDouble - minDouble) + minDouble;
+    }
     public static double average(long[] values)
     {
         long i = 0L;

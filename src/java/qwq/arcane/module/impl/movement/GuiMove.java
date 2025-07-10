@@ -7,13 +7,21 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C0EPacketClickWindow;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
+import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MoveInputEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.value.impl.BooleanValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author：Guyuemang
@@ -43,6 +51,14 @@ public class GuiMove extends Module {
         if (wdInv.get() && mc.currentScreen instanceof GuiInventory)
             event.setJumping(false);
     }
+    List<Packet<?>> packets = new ArrayList<>();
+    @EventTarget
+    public void onPacketSend(PacketSendEvent event) {
+        Packet<?> packet = event.getPacket();
+        if (event.getPacket() instanceof C0EPacketClickWindow c0EPacketClickWindow) {
+            mc.thePlayer.setSprinting(false);
+        }
+    }
 
     @EventTarget
     private void onUpdate(UpdateEvent event) {
@@ -58,10 +74,10 @@ public class GuiMove extends Module {
             }
 
             if (wdChest.get() && mc.currentScreen instanceof GuiChest)
-                MovementUtil.stopXZ();
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
 
             if (wdInv.get() && mc.currentScreen instanceof GuiInventory)
-                MovementUtil.stopXZ();
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
 
         }
     }
