@@ -55,6 +55,7 @@ public class Stealer extends Module {
 
     @EventTarget
     public void onMotion(MotionEvent event) {
+        setsuffix(String.valueOf(delay.get()));
         if (mc.thePlayer.openContainer instanceof ContainerFurnace && container.isEnabled("Furnace")) {
             ContainerFurnace furnace = (ContainerFurnace) mc.thePlayer.openContainer;
             hasItems = false;

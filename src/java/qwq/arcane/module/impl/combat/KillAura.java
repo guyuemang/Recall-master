@@ -227,7 +227,7 @@ public class KillAura extends Module {
             AttackEvent attackEvent = new AttackEvent(entity);
             Client.Instance.getEventManager().call(attackEvent);
             PacketUtil.sendPacket(new C0APacketAnimation());
-            AttackOrder.sendFixedAttackByPacket(entity);
+            AttackOrder.sendFixedAttack(mc.thePlayer,entity);
         }
     }
 
