@@ -78,7 +78,6 @@ public class GuiMove extends Module {
 
             if (wdInv.get() && mc.currentScreen instanceof GuiInventory)
                 mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-
         }
     }
 }
