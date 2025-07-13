@@ -19,6 +19,7 @@ import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IMerchant;
@@ -51,6 +52,7 @@ import qwq.arcane.event.impl.events.player.PostUpdateEvent;
 import qwq.arcane.event.impl.events.player.SlowDownEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.player.MovementUtil;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -97,7 +99,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * Reset to 0 every time position is sent to the server, used to send periodic updates every 20 ticks even when the
      * player is not moving.
      */
-    private int positionUpdateTicks;
+    public int positionUpdateTicks;
     private boolean hasValidHealth;
     private String clientBrand;
     public MovementInput movementInput;
@@ -786,11 +788,17 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag2 = this.movementInput.moveForward >= f;
         this.movementInput.updatePlayerMoveState();
 
-        SlowDownEvent event = new SlowDownEvent();
-        Client.Instance.getEventManager().call(event);
-        if ((this.isUsingItem()) && !this.isRiding() && !event.isCancelled()) {
-            this.movementInput.moveStrafe *= 0.2f;
-            this.movementInput.moveForward *= 0.2f;
+        SlowDownEvent slowDownEvent = new SlowDownEvent(0.2F, 0.2F,isSprinting());
+        Client.Instance.getEventManager().call(slowDownEvent);
+        if ((this.isUsingItem()) && !this.isRiding() && !slowDownEvent.isCancelled()) {
+            this.movementInput.moveStrafe *= slowDownEvent.getStrafe();
+            this.movementInput.moveForward *= slowDownEvent.getForward();
+            KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), slowDownEvent.isSprinting());
+            if(!slowDownEvent.isSprinting())
+                this.setSprinting(false);
+            if(slowDownEvent.isSprinting())
+                this.setSprinting(MovementUtil.canSprint(true));
+
             this.sprintToggleTimer = 0;
         }
 

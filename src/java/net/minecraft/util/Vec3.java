@@ -10,7 +10,20 @@ public class Vec3
 
     /** Z coordinate of Vec3D */
     public final double zCoord;
+    public Vec3 flat() {
+        return new Vec3(this.xCoord, 0.0D, this.zCoord);
+    }
+    public double lengthSquared()
+    {
+        return this.xCoord * this.xCoord + this.yCoord * this.yCoord + this.zCoord * this.zCoord;
+    }
+    public Vec3 scale(double factor) {
+        return this.mul(factor, factor, factor);
+    }
 
+    public Vec3 mul(double factorX, double factorY, double factorZ) {
+        return new Vec3(this.xCoord * factorX, this.yCoord * factorY, this.zCoord * factorZ);
+    }
     public Vec3(double x, double y, double z)
     {
         if (x == -0.0D)

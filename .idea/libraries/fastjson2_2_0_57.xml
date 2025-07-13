@@ -11,6 +11,8 @@
       <root url="jar://$PROJECT_DIR$/libs/client/ViaBackwards-5.2.0-downgraded.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/ViaRewind-4.0.4-downgraded.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/ViaVersion-5.2.0-downgraded.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/hutool-all-5.8.32.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/openauth-1.1.6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

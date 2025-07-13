@@ -204,21 +204,6 @@ public class ArrayList extends ModuleWidget {
         };
         return new Color(colors,true).getRGB();
     }
-    public int getRainbow(int counter) {
-        return Color.HSBtoRGB(getRainbowHSB(counter)[0], getRainbowHSB(counter)[1], getRainbowHSB(counter)[2]);
-    }
-    public float[] getRainbowHSB(int counter) {
-        final int width = 20;
-
-        double rainbowState = Math.ceil(System.currentTimeMillis() - (long) counter * width) / 8;
-        rainbowState %= 360;
-
-        float hue = (float) (rainbowState / 360);
-        float saturation = FirstColor.getSaturation();
-        float brightness = FirstColor.getBrightness();
-
-        return new float[]{hue, saturation, brightness};
-    }
     public static int astolfoRainbow(final int offset, final float saturation, final float brightness) {
         double currentColor = Math.ceil((double)(System.currentTimeMillis() + offset * 20L)) / 6.0;
         return Color.getHSBColor(((float)((currentColor %= 360.0) / 360.0) < 0.5) ? (-(float)(currentColor / 360.0)) : ((float)(currentColor / 360.0)), saturation, brightness).getRGB();

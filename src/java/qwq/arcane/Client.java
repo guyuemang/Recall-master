@@ -25,6 +25,8 @@ import qwq.arcane.gui.clickgui.dropdown.DropDownClickGui;
 import qwq.arcane.gui.notification.NotificationManager;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
+import qwq.arcane.utils.pack.BlinkComponent;
+import qwq.arcane.utils.player.SlotSpoofComponent;
 import qwq.arcane.utils.rotation.RotationComponent;
 
 import java.io.File;
@@ -57,6 +59,8 @@ public class Client implements Instance {
         eventManager = new EventManager();
         eventManager.register(this);
         eventManager.register(new RotationComponent());
+        eventManager.register(new BlinkComponent());
+        eventManager.register(new SlotSpoofComponent());
 
         moduleManager = new ModuleManager();
         moduleManager.Init();

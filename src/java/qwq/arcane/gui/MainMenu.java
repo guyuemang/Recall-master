@@ -3,7 +3,7 @@ package qwq.arcane.gui;
 import net.minecraft.client.gui.*;
 import org.bytedeco.javacv.FrameGrabber;
 import qwq.arcane.Client;
-import qwq.arcane.gui.altmanager.alt.GuiToken;
+import qwq.arcane.gui.alt.GuiAccountManager;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
@@ -185,7 +185,7 @@ public class MainMenu extends GuiScreen {
                     }
                     break;
                     case "Alt Manager": {
-                        LayeringAnimation.play(new GuiToken(this));
+                        LayeringAnimation.play(new GuiAccountManager(this));
                     }
                     break;
                     case "Options": {

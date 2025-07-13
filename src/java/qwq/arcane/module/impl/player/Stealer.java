@@ -15,6 +15,7 @@ import net.minecraft.network.play.server.S2FPacketSetSlot;
 import net.minecraft.network.play.server.S30PacketWindowItems;
 import net.minecraft.util.MathHelper;
 import qwq.arcane.event.annotations.EventTarget;
+import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.packet.PacketReceiveSyncEvent;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
@@ -52,7 +53,10 @@ public class Stealer extends Module {
     private final StopWatch stopWatch = new StopWatch();
     private boolean action = false;
     private boolean inchest;
-
+    @EventTarget
+    public void onWorld(WorldLoadEvent e){
+        this.setState(false);
+    }
     @EventTarget
     public void onMotion(MotionEvent event) {
         setsuffix(String.valueOf(delay.get()));

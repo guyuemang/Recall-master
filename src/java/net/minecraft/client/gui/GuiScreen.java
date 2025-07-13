@@ -781,7 +781,9 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
     {
         return keyID == 30 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
     }
-
+    public boolean GuiInvMove() {
+        return false;
+    }
     /**
      * Called when the GUI is resized in order to update the world and the resolution
      *  

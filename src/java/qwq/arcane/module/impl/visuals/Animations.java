@@ -22,6 +22,7 @@ public class Animations extends Module {
     private final NumberValue slowdown = new NumberValue("Slow Down", 0.0, -5.0, 15.0, 1.0);
     private final NumberValue downscaleFactor = new NumberValue("Scale", 0.0, 0.0, 0.5, .1);
     private final BooleanValue rotating = new BooleanValue("Rotating", ()-> !old.get(),false);
+    private final BooleanValue swingWhileUsingItem = new BooleanValue("Swing Using Item", false);
     private final NumberValue x = new NumberValue("Item-X", 0.0, -1.0, 1.0, .05);
     private final NumberValue y = new NumberValue("Item-Y", 0.0, -1.0, 1.0, .05);
     private final NumberValue z = new NumberValue("Item-Z", 0.0, -1.0, 1.0, .05);

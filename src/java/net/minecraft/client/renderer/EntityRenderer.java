@@ -100,10 +100,7 @@ import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
-import qwq.arcane.module.impl.visuals.Atmosphere;
-import qwq.arcane.module.impl.visuals.Camera;
-import qwq.arcane.module.impl.visuals.MotionBlur;
-import qwq.arcane.module.impl.visuals.NoHurtCam;
+import qwq.arcane.module.impl.visuals.*;
 import qwq.arcane.utils.animations.impl.LayeringAnimation;
 
 public class EntityRenderer implements IResourceManagerReloadListener
@@ -741,6 +738,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
         Entity entity = this.mc.getRenderViewEntity();
         Camera camera = Client.Instance.getModuleManager().getModule(Camera.class);
+        FreeLook freeLook = Client.INSTANCE.getModuleManager().getModule(FreeLook.class);
 
         float f = entity.getEyeHeight();
 
@@ -869,16 +867,20 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
         else if (!this.mc.gameSettings.debugCamEnable)
         {
-            GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 1.0F, 0.0F, 0.0F);
-
-            if (entity instanceof EntityAnimal)
-            {
-                EntityAnimal entityanimal = (EntityAnimal)entity;
-                GlStateManager.rotate(entityanimal.prevRotationYawHead + (entityanimal.rotationYawHead - entityanimal.prevRotationYawHead) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+            if (freeLook.isEnabled() && Mouse.isButtonDown(2)) {
+                GlStateManager.rotate(entity.cameraRotationPitch, 1.0F, 0.0F, 0.0F);
+            } else {
+                GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 1.0F, 0.0F, 0.0F);
             }
-            else
-            {
-                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+
+            if (entity instanceof EntityAnimal entityanimal1) {
+                GlStateManager.rotate(entityanimal1.prevRotationYawHead + (entityanimal1.rotationYawHead - entityanimal1.prevRotationYawHead) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+            } else {
+                if (freeLook.isEnabled() && Mouse.isButtonDown(2)) {
+                    GlStateManager.rotate(entity.cameraRotationYaw + 180.0F, 0.0F, 1.0F, 0.0F);
+                } else {
+                    GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+                }
             }
         }
 

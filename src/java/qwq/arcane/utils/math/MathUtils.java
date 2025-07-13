@@ -34,6 +34,16 @@ public class MathUtils {
     public static int getRandomInRange(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
+    public static float wrapAngleTo180_float(float angle) {
+        angle %= 360.0F;
+        if (angle >= 180.0F) {
+            angle -= 360.0F;
+        }
+        if (angle < -180.0F) {
+            angle += 360.0F;
+        }
+        return angle;
+    }
     public static int nextInt(int min, int max) {
         if (min == max || max - min <= 0D)
             return min;

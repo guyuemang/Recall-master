@@ -35,6 +35,7 @@ import qwq.arcane.Client;
 import qwq.arcane.module.impl.combat.KillAura;
 import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.module.impl.visuals.NoHurtCam;
+import qwq.arcane.utils.player.SlotSpoofComponent;
 
 public class ItemRenderer
 {
@@ -842,7 +843,7 @@ public class ItemRenderer
     {
         this.prevEquippedProgress = this.equippedProgress;
         EntityPlayer entityplayer = this.mc.thePlayer;
-        ItemStack itemstack = entityplayer.inventory.getCurrentItem();
+        ItemStack itemstack = SlotSpoofComponent.getSpoofedStack();
         boolean flag = false;
 
         if (this.itemToRender != null && itemstack != null)
@@ -851,12 +852,12 @@ public class ItemRenderer
             {
                 if (Reflector.ForgeItem_shouldCauseReequipAnimation.exists())
                 {
-                    boolean flag1 = Reflector.callBoolean(this.itemToRender.getItem(), Reflector.ForgeItem_shouldCauseReequipAnimation, new Object[] {this.itemToRender, itemstack, Boolean.valueOf(this.equippedItemSlot != entityplayer.inventory.currentItem)});
+                    boolean flag1 = Reflector.callBoolean(this.itemToRender.getItem(), Reflector.ForgeItem_shouldCauseReequipAnimation, new Object[] {this.itemToRender, itemstack, Boolean.valueOf(this.equippedItemSlot != SlotSpoofComponent.getSpoofedSlot())});
 
                     if (!flag1)
                     {
                         this.itemToRender = itemstack;
-                        this.equippedItemSlot = entityplayer.inventory.currentItem;
+                        this.equippedItemSlot = SlotSpoofComponent.getSpoofedSlot();
                         return;
                     }
                 }
@@ -881,7 +882,7 @@ public class ItemRenderer
         if (this.equippedProgress < 0.1F)
         {
             this.itemToRender = itemstack;
-            this.equippedItemSlot = entityplayer.inventory.currentItem;
+            this.equippedItemSlot = SlotSpoofComponent.getSpoofedSlot();
 
             if (Config.isShaders())
             {

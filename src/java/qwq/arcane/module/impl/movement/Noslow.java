@@ -1,13 +1,14 @@
 package qwq.arcane.module.impl.movement;
 
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
@@ -16,10 +17,12 @@ import qwq.arcane.event.impl.events.player.SlowDownEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.combat.KillAura;
+import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.ModeValue;
 
 /**
  * @Author：Guyuemang
@@ -29,83 +32,64 @@ public class Noslow extends Module {
     public Noslow() {
         super("Noslow",Category.Movement);
     }
-    private int offGroundTicks;
-    private boolean stop;
-    private boolean disable;
-    private Packet<?> interactItemPacket;
-    private KillAura killAuraModule;
-    public final BooleanValue slab = new BooleanValue("Slow down on Slabs",true);;
+    public final ModeValue mode = new ModeValue("Mode", "Blink", new String[]{"Blink"});
+    public final BooleanValue sprint = new BooleanValue("Sprint", false);
+    public final BooleanValue foodValue = new BooleanValue("Food", false);
+    public final BooleanValue potionValue = new BooleanValue("Potion", false);
+    public final BooleanValue swordValue = new BooleanValue("Sword", false);
+    public final BooleanValue bowValue = new BooleanValue("Bow", false);
+    boolean usingItem;
 
     @EventTarget
     public void onMotion(MotionEvent event) {
-        double d2;
-        if (event.getState() == MotionEvent.State.POST) return;
-        if (PlayerUtil.blockRelativeToPlayer(0.0d, mc.thePlayer.motionY, 0.0d) != Blocks.air && !mc.thePlayer.isUsingItem() && this.slab.getValue().booleanValue()) {
-            this.disable = false;
-        }
-        if (Math.abs((d2 = event.getY()) - (double)Math.round(d2)) > 0.03 && mc.thePlayer.onGround) {
-            this.disable = true;
-        }
-        if (mc.thePlayer.isUsingItem() && !(mc.thePlayer.getHeldItem().getItem() instanceof ItemSword)) {
-            if (mc.thePlayer.onGround) {
-                this.offGroundTicks = 0;
-            } else {
-                this.offGroundTicks++;
-            }
-            if (this.offGroundTicks >= 2) {
-                this.stop = false;
-                this.interactItemPacket = null;
-            } else if (mc.thePlayer.onGround && !this.disable) {
-                event.setY(event.getY() + 0.001d);
-            }
-        }
-        if (!this.disable || mc.thePlayer.onGround || !mc.thePlayer.isUsingItem() || (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword)) {
-            return;
-        }
-        mc.thePlayer.motionX *= 0.1d;
-        mc.thePlayer.motionZ *= 0.1d;
-    }
+        setsuffix(mode.get());
 
-    @EventTarget
-    public void onRightClick(RightClickerEvent event) {
-        if (mc.thePlayer.getHeldItem() == null) {
-            return;
-        }
-        if (mc.thePlayer.isUsingItem() || (((mc.thePlayer.getHeldItem().getItem() instanceof ItemPotion) && !ItemPotion.isSplash(mc.thePlayer.getHeldItem().getMetadata())) || (mc.thePlayer.getHeldItem().getItem() instanceof ItemFood) || (mc.thePlayer.getHeldItem().getItem() instanceof ItemBow))) {
-            if (mc.thePlayer.offGroundTicks < 2 && mc.thePlayer.offGroundTicks != 0 && !this.disable) {
-                event.setCancelled(true);
-            } else if (mc.thePlayer.onGround) {
-                mc.thePlayer.jump();
-                mc.thePlayer.setSprinting(false);
-                event.setCancelled(true);
+        if (event.isPre()) {
+            if (mc.thePlayer.getCurrentEquippedItem() == null) return;
+
+            final Item item = mc.thePlayer.getCurrentEquippedItem().getItem();
+
+            if (mc.thePlayer.isUsingItem()) {
+                if (item instanceof ItemSword && swordValue.get()) {
+                    BlinkComponent.blinking = true;
+
+                    if (mc.thePlayer.ticksExisted % 5 == 0) {
+                        PacketUtil.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                        BlinkComponent.dispatch();
+                        mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getCurrentEquippedItem()));
+                    }
+                } else if (item instanceof ItemFood && foodValue.get() || item instanceof ItemBow && bowValue.get()) {
+                    BlinkComponent.blinking = true;
+                }
+
+                usingItem = true;
+            } else if (usingItem) {
+                usingItem = false;
+
+                BlinkComponent.blinking = false;
             }
         }
     }
 
     @EventTarget
-    public void packetSendEvent(PacketSendEvent event){
-        if (this.killAuraModule == null) {
-            this.killAuraModule = this.getModule(KillAura.class);
+    public void onSlowDown(SlowDownEvent event) {
+        event.setSprinting(sprint.get());
+
+        if (foodValue.get() && mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemFood) {
+            event.setForward(1);
+            event.setStrafe(1);
+        }
+        if (potionValue.get() && mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemPotion) {
+            event.setForward(1);
+            event.setStrafe(1);
+        }
+        if (swordValue.get() && mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
+            event.setForward(1);
+            event.setStrafe(1);
+        }
+        if (bowValue.get() && mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemBow) {
+            event.setForward(1);
+            event.setStrafe(1);
         }
     }
-
-    @EventTarget
-    public void OnSlow(SlowDownEvent slowDownEvent) {
-        if (!this.disable || mc.thePlayer.onGround) {
-            if (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemFood) {
-                slowDownEvent.setCancelled(true);
-            }
-            if (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemPotion && !ItemPotion.isSplash(mc.thePlayer.getHeldItem().getMetadata())) {
-                slowDownEvent.setCancelled(true);
-            }
-            if (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemBow) {
-                slowDownEvent.setCancelled(true);
-            }
-        }
-        if (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
-            PacketUtil.sendPacket(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem % 8 + 1));
-            PacketUtil.sendPacket(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-            slowDownEvent.setCancelled(true);
-        }
-    };
 }

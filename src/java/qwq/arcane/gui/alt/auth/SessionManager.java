@@ -1,4 +1,4 @@
-package qwq.arcane.gui.altmanager.alt;
+package qwq.arcane.gui.alt.auth;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;

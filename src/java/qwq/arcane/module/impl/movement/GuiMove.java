@@ -7,16 +7,22 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemFood;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C0EPacketClickWindow;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import qwq.arcane.Client;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MoveInputEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.utils.pack.BlinkComponent;
+import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.value.impl.BooleanValue;
 
@@ -44,21 +50,7 @@ public class GuiMove extends Module {
             KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
         }
     }
-    @EventTarget
-    public void onMoveInput(MoveInputEvent event) {
-        if (wdChest.get() && mc.currentScreen instanceof GuiChest)
-            event.setJumping(false);
-        if (wdInv.get() && mc.currentScreen instanceof GuiInventory)
-            event.setJumping(false);
-    }
-    List<Packet<?>> packets = new ArrayList<>();
-    @EventTarget
-    public void onPacketSend(PacketSendEvent event) {
-        Packet<?> packet = event.getPacket();
-        if (event.getPacket() instanceof C0EPacketClickWindow c0EPacketClickWindow) {
-            mc.thePlayer.setSprinting(false);
-        }
-    }
+    boolean sb;
 
     @EventTarget
     private void onUpdate(UpdateEvent event) {
@@ -71,6 +63,15 @@ public class GuiMove extends Module {
 
             for (KeyBinding keyBinding : this.keyBindings) {
                 KeyBinding.setKeyBindState(keyBinding.getKeyCode(), GameSettings.isKeyDown(keyBinding));
+            }
+            if (mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChest) {
+                if (MovementUtil.isMoving()) {
+                    sb = true;
+                    BlinkComponent.blinking = true;
+                }
+            }else if (sb){
+                sb = false;
+                BlinkComponent.blinking = false;
             }
 
             if (wdChest.get() && mc.currentScreen instanceof GuiChest)

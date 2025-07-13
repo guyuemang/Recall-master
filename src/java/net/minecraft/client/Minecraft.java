@@ -24,6 +24,7 @@ import java.util.concurrent.FutureTask;
 
 import javax.imageio.ImageIO;
 
+import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
@@ -193,10 +194,12 @@ import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.misc.KeyPressEvent;
 import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
+import qwq.arcane.event.impl.events.player.PlaceEvent;
 import qwq.arcane.event.impl.events.player.RightClickerEvent;
 import qwq.arcane.gui.MainMenu;
 import qwq.arcane.gui.SplashScreen;
 import qwq.arcane.gui.VideoPlayer;
+import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.utils.animations.AnimationUtils;
 import qwq.arcane.utils.player.MovementInputKeyboard;
 
@@ -248,6 +251,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private Entity renderViewEntity;
     public Entity pointedEntity;
     public EffectRenderer effectRenderer;
+    @Setter
     public Session session;
     private boolean isGamePaused;
 
@@ -1534,7 +1538,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
     }
 
-    private void sendClickBlockToController(boolean leftClick)
+    public void sendClickBlockToController(boolean leftClick)
     {
         if (!leftClick)
         {
@@ -2174,52 +2178,48 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                 this.displayGuiScreen(new GuiChat("/"));
             }
 
-            if (this.thePlayer.isUsingItem())
-            {
-                if (!this.gameSettings.keyBindUseItem.isKeyDown())
-                {
-                    this.playerController.onStoppedUsingItem(this.thePlayer);
-                }
+            PlaceEvent event = new PlaceEvent(this.thePlayer.inventory.currentItem);
+            event.setShouldRightClick(true);
+            Client.Instance.getEventManager().call(event);
+            this.thePlayer.inventory.currentItem = event.getSlot();
+            if (!event.isCancelled()) {
+                if (this.thePlayer.isUsingItem()) {
+                    if ((!this.gameSettings.keyBindUseItem.isKeyDown())) {
+                        this.playerController.onStoppedUsingItem(this.thePlayer);
+                    }
 
-                while (this.gameSettings.keyBindAttack.isPressed())
-                {
-                    ;
-                }
+                    while (this.gameSettings.keyBindAttack.isPressed()) {
+                        if (Client.Instance.getModuleManager().getModule(Animations.class).getState() &&
+                                Client.Instance.getModuleManager().getModule(Animations.class).getSwingWhileUsingItem().get()) {
+                            if (!thePlayer.isSwingInProgress ||
+                                    thePlayer.swingProgressInt >= thePlayer.getArmSwingAnimationEnd() / 2 ||
+                                    thePlayer.swingProgressInt < 0) {
+                                thePlayer.swingProgressInt = -1;
+                                thePlayer.isSwingInProgress = true;
+                            }
+                        }
+                    }
+                } else {
+                    while (this.gameSettings.keyBindAttack.isPressed()) {
+                        this.clickMouse();
+                    }
 
-                while (this.gameSettings.keyBindUseItem.isPressed())
-                {
-                    ;
-                }
+                    if (event.isShouldRightClick()) {
+                        while ((this.gameSettings.keyBindUseItem.isPressed())) {
+                            this.rightClickMouse();
+                        }
+                    }
 
-                while (this.gameSettings.keyBindPickBlock.isPressed())
-                {
-                    ;
+                    while (this.gameSettings.keyBindPickBlock.isPressed()) {
+                        this.middleClickMouse();
+                    }
                 }
-            }
-            else
-            {
-                while (this.gameSettings.keyBindAttack.isPressed())
-                {
-                    this.clickMouse();
-                }
-
-                while (this.gameSettings.keyBindUseItem.isPressed())
-                {
+                if (event.isShouldRightClick() && (this.gameSettings.keyBindUseItem.isKeyDown()) && this.rightClickDelayTimer == 0 && !this.thePlayer.isUsingItem()) {
                     this.rightClickMouse();
                 }
 
-                while (this.gameSettings.keyBindPickBlock.isPressed())
-                {
-                    this.middleClickMouse();
-                }
+                this.sendClickBlockToController(this.currentScreen == null && this.gameSettings.keyBindAttack.isKeyDown() && this.inGameHasFocus);
             }
-
-            if (this.gameSettings.keyBindUseItem.isKeyDown() && this.rightClickDelayTimer == 0 && !this.thePlayer.isUsingItem())
-            {
-                this.rightClickMouse();
-            }
-
-            this.sendClickBlockToController(this.currentScreen == null && this.gameSettings.keyBindAttack.isKeyDown() && this.inGameHasFocus);
         }
 
         if (this.theWorld != null)

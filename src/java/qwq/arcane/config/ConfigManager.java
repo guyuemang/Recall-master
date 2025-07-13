@@ -1,6 +1,7 @@
 package qwq.arcane.config;
 
 import com.google.gson.*;
+import qwq.arcane.gui.alt.auth.Account;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.module.ModuleWidget;
 import qwq.arcane.utils.color.ColorUtil;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import qwq.arcane.module.Module;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * @Author: Guyuemang
@@ -24,6 +27,7 @@ import java.util.Map;
 public class ConfigManager {
     private static final File CONFIG_DIR = new File("Arcane/configs");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final ArrayList<Account> accounts = new ArrayList<>();
 
     static {
         if (!CONFIG_DIR.exists()) {
@@ -31,9 +35,32 @@ public class ConfigManager {
         }
     }
 
+    // Account management methods
+    public static Account getAccount(int index) {
+        return accounts.get(index);
+    }
+
+    public static void addAccount(Account account) {
+        accounts.add(account);
+    }
+
+    public static void removeAccount(int index) {
+        accounts.remove(index);
+    }
+
+    public static int getAccountCount() {
+        return accounts.size();
+    }
+
+    public static void swapAccounts(int i, int j) {
+        Collections.swap(accounts, i, j);
+    }
+
     public static void saveConfig(String configName, ModuleManager moduleManager) {
         try {
             JsonObject config = new JsonObject();
+
+            // Save modules
             JsonObject modulesObj = new JsonObject();
             for (Module module : moduleManager.getAllModules()) {
                 JsonObject moduleObj = new JsonObject();
@@ -66,6 +93,7 @@ public class ConfigManager {
             }
             config.add("modules", modulesObj);
 
+            // Save widgets
             JsonObject widgetsObj = new JsonObject();
             for (ModuleWidget widget : moduleManager.getAllWidgets()) {
                 JsonObject widgetObj = new JsonObject();
@@ -76,6 +104,19 @@ public class ConfigManager {
                 widgetsObj.add(widget.getName(), widgetObj);
             }
             config.add("widgets", widgetsObj);
+
+            // Save accounts
+            JsonArray accountsArray = new JsonArray();
+            for (Account account : accounts) {
+                JsonObject accountObj = new JsonObject();
+                accountObj.addProperty("refreshToken", account.getRefreshToken());
+                accountObj.addProperty("accessToken", account.getAccessToken());
+                accountObj.addProperty("username", account.getUsername());
+                accountObj.addProperty("timestamp", account.getTimestamp());
+                accountObj.addProperty("uuid", account.getUUID());
+                accountsArray.add(accountObj);
+            }
+            config.add("accounts", accountsArray);
 
             Files.write(Paths.get(CONFIG_DIR.getPath(), configName + ".json"), GSON.toJson(config).getBytes());
         } catch (IOException e) {
@@ -91,7 +132,7 @@ public class ConfigManager {
             String content = new String(Files.readAllBytes(configFile.toPath()));
             JsonObject config = new JsonParser().parse(content).getAsJsonObject();
 
-            // 加载模块配置
+            // Load modules
             if (config.has("modules")) {
                 JsonObject modulesObj = config.getAsJsonObject("modules");
                 for (Map.Entry<String, JsonElement> entry : modulesObj.entrySet()) {
@@ -145,7 +186,7 @@ public class ConfigManager {
                 }
             }
 
-            // 加载Widget配置
+            // Load widgets
             if (config.has("widgets")) {
                 JsonObject widgetsObj = config.getAsJsonObject("widgets");
                 for (ModuleWidget widget : moduleManager.getAllWidgets()) {
@@ -155,6 +196,24 @@ public class ConfigManager {
                         widget.setY(widgetObj.get("y").getAsFloat());
                         widget.setWidth(widgetObj.get("width").getAsFloat());
                         widget.setHeight(widgetObj.get("height").getAsFloat());
+                    }
+                }
+            }
+
+            // Load accounts
+            accounts.clear();
+            if (config.has("accounts")) {
+                JsonArray accountsArray = config.getAsJsonArray("accounts");
+                if (accountsArray != null) {
+                    for (JsonElement jsonElement : accountsArray) {
+                        JsonObject accountObj = jsonElement.getAsJsonObject();
+                        accounts.add(new Account(
+                                Optional.ofNullable(accountObj.get("refreshToken")).map(JsonElement::getAsString).orElse(""),
+                                Optional.ofNullable(accountObj.get("accessToken")).map(JsonElement::getAsString).orElse(""),
+                                Optional.ofNullable(accountObj.get("username")).map(JsonElement::getAsString).orElse(""),
+                                Optional.ofNullable(accountObj.get("timestamp")).map(JsonElement::getAsLong).orElse(System.currentTimeMillis()),
+                                Optional.ofNullable(accountObj.get("uuid")).map(JsonElement::getAsString).orElse("")
+                        ));
                     }
                 }
             }

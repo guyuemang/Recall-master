@@ -4,6 +4,7 @@ import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.*;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.MovementUtil;
+import qwq.arcane.utils.player.Rotation;
 
 import static qwq.arcane.utils.Instance.mc;
 
@@ -145,5 +146,20 @@ public final class RotationComponent {
          * Updating MouseOver
          */
         mc.entityRenderer.getMouseOver(1);
+    }
+
+    public static double getRotationDifference(Rotation rotation) {
+        return lastServerRotations == null ? 0.0D : getRotationDifference(rotation, lastServerRotations);
+    }
+    public static double getRotationDifference(Vector2f a ,Vector2f b2) {
+        return Math.hypot(RotationUtil.getAngleDifference(a.getX(), b2.getX()), a.getY() - b2.getY());
+    }
+
+    public static double getRotationDifference(Rotation a, Vector2f b) {
+        return Math.hypot((double)getAngleDifference(a.getYaw(), b.getX()), (double)(a.getPitch() - b.getY()));
+    }
+
+    public static float getAngleDifference(float a, float b) {
+        return ((a - b) % 360.0F + 540.0F) % 360.0F - 180.0F;
     }
 }

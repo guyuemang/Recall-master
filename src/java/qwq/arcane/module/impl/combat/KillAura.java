@@ -9,6 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C0APacketAnimation;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.util.MovingObjectPosition;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
@@ -52,19 +53,17 @@ public class KillAura extends Module {
     private final NumberValue maxCPS = new NumberValue("Max CPS", 12, 1, 20, 1);
     private final NumberValue minCPS = new NumberValue("Min CPS", 6, 1, 20, 1);
     public static NumberValue range = new NumberValue("Range", 3.0,  0.0, 5.0, 0.1);
-    private final ModeValue priority = new ModeValue("Priority", "Health", new String[]{"Range", "Armor", "Health", "HurtTime"});
+    private final ModeValue priority = new ModeValue("Priority", "Range", new String[]{"Range", "Armor", "Health", "HurtTime"});
+    private final BooleanValue rotation = new BooleanValue("Rotation",true);
+    public static NumberValue rotationspeed = new NumberValue("RotationSpeed", 90.0,  0.0, 180.0, 0.1);
     private final BooleanValue raycase = new BooleanValue("RayCase",true);
     public static BooleanValue autoblock = new BooleanValue("AutoBlock",true);
     public static ModeValue autoblockmode = new ModeValue("AutoBlockMode", autoblock::getValue,"Off",new String[]{"Grim","Watchdog","Off"});
-    private final MultiBooleanValue targetOption = new MultiBooleanValue("Targets", Arrays.asList(new BooleanValue("Players", true), new BooleanValue("Mobs", false),
-            new BooleanValue("Animals", false), new BooleanValue("Invisible", true), new BooleanValue("Dead", false)));
+    private final MultiBooleanValue targetOption = new MultiBooleanValue("Targets", Arrays.asList(new BooleanValue("Players", true), new BooleanValue("Mobs", false), new BooleanValue("Animals", false), new BooleanValue("Invisible", true), new BooleanValue("Dead", false)));
     public final MultiBooleanValue filter = new MultiBooleanValue("Filter", Arrays.asList(new BooleanValue("Teams", true), new BooleanValue("Friends", true)));
-    private final MultiBooleanValue auraESP = new MultiBooleanValue("TargetHUD ESP", Arrays.asList(
-            new BooleanValue("Circle", true),
-            new BooleanValue("Tracer", false),
-            new BooleanValue("Box", false),
-            new BooleanValue("Custom Color", false)));
+    private final MultiBooleanValue auraESP = new MultiBooleanValue("TargetHUD ESP", Arrays.asList(new BooleanValue("Circle", true), new BooleanValue("Tracer", false), new BooleanValue("Box", false), new BooleanValue("Custom Color", false)));
     private final ColorValue customColor = new ColorValue("Custom Color", Color.WHITE);
+    private final BooleanValue noScaffold = new BooleanValue("NoScaffold",true);
     public List<EntityLivingBase> targets = new ArrayList<>();
     public static EntityLivingBase target;
     public boolean blocking;
@@ -132,8 +131,6 @@ public class KillAura extends Module {
                 attackTimer.reset();
             }
 
-            onAutoBlock();
-
             if (targets.size() > 1) {
                 switch (priority.get()) {
                     case "Armor":
@@ -150,9 +147,12 @@ public class KillAura extends Module {
                         break;
                 }
             }
-
-            onRotation();
-
+            if (rotation.get()){
+                onRotation();
+            }
+            if (autoblock.get()){
+                onAutoBlock();
+            }
         } else {
             targets.clear();
             target = null;
@@ -165,8 +165,8 @@ public class KillAura extends Module {
     }
 
     public void onRotation(){
-        float[] rotation = RotationUtil.getHVHRotation(target, range.getValue());;
-        RotationComponent.setRotations(new Vector2f(rotation[0], rotation[1]), 180, MovementFix.NORMAL);
+        Vector2f rotation = RotationUtil.calculate(target);
+        RotationComponent.setRotations(rotation, rotationspeed.get(), MovementFix.NORMAL);
     }
 
     public void onAutoBlock(){
@@ -201,7 +201,7 @@ public class KillAura extends Module {
     public boolean shouldAttack() {
         if (raycase.get()) {
             final MovingObjectPosition movingObjectPosition = mc.objectMouseOver;
-            if (Client.Instance.getModuleManager().getModule(Scaffold.class).getState()) return false;
+            if (Client.Instance.getModuleManager().getModule(Scaffold.class).getState() && noScaffold.get()) return false;
             return (mc.thePlayer.getClosestDistanceToEntity(target) <= range.get()) && (movingObjectPosition != null && movingObjectPosition.entityHit == target);
         } else {
             return (double) (mc.thePlayer.canEntityBeSeen(target) ? mc.thePlayer.getClosestDistanceToEntity(target) : mc.thePlayer.getDistanceToEntity(target)) <= range.get();
@@ -224,9 +224,13 @@ public class KillAura extends Module {
 
     public void attack(Entity entity){
         if (shouldAttack()) {
+            if (mc.thePlayer.isSprinting()) {
+                mc.thePlayer.setSprinting(false);
+                PacketUtil.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
+            }
+
             AttackEvent attackEvent = new AttackEvent(entity);
             Client.Instance.getEventManager().call(attackEvent);
-            PacketUtil.sendPacket(new C0APacketAnimation());
             AttackOrder.sendFixedAttack(mc.thePlayer,entity);
         }
     }
@@ -292,4 +296,5 @@ public class KillAura extends Module {
     public boolean isSword() {
         return mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
     }
+
 }

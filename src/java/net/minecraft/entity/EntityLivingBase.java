@@ -56,6 +56,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.player.JumpEvent;
+import qwq.arcane.event.impl.events.player.MoveEvent;
 import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.utils.player.MovementUtil;
 
@@ -1345,7 +1346,7 @@ public abstract class EntityLivingBase extends Entity
      * Returns an integer indicating the end point of the swing animation, used by {@link #swingProgress} to provide a
      * progress indicator. Takes dig speed enchantments into account.
      */
-    private int getArmSwingAnimationEnd() {
+    public int getArmSwingAnimationEnd() {
         if (Client.Instance.getModuleManager().getModule(Animations.class).getState() && this == Minecraft.getMinecraft().thePlayer) {
             return (int) (6 + Client.Instance.getModuleManager().getModule(Animations.class).getSlowdown().get());
         } else {
@@ -1680,7 +1681,19 @@ public abstract class EntityLivingBase extends Entity
                         }
                     }
 
-                    this.moveEntity(this.motionX, this.motionY, this.motionZ);
+                    if(this instanceof EntityPlayerSP) {
+                        MoveEvent moveEvent = new MoveEvent(this.motionX, this.motionY, this.motionZ);
+
+                        Client.Instance.getEventManager().call(moveEvent);
+
+                        if (moveEvent.isCancelled()) {
+                            this.moveEntity(0, 0, 0);
+                        } else {
+                            this.moveEntity(moveEvent.getX(), moveEvent.getY(), moveEvent.getZ());
+                        }
+                    } else {
+                        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+                    }
 
                     if (this.isCollidedHorizontally && this.isOnLadder())
                     {

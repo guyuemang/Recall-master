@@ -3,8 +3,10 @@ package qwq.arcane.utils.player;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
+import qwq.arcane.event.impl.events.player.MoveEvent;
 import qwq.arcane.event.impl.events.player.MoveInputEvent;
 import qwq.arcane.utils.Instance;
+import qwq.arcane.utils.math.Vector2f;
 
 /**
  * @Author：Guyuemang
@@ -18,12 +20,72 @@ public class MovementUtil implements Instance {
     public static boolean isMoving(EntityLivingBase player) {
         return player != null && (player.moveForward != 0F || player.moveStrafing != 0F);
     }
+    public static void setMotion2(double d, float f) {
+        mc.thePlayer.motionX = -Math.sin(Math.toRadians(f)) * d;
+        mc.thePlayer.motionZ = Math.cos(Math.toRadians(f)) * d;
+    }
+    public static float getMoveYaw(float yaw) {
+        Vector2f from = new Vector2f((float) mc.thePlayer.lastTickPosX, (float) mc.thePlayer.lastTickPosZ),
+                to = new Vector2f((float) mc.thePlayer.posX, (float) mc.thePlayer.posZ),
+                diff = new Vector2f(to.x - from.x, to.y - from.y);
 
+        double x = diff.x, z = diff.y;
+        if (x != 0 && z != 0) {
+            yaw = (float) Math.toDegrees((Math.atan2(-x, z) + MathHelper.PI2) % MathHelper.PI2);
+        }
+        return yaw;
+    }
+    public static double speed() {
+        return Math.hypot(mc.thePlayer.motionX, mc.thePlayer.motionZ);
+    }
+    public static double getDirection1() {
+        float yaw = mc.thePlayer.rotationYaw;
+
+        if (mc.thePlayer.moveForward < 0.0F) {
+            yaw += 180F;
+        }
+
+        float forward = 1.0F;
+        if (mc.thePlayer.moveForward < 0.0F) {
+            forward = -0.5F;
+        } else if (mc.thePlayer.moveForward > 0.0F) {
+            forward = 0.5F;
+        }
+
+        if (mc.thePlayer.moveStrafing > 0.0F) {
+            yaw -= 90F * forward;
+        } else if (mc.thePlayer.moveStrafing < 0.0F) {
+            yaw += 90F * forward;
+        }
+
+        return Math.toRadians(yaw);
+    }
     public static void stop() {
         mc.thePlayer.motionX = 0;
         mc.thePlayer.motionZ = 0;
     }
+    public static float getDirection(final float yaw) {
+        return getDirection(yaw, mc.thePlayer.movementInput.moveForward, mc.thePlayer.movementInput.moveStrafe);
+    }
+    public static float getDirection(float yaw, final float forward, final float strafe) {
+        if (forward != 0) {
+            if (strafe < 0) {
+                yaw += forward < 0 ? 135 : 45;
+            } else if (strafe > 0) {
+                yaw -= forward < 0 ? 135 : 45;
+            } else if (strafe == 0 && forward < 0) {
+                yaw -= 180;
+            }
+        } else {
+            if (strafe < 0) {
+                yaw += 90;
+            } else if (strafe > 0) {
+                yaw -= 90;
+            }
+        }
 
+        return yaw;
+    }
     public static boolean canSprint(final boolean legit) {
         return (legit ? mc.thePlayer.moveForward >= 0.8F
                 && !mc.thePlayer.isCollidedHorizontally
@@ -121,7 +183,11 @@ public class MovementUtil implements Instance {
         mc.thePlayer.motionX = -Math.sin(yaw) * speed;
         mc.thePlayer.motionZ = Math.cos(yaw) * speed;
     }
-
+    public static void strafe(final MoveEvent moveEvent, final double speed, final double direction) {
+        if (!isMoving()) return;
+        moveEvent.setX(mc.thePlayer.motionX = -Math.sin(direction) * speed);
+        moveEvent.setZ(mc.thePlayer.motionZ = Math.cos(direction) * speed);
+    }
     public static float getRawDirection() {
         return getRawDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.keyMovementInput.moveStrafe, mc.thePlayer.keyMovementInput.moveForward);
     }

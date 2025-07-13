@@ -47,9 +47,11 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import org.lwjgl.input.Mouse;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.player.PostStrafeEvent;
 import qwq.arcane.event.impl.events.player.StrafeEvent;
+import qwq.arcane.module.impl.visuals.FreeLook;
 import qwq.arcane.utils.math.Vector3d;
 
 public abstract class Entity implements ICommandSender
@@ -125,7 +127,7 @@ public abstract class Entity implements ICommandSender
      */
     public boolean isCollided;
     public boolean velocityChanged;
-    protected boolean isInWeb;
+    public boolean isInWeb;
     private boolean isOutsideBorder;
 
     /**
@@ -216,6 +218,7 @@ public abstract class Entity implements ICommandSender
     public int serverPosX;
     public int serverPosY;
     public int serverPosZ;
+    public boolean safeWalk = false;
 
     /**
      * Render entity even if it is outside the camera frustum. Only true in EntityFish for now. Used in RenderGlobal:
@@ -393,15 +396,25 @@ public abstract class Entity implements ICommandSender
      * Adds 15% to the entity's yaw and subtracts 15% from the pitch. Clamps pitch from -90 to 90. Both arguments in
      * degrees.
      */
+    public float cameraRotationPitch;
+    public float cameraRotationYaw;
     public void setAngles(float yaw, float pitch)
     {
-        float f = this.rotationPitch;
-        float f1 = this.rotationYaw;
-        this.rotationYaw = (float)((double)this.rotationYaw + (double)yaw * 0.15D);
-        this.rotationPitch = (float)((double)this.rotationPitch - (double)pitch * 0.15D);
-        this.rotationPitch = MathHelper.clamp_float(this.rotationPitch, -90.0F, 90.0F);
-        this.prevRotationPitch += this.rotationPitch - f;
-        this.prevRotationYaw += this.rotationYaw - f1;
+        float f = rotationPitch;
+        float f1 = rotationYaw;
+        FreeLook freeLook = Client.INSTANCE.getModuleManager().getModule(FreeLook.class);
+        if (!(freeLook.isEnabled() && Mouse.isButtonDown(2))) {
+            this.rotationYaw = (float) ((double) rotationYaw + (double) yaw * 0.15D);
+            this.rotationPitch = (float) ((double) rotationPitch - (double) pitch * 0.15D);
+            this.rotationPitch = MathHelper.clamp_float(rotationPitch, -90.0F, 90.0F);
+            this.prevRotationPitch += rotationPitch - f;
+            this.prevRotationYaw += rotationYaw - f1;
+            this.cameraRotationYaw = rotationYaw;
+            this.cameraRotationPitch = rotationPitch;
+        }
+        this.cameraRotationPitch = (float) ((double) cameraRotationPitch - (double) pitch * 0.15D);
+        this.cameraRotationPitch = MathHelper.clamp_float(cameraRotationPitch, -90.0F, 90.0F);
+        this.cameraRotationYaw = (float) ((double) cameraRotationYaw + (double) yaw * 0.15D);
     }
 
     /**
