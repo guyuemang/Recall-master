@@ -55,7 +55,6 @@ public class Noslow extends Module {
 
                     if (mc.thePlayer.ticksExisted % 5 == 0) {
                         PacketUtil.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-                        BlinkComponent.dispatch();
                         mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getCurrentEquippedItem()));
                     }
                 } else if (item instanceof ItemFood && foodValue.get() || item instanceof ItemBow && bowValue.get()) {

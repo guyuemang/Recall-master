@@ -1,4 +1,3 @@
-
 /*
  * This file is part of ViaLoadingBase - https://github.com/FlorianMichael/ViaLoadingBase
  * Copyright (C) 2020-2024 FlorianMichael/EnZaXD <florian.michael07@gmail.com> and contributors
@@ -31,7 +30,7 @@ public class VLBTask implements PlatformTask<Task> {
         this.object = object;
     }
 
-    @Deprecated
+    @Override
     public Task getObject() {
         return object;
     }
@@ -41,7 +40,6 @@ public class VLBTask implements PlatformTask<Task> {
         object.cancel();
     }
 
-    @Deprecated
     public TaskStatus getStatus() {
         return this.getObject().status();
     }

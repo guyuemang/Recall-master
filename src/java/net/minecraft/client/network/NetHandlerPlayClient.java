@@ -1187,7 +1187,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             addToSendQueue(new C0FPacketConfirmTransaction(s32PacketConfirmTransaction.getWindowId(), s32PacketConfirmTransaction.getActionNumber(), true));
         }
 
-        if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
+        if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
             addToSendQueue(new C0FPacketConfirmTransaction(s32PacketConfirmTransaction.getWindowId(), (short) 0, false));
         }
     }

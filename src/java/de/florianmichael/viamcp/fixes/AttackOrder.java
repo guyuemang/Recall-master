@@ -33,18 +33,22 @@ public class AttackOrder {
         if (mop != null && mop.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) mc.thePlayer.swingItem();
     }
 
-    public static void sendFixedAttack(EntityPlayer entityIn, Entity target) {
-        mc.thePlayer.swingItem();
-        mc.playerController.attackEntity(entityIn, target);
-    }
-
-    public static void sendFixedAttackByPacket(Entity target) {
-        if (ViaLoadingBase.getInstance().getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
+    public static void sendFixedAttackByPacket(EntityPlayer entityIn, Entity target) {
+        if (ViaLoadingBase.getInstance().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_8)) {
             mc.thePlayer.swingItem();
             mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
         } else {
-            mc.thePlayer.swingItem();
             mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
+            mc.thePlayer.swingItem();
+        }
+    }
+    public static void sendFixedAttack(EntityPlayer entityIn, Entity target) {
+        if (ViaLoadingBase.getInstance().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_8)) {
+            mc.thePlayer.swingItem();
+            mc.playerController.attackEntity(entityIn, target);
+        } else {
+            mc.playerController.attackEntity(entityIn, target);
+            mc.thePlayer.swingItem();
         }
     }
 }

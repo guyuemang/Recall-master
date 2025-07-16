@@ -63,7 +63,7 @@ public class VLBViaDecodeHandler extends MessageToMessageDecoder<ByteBuf> {
         if (PipelineUtil.containsCause(cause, CancelCodecException.class)) return;
 
         if ((PipelineUtil.containsCause(cause, InformativeException.class)
-                && user.getProtocolInfo().getServerState() != State.HANDSHAKE)
+                && user.getProtocolInfo().getState() != State.HANDSHAKE)
                 || Via.getManager().debugHandler().enabled()) {
             cause.printStackTrace();
         }

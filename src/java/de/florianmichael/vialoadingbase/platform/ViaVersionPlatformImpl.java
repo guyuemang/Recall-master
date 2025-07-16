@@ -39,20 +39,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
+public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
-    private final ViaAPI<UserConnection> api = new VLBViaAPIWrapper();
+    private final ViaAPI<UUID> api = new VLBViaAPIWrapper();
 
     private final Logger logger;
     private final VLBViaConfig config;
 
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new VLBViaConfig(new File(ViaLoadingBase.getInstance().getRunDirectory(), "viaversion.yml"), logger);
+        config = new VLBViaConfig(new File(ViaLoadingBase.getInstance().getRunDirectory(), "viaversion.yml"));
     }
 
     public static List<ProtocolVersion> createVersionList() {
-        final List<ProtocolVersion> versions = new ArrayList<>(ProtocolVersion.getProtocols()).stream().filter(version -> version.newerThanOrEqualTo(ProtocolVersion.v1_8)).collect(Collectors.toList());
+        final List<ProtocolVersion> versions = new ArrayList<>(ProtocolVersion.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList());
         Collections.reverse(versions);
         return versions;
     }
@@ -126,7 +126,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
     }
 
     @Override
-    public ViaAPI<UserConnection> getApi() {
+    public ViaAPI<UUID> getApi() {
         return api;
     }
 
@@ -142,7 +142,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
 
     @Override
     public String getPlatformName() {
-        return "ViaLoadingBase";
+        return "ViaLoadingBase by FlorianMichael";
     }
 
     @Override

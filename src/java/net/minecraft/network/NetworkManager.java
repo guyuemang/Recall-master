@@ -548,7 +548,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     public void sendUnregisteredPacket(final Packet packetIn) {
         final HigherPacketEvent event = new HigherPacketEvent(packetIn);
         Client.Instance.getEventManager().call(event);
-
+        if (event.isCancelled()) {
+            return;
+        }
         if (this.isChannelOpen()) {
             this.flushOutboundQueue();
             this.dispatchPacket(packetIn, null);

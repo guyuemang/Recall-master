@@ -19,16 +19,15 @@
 package de.florianmichael.vialoadingbase.provider;
 
 import com.viaversion.viaversion.api.connection.UserConnection;
-import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import com.viaversion.viaversion.protocol.version.BaseVersionProvider;
+import com.viaversion.viaversion.protocols.base.BaseVersionProvider;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 public class VLBBaseVersionProvider extends BaseVersionProvider {
 
     @Override
-    public ProtocolVersion getClosestServerProtocol(UserConnection connection) throws Exception {
+    public int getClosestServerProtocol(UserConnection connection) throws Exception {
         if (connection.isClientSide()) {
-            return ViaLoadingBase.getInstance().getTargetVersion();
+            return ViaLoadingBase.getInstance().getTargetVersion().getVersion();
         }
         return super.getClosestServerProtocol(connection);
     }

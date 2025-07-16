@@ -1,5 +1,8 @@
 package qwq.arcane.utils.pack;
 
+import com.viaversion.viaversion.api.protocol.Protocol;
+import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
+import com.viaversion.viaversion.exception.CancelException;
 import net.minecraft.network.Packet;
 import qwq.arcane.utils.Instance;
 
@@ -11,7 +14,19 @@ public class PacketUtil implements Instance {
     public static void sendPacket(Packet<?> packet) {
         mc.getNetHandler().addToSendQueue(packet);
     }
+    public static void sendToServer(PacketWrapper packet, Class<? extends Protocol> packetProtocol, boolean skipCurrentPipeline, boolean currentThread) {
+        try {
+            if (currentThread) {
+                packet.sendToServer(packetProtocol, skipCurrentPipeline);
+            } else {
+                packet.scheduleSendToServer(packetProtocol, skipCurrentPipeline);
+            }
+        } catch (CancelException var5) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
+    }
     public static void sendPacketNoEvent(Packet packet) {
         mc.getNetHandler().addToSendQueueUnregistered(packet);
     }

@@ -66,7 +66,7 @@ public class InterFace extends Module {
                     mc.fontRendererObj.drawStringWithShadow("XYZ: " + EnumChatFormatting.WHITE +
                                     xyzFormat.format(mc.thePlayer.posX) + " " +
                                     xyzFormat.format(mc.thePlayer.posY) + " " +
-                                    xyzFormat.format(mc.thePlayer.posZ) + " " + EnumChatFormatting.RESET + "BPS: " + EnumChatFormatting.WHITE + this.bpsFormat.format(getBPS())
+                                        xyzFormat.format(mc.thePlayer.posZ) + " " + EnumChatFormatting.RESET + "BPS: " + EnumChatFormatting.WHITE + this.bpsFormat.format(getBPS())
                             , 2, (int) ((event.getScaledResolution().getScaledHeight() - 9) + (mc.currentScreen instanceof GuiChat ? -14.0f : -3.0f)), color());
                     break;
                 case "Arcane":

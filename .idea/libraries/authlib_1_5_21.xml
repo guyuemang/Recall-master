@@ -35,9 +35,6 @@
       <root url="jar://$PROJECT_DIR$/libs/mc/twitch-6.5.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/mc/twitch-external-platform-4.5-natives-windows-64.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/mc/twitch-platform-6.5-natives-windows-64.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/client/ViaBackwards-5.2.0-downgraded.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/client/ViaRewind-4.0.4-downgraded.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/client/ViaVersion-5.2.0-downgraded.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/lombok.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/fastutil-8.5.13.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/fastjson2-2.0.57.jar!/" />
@@ -45,8 +42,10 @@
       <root url="jar://$PROJECT_DIR$/libs/client/ffmpeg-6.1.1-1.5.10-windows-x86_64.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/javacpp-1.5.10.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/javacv-1.5.10.jar!/" />
+      <root url="file://$PROJECT_DIR$/libs/mc" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/libs/mc" recursive="false" />
   </library>
 </component>

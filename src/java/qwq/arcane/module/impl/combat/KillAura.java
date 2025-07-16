@@ -1,5 +1,10 @@
 package qwq.arcane.module.impl.combat;
 
+import com.viaversion.viarewind.protocol.protocol1_8to1_9.Protocol1_8To1_9;
+import com.viaversion.viarewind.utils.PacketUtil;
+import com.viaversion.viaversion.api.Via;
+import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
+import com.viaversion.viaversion.api.type.Type;
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -8,13 +13,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
+import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
@@ -25,7 +36,6 @@ import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
-import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.rotation.MovementFix;
@@ -40,71 +50,80 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * @Author：Guyuemang
- * @Date：2025/7/3 23:53
- */
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura",Category.Combat);
     }
-    private final ModeValue mode = new ModeValue("AttackMode","Single",new String[]{"Single","Switch"});
-    public final NumberValue switchDelayValue = new NumberValue("SwitchDelay", () -> mode.is("Switch"),9, 0, 20, 1);
-    private final NumberValue maxCPS = new NumberValue("Max CPS", 12, 1, 20, 1);
-    private final NumberValue minCPS = new NumberValue("Min CPS", 6, 1, 20, 1);
-    public static NumberValue range = new NumberValue("Range", 3.0,  0.0, 5.0, 0.1);
+    public ModeValue modeValue = new ModeValue("AttackMode","Switch",new String[]{"Single","Multi","Switch"});
+    public NumberValue switchdelay = new NumberValue("SwitchDelay",()-> modeValue.getValue().equals("Switch"),10,1,20,1);
+    public NumberValue max = new NumberValue("MaxDelay",10,1,20,1);
+    public NumberValue min = new NumberValue("MinDelay",10,1,20,1);
+    public NumberValue range = new NumberValue("Range",3.0,1.0,6.0,0.1);
+    public BooleanValue keepsprint = new BooleanValue("KeepSprint",false);
+    public BooleanValue autoblock = new BooleanValue("AutoBlock",false);
+    public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
+    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "WatchDog", "Blink"});
+    public BooleanValue rotation = new BooleanValue("Rotation",false);
+    public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
+    private final ModeValue rotationmode = new ModeValue("RotationMode",()->rotation.get(), "Normal", new String[]{"Normal", "HvH", "Smart"});
+    public static BooleanValue rayCastValue = new BooleanValue("RayCast", false);
+    public BooleanValue movefix = new BooleanValue("MoveFix",false);
+    public BooleanValue strictValue = new BooleanValue("FollowTarget", () -> movefix.getValue(), false);
     private final ModeValue priority = new ModeValue("Priority", "Range", new String[]{"Range", "Armor", "Health", "HurtTime"});
-    private final BooleanValue rotation = new BooleanValue("Rotation",true);
-    public static NumberValue rotationspeed = new NumberValue("RotationSpeed", 90.0,  0.0, 180.0, 0.1);
-    private final BooleanValue raycase = new BooleanValue("RayCase",true);
-    public static BooleanValue autoblock = new BooleanValue("AutoBlock",true);
-    public static ModeValue autoblockmode = new ModeValue("AutoBlockMode", autoblock::getValue,"Off",new String[]{"Grim","Watchdog","Off"});
-    private final MultiBooleanValue targetOption = new MultiBooleanValue("Targets", Arrays.asList(new BooleanValue("Players", true), new BooleanValue("Mobs", false), new BooleanValue("Animals", false), new BooleanValue("Invisible", true), new BooleanValue("Dead", false)));
-    public final MultiBooleanValue filter = new MultiBooleanValue("Filter", Arrays.asList(new BooleanValue("Teams", true), new BooleanValue("Friends", true)));
-    private final MultiBooleanValue auraESP = new MultiBooleanValue("TargetHUD ESP", Arrays.asList(new BooleanValue("Circle", true), new BooleanValue("Tracer", false), new BooleanValue("Box", false), new BooleanValue("Custom Color", false)));
-    private final ColorValue customColor = new ColorValue("Custom Color", Color.WHITE);
-    private final BooleanValue noScaffold = new BooleanValue("NoScaffold",true);
+    public BooleanValue noscaffold = new BooleanValue("NoScaffold", false);
+    public MultiBooleanValue sorttargets = new MultiBooleanValue("Targets",Arrays.asList(
+            new BooleanValue("Animals",false)
+            ,new BooleanValue("Players",true),
+            new BooleanValue("Mobs",false),
+            new BooleanValue("Dead",false),
+            new BooleanValue("Invisible",false),
+            new BooleanValue("Teams",false)
+    ));
     public List<EntityLivingBase> targets = new ArrayList<>();
     public static EntityLivingBase target;
+    public EntityLivingBase blockTarget;
+    public EntityLivingBase rotationTarget;
     public boolean blocking;
-    private final TimerUtil switchTimer = new TimerUtil();
-    private final TimerUtil attackTimer = new TimerUtil();
+    public TimerUtil switchTimer = new TimerUtil();
+    public TimerUtil attacktimer = new TimerUtil();
     private int index;
-    private final Animation auraESPAnim = new DecelerateAnimation(300, 1);
-    private Entity auraESPTarget;
-    int cps = 0;
+    private int cps;
 
     @Override
     public void onEnable() {
-        targets.clear();
-        target = null;
+        StopAutoBlock();
         blocking = false;
-        switchTimer.reset();
-        attackTimer.reset();
         index = 0;
         cps = 0;
+        switchTimer.reset();
+        attacktimer.reset();
+        targets.clear();
+        target = null;
+        blockTarget = null;
+        rotationTarget = null;
         super.onEnable();
     }
 
     @Override
     public void onDisable() {
-        targets.clear();
-        target = null;
-        attackTimer.reset();
-        switchTimer.reset();
-        index = 0;
-        cps = 0;
         StopAutoBlock();
         blocking = false;
+        index = 0;
+        cps = 0;
+        switchTimer.reset();
+        attacktimer.reset();
+        targets.clear();
+        target = null;
+        blockTarget = null;
+        rotationTarget = null;
         super.onDisable();
     }
 
     @EventTarget
-    public void onMotion(MotionEvent event) {
-        setsuffix(mode.get());
-        targets = gettargets();
+    public void preMotion(MotionEvent event){
+        targets = setTargets();
         if (!targets.isEmpty()) {
-            if (switchTimer.hasTimeElapsed((long) (switchDelayValue.get() * 100L)) && targets.size() > 1) {
+            if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
                 ++index;
                 switchTimer.reset();
             }
@@ -113,24 +132,53 @@ public class KillAura extends Module {
                 switchTimer.reset();
             }
 
-            if (attackTimer.hasTimeElapsed(cps)) {
-                switch (mode.getValue()) {
+            if (attacktimer.delay(cps)) {
+                switch (modeValue.get()) {
+                    case "Multi":
+                        mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
+                        break;
                     case "Single":
                         target = targets.get(0);
                         attack(target);
-
                         break;
-                    case "Switch":
+                    case "Switch": {
                         target = targets.get(index);
                         attack(target);
                         break;
+                    }
                 }
-                final int maxValue = (int) ((minCPS.getMax() - maxCPS.getValue()) * 20);
-                final int minValue = (int) ((minCPS.getMax() - minCPS.getValue()) * 20);
+                final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
+                final int minValue = (int) ((min.getMax() - min.getValue()) * 20);
                 cps = MathUtils.getRandomInRange(minValue, maxValue);
-                attackTimer.reset();
+                attacktimer.reset();
             }
+        } else {
+            index = 0;
+            cps = 0;
+            switchTimer.reset();
+            attacktimer.reset();
+            targets.clear();
+            target = null;
+        }
+        if (rotation.get()) {
+            rotationTarget = findClosestEntity(Rotationrange.get());
+            if (rotationTarget != null) {
+                onRotation(rotationTarget);
+            }
+        }
+    }
 
+    @EventTarget
+    public void onPostMotion(MotionEvent event){
+        if (autoblock.get()) {
+            blockTarget = findClosestEntity(blockrange.get());
+            if (blockTarget != null) {
+                onAutoBlock();
+            } else {
+                StopAutoBlock();
+            }
+        }
+        if (event.isPost() && !targets.isEmpty() && target != null){
             if (targets.size() > 1) {
                 switch (priority.get()) {
                     case "Armor":
@@ -147,74 +195,129 @@ public class KillAura extends Module {
                         break;
                 }
             }
-            if (rotation.get()){
-                onRotation();
-            }
-            if (autoblock.get()){
-                onAutoBlock();
-            }
-        } else {
-            targets.clear();
-            target = null;
-            attackTimer.reset();
-            switchTimer.reset();
-            index = 0;
-            cps = 0;
-            StopAutoBlock();
         }
     }
 
-    public void onRotation(){
-        Vector2f rotation = RotationUtil.calculate(target);
-        RotationComponent.setRotations(rotation, rotationspeed.get(), MovementFix.NORMAL);
+    public EntityLivingBase findClosestEntity(double range) {
+        EntityLivingBase closest = null;
+        double minDistance = Double.MAX_VALUE;
+        for (Entity entity : mc.theWorld.loadedEntityList) {
+            if (entity instanceof EntityLivingBase) {
+                EntityLivingBase living = (EntityLivingBase) entity;
+                if (setTarget(living)) {
+                    double distance = mc.thePlayer.getDistanceToEntity(living);
+                    if (distance <= range && distance < minDistance) {
+                        minDistance = distance;
+                        closest = living;
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+
+    public void attack(Entity entity){
+        if (shouldAttack()){
+            AttackEvent event = new AttackEvent(entity);
+            Client.Instance.getEventManager().call(event);
+            AttackOrder.sendFixedAttack(mc.thePlayer,entity);
+        }
+    }
+
+    public void onRotation(Entity entity){
+        float[] rotaiton;
+        if (shouldRotation(entity)){
+            switch (rotationmode.get()){
+                case "Smart":
+                    break;
+                case "Normal":
+                    break;
+                case "HvH":
+                    break;
+            }
+        }
     }
 
     public void onAutoBlock(){
-        if (autoblock.get()) {
-            if (isSword()) {
-                switch (autoblockmode.getValue()) {
-                    case "Watchdog":
-                        blocking = true;
-                        break;
-                    case "Off":
-                        blocking = true;
-                        break;
-                }
-            }
-        }
-    }
-    public void StopAutoBlock(){
-        if (autoblock.get() && blocking) {
-            if (isSword()) {
-                switch (autoblockmode.getValue()) {
-                    case "Watchdog":
-                        blocking = false;
-                        break;
-                    case "Off":
-                        blocking = false;
-                        break;
-                }
+        if (shouldAutoBlock(blockTarget)) {
+            switch (blockmode.get()) {
+                case "Grim":
+                    PacketWrapper useItem = PacketWrapper.create(29, null, Via.getManager().getConnectionManager().getConnections().iterator().next());
+                    useItem.write(Type.VAR_INT, 1);
+                    com.viaversion.viarewind.utils.PacketUtil.sendToServer(useItem, Protocol1_8To1_9.class, true, true);
+                    PacketWrapper useItem2 = PacketWrapper.create(29, null, Via.getManager().getConnectionManager().getConnections().iterator().next());
+                    useItem2.write(Type.VAR_INT, 0);
+                    PacketUtil.sendToServer(useItem2, Protocol1_8To1_9.class, true, true);
+                    mc.gameSettings.keyBindUseItem.pressed = true;
+                    blocking = true;
+                    break;
+                case "Fake":
+                    blocking = true;
+                    break;
+                case "WatchDog":
+                    blocking = true;
+                    break;
+                case "Blink":
+                    blocking = true;
+                    break;
             }
         }
     }
 
-    public boolean shouldAttack() {
-        if (raycase.get()) {
+    public void StopAutoBlock(){
+        if (blocking){
+            switch (blockmode.get()) {
+                case "Grim":
+                    blocking = false;
+                case "WatchDog":
+                    mc.gameSettings.keyBindUseItem.pressed = false;
+                    mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(
+                            C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                    if (target != null) {
+                        mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.INTERACT));
+                    }
+                    blocking = false;
+                    break;
+                case "Blink":
+                    blocking = false;
+                    break;
+                case "Fake":
+                    blocking = false;
+                    break;
+            }
+        }
+    }
+
+    public boolean shouldAttack(){
+        if (target == null) return false;
+        if (rayCastValue.get()) {
             final MovingObjectPosition movingObjectPosition = mc.objectMouseOver;
-            if (Client.Instance.getModuleManager().getModule(Scaffold.class).getState() && noScaffold.get()) return false;
+            if (Client.Instance.getModuleManager().getModule(Scaffold.class).getState() && noscaffold.get()) return false;
             return (mc.thePlayer.getClosestDistanceToEntity(target) <= range.get()) && (movingObjectPosition != null && movingObjectPosition.entityHit == target);
         } else {
             return (double) (mc.thePlayer.canEntityBeSeen(target) ? mc.thePlayer.getClosestDistanceToEntity(target) : mc.thePlayer.getDistanceToEntity(target)) <= range.get();
         }
     }
 
-    public List<EntityLivingBase> gettargets(){
+    public boolean shouldAutoBlock(EntityLivingBase target){
+        return autoblock.get() && target != null && target.getDistanceToEntity(mc.thePlayer) <= blockrange.get() && isSword();
+    }
+
+    public boolean shouldRotation(Entity entity){
+        return rotation.get() && entity != null && entity.getDistanceToEntity(mc.thePlayer) <= Rotationrange.get();
+    }
+
+    public boolean isSword() {
+        return mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
+    }
+
+    public List<EntityLivingBase> setTargets(){
         targets.clear();
         final List<EntityLivingBase> entities = new ArrayList<>();
-        for (Entity entity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
+        for (Entity entity : mc.theWorld.loadedEntityList) {
             if (entity instanceof EntityLivingBase) {
                 EntityLivingBase target = (EntityLivingBase) entity;
-                if (target.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= range.get() && !target.equals(Minecraft.getMinecraft().thePlayer) && isValid(target)) {
+                if (!target.equals(mc.thePlayer) && setTarget(target) && mc.thePlayer.getDistanceToEntity(target) <= range.get()) {
                     entities.add(target);
                 }else entities.remove(target);
             }
@@ -222,79 +325,18 @@ public class KillAura extends Module {
         return entities;
     }
 
-    public void attack(Entity entity){
-        if (shouldAttack()) {
-            if (mc.thePlayer.isSprinting()) {
-                mc.thePlayer.setSprinting(false);
-                PacketUtil.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
-            }
-
-            AttackEvent attackEvent = new AttackEvent(entity);
-            Client.Instance.getEventManager().call(attackEvent);
-            AttackOrder.sendFixedAttack(mc.thePlayer,entity);
-        }
-    }
-
-    public boolean isValid(Entity entity) {
-        if ((filter.isEnabled("Teams") && PlayerUtil.isInTeam(entity))) {
+    public boolean setTarget(Entity entity){
+        if ((sorttargets.isEnabled("Teams") && PlayerUtil.isInTeam(entity))) {
             return false;
         }
-        if (entity instanceof EntityLivingBase && (targetOption.isEnabled("Dead") || entity.isEntityAlive()) && entity != mc.thePlayer) {
-            if (targetOption.isEnabled("Invisible") || !entity.isInvisible()) {
-                if (targetOption.isEnabled("Players") && entity instanceof EntityPlayer) {
+        if (entity instanceof EntityLivingBase && (sorttargets.isEnabled("Dead") || entity.isEntityAlive()) && entity != mc.thePlayer) {
+            if (sorttargets.isEnabled("Invisible") || !entity.isInvisible()) {
+                if (sorttargets.isEnabled("Players") && entity instanceof EntityPlayer) {
                     return !isEnabled(AntiBot.class) || !getModule(AntiBot.class).isBot((EntityPlayer) entity);
                 }
             }
-            return (targetOption.isEnabled("Mobs") && PlayerUtil.isMob(entity)) || (targetOption.isEnabled("Animals") && PlayerUtil.isAnimal(entity));
+            return (sorttargets.isEnabled("Mobs") && PlayerUtil.isMob(entity)) || (sorttargets.isEnabled("Animals") && PlayerUtil.isAnimal(entity));
         }
         return false;
     }
-
-    @EventTarget
-    public void onRender3DEvent(Render3DEvent event) {
-        auraESPAnim.setDirection(KillAura.target != null ? Direction.FORWARDS : Direction.BACKWARDS);
-        if (KillAura.target != null) {
-            auraESPTarget = KillAura.target;
-        }
-
-        if (auraESPAnim.finished(Direction.BACKWARDS)) {
-            auraESPTarget = null;
-        }
-
-        Color color = Client.Instance.getModuleManager().getModule(InterFace.class).color(1);
-
-        if (auraESP.isEnabled("Custom Color")) {
-            color = customColor.get();
-        }
-        if (auraESPTarget != null) {
-            if (auraESP.isEnabled("Box")) {
-                RenderUtil.renderBoundingBox((EntityLivingBase) auraESPTarget, color, auraESPAnim.getOutput().floatValue());
-            }
-            if (auraESP.isEnabled("Circle")) {
-                RenderUtil.drawCircle(this.auraESPTarget, event.partialTicks(), 0.75, color.getRGB(), this.auraESPAnim.getOutput().floatValue());
-            }
-            if (auraESP.isEnabled("Tracer")) {
-                RenderUtil.drawTracerLine(auraESPTarget, 4f, Color.BLACK, auraESPAnim.getOutput().floatValue());
-                RenderUtil.drawTracerLine(auraESPTarget, 2.5f, color, auraESPAnim.getOutput().floatValue());
-            }
-        }
-    }
-
-    private int getItemIndex() {
-        final InventoryPlayer inventoryPlayer = mc.thePlayer.inventory;
-        return inventoryPlayer.currentItem;
-    }
-
-    public ItemStack getItemStack() {
-        return (mc.thePlayer == null || mc.thePlayer.inventoryContainer == null ? null : mc.thePlayer.inventoryContainer.getSlot(getItemIndex() + 36).getStack());
-    }
-    public void interact(MovingObjectPosition mouse) {
-        if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, mouse.entityHit, mouse)) {
-            mc.playerController.interactWithEntitySendPacket(mc.thePlayer, mouse.entityHit);
-        }
-    }
-    public boolean isSword() {
-        return mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
-    }
-
 }

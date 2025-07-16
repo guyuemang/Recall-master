@@ -201,7 +201,6 @@ public class ShaderUtils implements Instance {
 
         if (glGetShaderi(shader, GL_COMPILE_STATUS) == 0) {
             System.out.println(glGetShaderInfoLog(shader, 4096));
-            throw new IllegalStateException(String.format("Shader (%s) failed to compile!", shaderType));
         }
 
         return shader;
