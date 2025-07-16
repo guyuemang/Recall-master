@@ -3,6 +3,8 @@ package qwq.arcane.utils.rotation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import qwq.arcane.event.annotations.EventPriority;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.*;
@@ -25,6 +27,13 @@ public final class RotationManager {
 
     public Vector2f getRotation() {
         return rotation;
+    }
+
+    public MovingObjectPosition rayTrace(double blockReachDistance, float partialTicks) {
+        Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
+        Vec3 vec31 = mc.thePlayer.getLookCustom(lastServerRotation.getX(),lastServerRotation.getY());
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance, vec31.zCoord * blockReachDistance);
+        return mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
     }
 
     public void setRotation(Vector2f rotation, float rotationSpeed, boolean movementFix, boolean strict) {
