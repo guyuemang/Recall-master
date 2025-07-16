@@ -6,45 +6,31 @@ import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
 import de.florianmichael.viamcp.fixes.AttackOrder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
-import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
-import qwq.arcane.event.impl.events.player.UpdateEvent;
-import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.movement.Sprint;
 import qwq.arcane.module.impl.world.Scaffold;
-import qwq.arcane.module.impl.visuals.InterFace;
-import qwq.arcane.utils.animations.Animation;
-import qwq.arcane.utils.animations.Direction;
-import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.PlayerUtil;
-import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.utils.rotation.MovementFix;
-import qwq.arcane.utils.rotation.RotationComponent;
+import qwq.arcane.utils.rotation.RotationManager;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -65,6 +51,7 @@ public class KillAura extends Module {
     private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "WatchDog", "Blink"});
     public BooleanValue rotation = new BooleanValue("Rotation",false);
     public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
+    public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
     private final ModeValue rotationmode = new ModeValue("RotationMode",()->rotation.get(), "Normal", new String[]{"Normal", "HvH", "Smart"});
     public static BooleanValue rayCastValue = new BooleanValue("RayCast", false);
     public BooleanValue movefix = new BooleanValue("MoveFix",false);
@@ -133,6 +120,9 @@ public class KillAura extends Module {
             }
 
             if (attacktimer.delay(cps)) {
+                if (keepsprint.get()) {
+                    Sprint.keepSprinting = true;
+                }
                 switch (modeValue.get()) {
                     case "Multi":
                         mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
@@ -170,6 +160,9 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onPostMotion(MotionEvent event){
+        if (keepsprint.get()) {
+            Sprint.keepSprinting = false;
+        }
         if (autoblock.get()) {
             blockTarget = findClosestEntity(blockrange.get());
             if (blockTarget != null) {
@@ -225,7 +218,7 @@ public class KillAura extends Module {
     }
 
     public void onRotation(Entity entity){
-        float[] rotaiton;
+        float[] rotaiton = new float[0];
         if (shouldRotation(entity)){
             switch (rotationmode.get()){
                 case "Smart":
@@ -233,8 +226,10 @@ public class KillAura extends Module {
                 case "Normal":
                     break;
                 case "HvH":
+                    rotaiton = RotationUtil.getHVHRotation(entity, Rotationrange.getValue());
                     break;
             }
+            Client.Instance.rotationManager.setRotation(new Vector2f(rotaiton[0],rotaiton[1]),rotationspeed.get().intValue(), movefix.get(),strictValue.get());
         }
     }
 
@@ -244,7 +239,7 @@ public class KillAura extends Module {
                 case "Grim":
                     PacketWrapper useItem = PacketWrapper.create(29, null, Via.getManager().getConnectionManager().getConnections().iterator().next());
                     useItem.write(Type.VAR_INT, 1);
-                    com.viaversion.viarewind.utils.PacketUtil.sendToServer(useItem, Protocol1_8To1_9.class, true, true);
+                    PacketUtil.sendToServer(useItem, Protocol1_8To1_9.class, true, true);
                     PacketWrapper useItem2 = PacketWrapper.create(29, null, Via.getManager().getConnectionManager().getConnections().iterator().next());
                     useItem2.write(Type.VAR_INT, 0);
                     PacketUtil.sendToServer(useItem2, Protocol1_8To1_9.class, true, true);

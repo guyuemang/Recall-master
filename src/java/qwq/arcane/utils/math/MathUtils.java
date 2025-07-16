@@ -1,7 +1,10 @@
 package qwq.arcane.utils.math;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -22,6 +25,33 @@ public class MathUtils {
         } else {
             return Math.min(num, max);
         }
+    }
+    public static Vec3 closestPointOnFace(AxisAlignedBB aabb, EnumFacing face, Vec3 vec) {
+        return closestPointOnFace(aabb, face, vec.xCoord, vec.yCoord, vec.zCoord);
+    }
+    public static Vec3 closestPointOnFace(AxisAlignedBB aabb, EnumFacing face, double x, double y, double z) {
+        double closestX, closestY, closestZ;
+
+        switch (face) {
+            case DOWN, UP -> {
+                closestX = Math.max(aabb.minX, Math.min(x, aabb.maxX));
+                closestY = face == EnumFacing.DOWN ? aabb.minY : aabb.maxY;
+                closestZ = Math.max(aabb.minZ, Math.min(z, aabb.maxZ));
+            }
+            case NORTH, SOUTH -> {
+                closestX = Math.max(aabb.minX, Math.min(x, aabb.maxX));
+                closestY = Math.max(aabb.minY, Math.min(y, aabb.maxY));
+                closestZ = face == EnumFacing.NORTH ? aabb.minZ : aabb.maxZ;
+            }
+            case WEST, EAST -> {
+                closestX = face == EnumFacing.WEST ? aabb.minX : aabb.maxX;
+                closestY = Math.max(aabb.minY, Math.min(y, aabb.maxY));
+                closestZ = Math.max(aabb.minZ, Math.min(z, aabb.maxZ));
+            }
+            default -> throw new IllegalArgumentException("Invalid face: " + face);
+        }
+
+        return new Vec3(closestX, closestY, closestZ);
     }
     public static double linearInterpolate(double min, double max, double norm) {
         return (max - min) * norm + min;

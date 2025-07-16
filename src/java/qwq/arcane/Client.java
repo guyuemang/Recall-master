@@ -22,7 +22,7 @@ import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.SlotSpoofComponent;
-import qwq.arcane.utils.rotation.RotationComponent;
+import qwq.arcane.utils.rotation.RotationManager;
 
 import java.io.File;
 
@@ -45,6 +45,7 @@ public class Client implements Instance {
     private VideoComponent videoComponent;
     private NotificationManager notification;
     private CommandManager commandManager;
+    public RotationManager rotationManager;
 
     public void Init(){
         ViaMCP.create();
@@ -52,9 +53,10 @@ public class Client implements Instance {
         Display.setTitle(name + " " + version);
         eventManager = new EventManager();
         eventManager.register(this);
-        eventManager.register(new RotationComponent());
         eventManager.register(new BlinkComponent());
         eventManager.register(new SlotSpoofComponent());
+        rotationManager = new RotationManager();
+        eventManager.register(rotationManager);
 
         moduleManager = new ModuleManager();
         moduleManager.Init();

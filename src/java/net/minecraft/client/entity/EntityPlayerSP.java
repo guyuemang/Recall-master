@@ -81,13 +81,13 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * The last yaw value which was transmitted to the server, used to determine when the yaw changes and needs to be
      * re-transmitted
      */
-    private float lastReportedYaw;
+    public float lastReportedYaw;
 
     /**
      * The last pitch value which was transmitted to the server, used to determine when the pitch changes and needs to
      * be re-transmitted
      */
-    private float lastReportedPitch;
+    public float lastReportedPitch;
 
     /** the last sneaking state sent to the server */
     private boolean serverSneakState;
