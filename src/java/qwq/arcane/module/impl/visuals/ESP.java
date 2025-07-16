@@ -15,11 +15,10 @@ import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.color.ColorUtil;
-import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.render.GLUtil;
 import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 
 import java.awt.*;
@@ -43,17 +42,17 @@ public final class ESP extends Module {
     public ESP() {
         super("ESP",Category.Visuals);
     }
-    public static final BooleanValue fontTags = new BooleanValue("TagsName", true);
-    public static final BooleanValue fonttagsBackground = new BooleanValue("TagsBackground", fontTags::get, true);
-    public static final BooleanValue fonttagsHealth = new BooleanValue("TagsHealth", fontTags::get, true);
-    public static final BooleanValue esp2d = new BooleanValue("2DESP", true);
-    public static final BooleanValue box = new BooleanValue("Box", esp2d::get, true);
-    public static final BooleanValue boxSyncColor = new BooleanValue("BoxSyncColor", () -> esp2d.get() && box.get(), false);
+    public static final BoolValue fontTags = new BoolValue("TagsName", true);
+    public static final BoolValue fonttagsBackground = new BoolValue("TagsBackground", fontTags::get, true);
+    public static final BoolValue fonttagsHealth = new BoolValue("TagsHealth", fontTags::get, true);
+    public static final BoolValue esp2d = new BoolValue("2DESP", true);
+    public static final BoolValue box = new BoolValue("Box", esp2d::get, true);
+    public static final BoolValue boxSyncColor = new BoolValue("BoxSyncColor", () -> esp2d.get() && box.get(), false);
     public static final ColorValue boxColor = new ColorValue("BoxColor", () -> esp2d.get() && box.get() && !boxSyncColor.get(), Color.RED);
-    public static final BooleanValue healthBar = new BooleanValue("Health", esp2d::get, true);
-    public static final BooleanValue healthBarSyncColor = new BooleanValue("HealthColor", () -> esp2d.get() && healthBar.get(),false);
+    public static final BoolValue healthBar = new BoolValue("Health", esp2d::get, true);
+    public static final BoolValue healthBarSyncColor = new BoolValue("HealthColor", () -> esp2d.get() && healthBar.get(),false);
     public static final ColorValue absorptionColor = new ColorValue("AbsorptionColor", () -> esp2d.get() && healthBar.get() && !healthBarSyncColor.get(), new Color(255, 255, 50));
-    public static final BooleanValue armorBar = new BooleanValue("Armor", esp2d::get,true);
+    public static final BoolValue armorBar = new BoolValue("Armor", esp2d::get,true);
     public static final ColorValue armorBarColor = new ColorValue("ArmorColor", () -> esp2d.get() && armorBar.get(), new Color(50, 255, 255));
     public final Map<EntityPlayer, float[][]> playerRotationMap = new HashMap<>();
     private final Map<EntityPlayer, float[]> entityPosMap = new HashMap<>();

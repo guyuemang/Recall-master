@@ -9,7 +9,7 @@ import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.MultiBooleanValue;
 
 import java.awt.*;
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class MultiBooleanComponent extends Component {
     private final MultiBooleanValue setting;
-    private final Map<BooleanValue, EaseOutSine> select = new HashMap<>();
+    private final Map<BoolValue, EaseOutSine> select = new HashMap<>();
 
     public MultiBooleanComponent(MultiBooleanValue setting) {
         this.setting = setting;
@@ -36,7 +36,7 @@ public class MultiBooleanComponent extends Component {
         RoundedUtil.drawRound(getX() + offset, getY() + FontManager.Bold.get(15).getHeight() + 2, getWidth() - 5, heightoff, 4, new Color(128, 128, 128));
         FontManager.Bold.get(15).drawString(setting.getName(), getX() + 4, getY(), -1);
 
-        for (BooleanValue boolValue : setting.getValues()) {
+        for (BoolValue boolValue : setting.getValues()) {
             float off = FontManager.Bold.get(13).getStringWidth(boolValue.getName()) + 4;
             if (offset + off >= getWidth() - 5) {
                 offset = 8;
@@ -58,7 +58,7 @@ public class MultiBooleanComponent extends Component {
     public void mouseClicked(int mouseX, int mouseY, int mouse) {
         float offset = 8;
         float heightoff = 0;
-        for (BooleanValue boolValue : setting.getValues()) {
+        for (BoolValue boolValue : setting.getValues()) {
             float off = FontManager.Bold.get(13).getStringWidth(boolValue.getName()) + 4;
             if (offset + off >= getWidth() - 5) {
                 offset = 8;

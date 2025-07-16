@@ -213,6 +213,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import qwq.arcane.module.impl.world.Disabler;
 
 public class NetHandlerPlayClient implements INetHandlerPlayClient
 {
@@ -670,6 +671,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
      */
     public void handlePlayerPosLook(S08PacketPlayerPosLook packetIn)
     {
+        Disabler.onS08();
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
         EntityPlayer entityplayer = this.gameController.thePlayer;
         double d0 = packetIn.getX();

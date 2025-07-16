@@ -7,7 +7,7 @@ import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.NumberValue;
 
 import java.util.ArrayDeque;
@@ -16,7 +16,7 @@ public final class Breadcrumbs extends Module {
 
     private final ArrayDeque<Vec3> path = new ArrayDeque<>();
 
-    private final BooleanValue timeoutBool = new BooleanValue("Timeout", true);
+    private final BoolValue timeoutBool = new BoolValue("Timeout", true);
     private final NumberValue timeout = new NumberValue("Time", 15, 1, 150, 0.1f);
 
     public Breadcrumbs() {

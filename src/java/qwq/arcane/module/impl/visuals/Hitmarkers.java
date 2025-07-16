@@ -38,7 +38,7 @@ public final class Hitmarkers extends Module {
     private final NumberValue hitMarkerThicknessProperty = new NumberValue(
             "Thickness", 1.0D, 0.5D, 3.0D, 0.5D);
 
-    private final BooleanValue soundsProperty = new BooleanValue("Sounds", true);
+    private final BoolValue soundsProperty = new BoolValue("Sounds", true);
     public final NumberValue volumeProperty = new NumberValue("Volume",()-> soundsProperty.get(), 100, 0, 100, 1);
     private final ModeValue soundTypeProperty = new ModeValue("Sound Type","SKEET", new String[]{"BASIC", "NEKO", "RIFK", "SKEET"});
 

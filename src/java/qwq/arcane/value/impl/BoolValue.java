@@ -6,13 +6,13 @@ import qwq.arcane.value.Value;
  * @Author：Guyuemang
  * @Date：2025/6/1 00:47
  */
-public class BooleanValue extends Value<Boolean> {
-    public BooleanValue(String name, Dependency dependency, boolean defaultValue) {
+public class BoolValue extends Value<Boolean> {
+    public BoolValue(String name, Dependency dependency, boolean defaultValue) {
         super(name, dependency);
         this.value = defaultValue;
     }
 
-    public BooleanValue(String name, boolean defaultValue) {
+    public BoolValue(String name, boolean defaultValue) {
         this(name, () -> true, defaultValue);
     }
 

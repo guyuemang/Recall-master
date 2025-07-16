@@ -34,7 +34,7 @@ public class ModuleComponent extends Component {
     public ModuleComponent(Module module) {
         this.module = module;
         for (Value setting : module.getSettings()) {
-            if (setting instanceof BooleanValue bool) {
+            if (setting instanceof BoolValue bool) {
                 components.add(new BooleanComponent(bool));
             }else if (setting instanceof NumberValue number) {
                 components.add(new NumberComponent(number));

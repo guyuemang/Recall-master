@@ -1,6 +1,5 @@
 package qwq.arcane.module.impl.world;
 
-import lombok.AllArgsConstructor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.util.BlockPos;
@@ -13,11 +12,10 @@ import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.math.Vector2f;
-import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlaceData;
 import qwq.arcane.utils.player.ScaffoldUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 
 /**
  * @Author：Guyuemang
@@ -27,8 +25,8 @@ public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold",Category.World);
     }
-    public final BooleanValue swing = new BooleanValue("Swing", true);
-    public final BooleanValue sprint = new BooleanValue("sprint", true);
+    public final BoolValue swing = new BoolValue("Swing", true);
+    public final BoolValue sprint = new BoolValue("sprint", true);
     private PlaceData data;
     public BlockPos previousBlock;
 

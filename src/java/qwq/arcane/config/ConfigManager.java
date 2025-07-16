@@ -69,8 +69,8 @@ public class ConfigManager {
 
                 JsonObject settingsObj = new JsonObject();
                 for (Value<?> setting : module.getSettings()) {
-                    if (setting instanceof BooleanValue) {
-                        settingsObj.addProperty(setting.getName(), ((BooleanValue) setting).getValue());
+                    if (setting instanceof BoolValue) {
+                        settingsObj.addProperty(setting.getName(), ((BoolValue) setting).getValue());
                     } else if (setting instanceof NumberValue) {
                         settingsObj.addProperty(setting.getName(), ((NumberValue) setting).getValue());
                     } else if (setting instanceof MultiBooleanValue) {
@@ -149,8 +149,8 @@ public class ConfigManager {
                             if (!settingsObj.has(setting.getName())) continue;
 
                             JsonElement settingValue = settingsObj.get(setting.getName());
-                            if (setting instanceof BooleanValue) {
-                                ((BooleanValue) setting).setValue(settingValue.getAsBoolean());
+                            if (setting instanceof BoolValue) {
+                                ((BoolValue) setting).setValue(settingValue.getAsBoolean());
                             }
                             else if (setting instanceof NumberValue) {
                                 NumberValue numSetting = (NumberValue) setting;

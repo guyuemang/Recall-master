@@ -13,7 +13,7 @@ import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.ModuleManager;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class AntiBot extends Module {
     static List<Integer> bots = new ArrayList<>();
     static ModeValue mode = new ModeValue("Mode","Hypixel",new String[]{"Hypixel","Mineland"});
-    static BooleanValue AntiStaff = new BooleanValue("AntiStaff", true);
+    static BoolValue AntiStaff = new BoolValue("AntiStaff", true);
     private static final List<Entity> invalid = new ArrayList<>();
     public static List<Entity> getInvalid() {
         return invalid;

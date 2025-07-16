@@ -13,7 +13,7 @@ import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.fontrender.FontRenderer;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.module.Module;
@@ -31,10 +31,10 @@ public class ArrayList extends ModuleWidget {
         super("ArrayList",Category.Display);
     }
 
-    public static BooleanValue importantModules = new BooleanValue("Important", false);
+    public static BoolValue importantModules = new BoolValue("Important", false);
     public ModeValue fontmode = new ModeValue("FontMode","Custom",new String[]{"Custom","Bold","Semibold","Regular","Light"});
     public ModeValue textShadow = new ModeValue("Text Shadow","None", new String[]{"Black", "Colored", "None"});
-    public BooleanValue suffixColor = new BooleanValue("SuffixColor",false);
+    public BoolValue suffixColor = new BoolValue("SuffixColor",false);
     public final ModeValue tags = new ModeValue("Suffix","Bracket", new String[]{"None", "Simple", "Bracket", "Dash"});
     public ModeValue animation = new ModeValue("Animation", "Move In",new String[]{"Move In","Scale In"});
     public final ModeValue color = new ModeValue("Color Setting","Fade", new String[]{"Custom", "Rainbow", "Dynamic","Double","Astolfo","Tenacity"});
@@ -42,7 +42,7 @@ public class ArrayList extends ModuleWidget {
     public final NumberValue colorIndex = new NumberValue("Color Seperation", 1, 1, 50, 1);
     public ColorValue FirstColor = new ColorValue("MainColor", new Color(167, 59, 255));
     public ColorValue SecondColor = new ColorValue("SecondColor", new Color(217, 191, 255));
-    public BooleanValue background = new BooleanValue("BackGround",false);
+    public BoolValue background = new BoolValue("BackGround",false);
     public ModeValue misc = new ModeValue("Rectangle","None",new String[]{"None", "Top", "Side"});
     public NumberValue radius = new NumberValue("radius",()-> background.get(),3,0,8,1);
     public ModeValue backgroundmod = new ModeValue("BackGroundMod",()-> background.get(),"Rect",new String[]{"Rect","Round"});

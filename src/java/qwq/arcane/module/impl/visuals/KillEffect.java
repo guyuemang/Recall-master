@@ -16,7 +16,7 @@ import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.animations.impl.ContinualAnimation;
 import qwq.arcane.utils.render.SoundUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 
 import javax.sound.sampled.*;
 import java.io.BufferedInputStream;
@@ -35,12 +35,12 @@ public class KillEffect extends Module {
     private double percent = 0.0;
     private final ContinualAnimation anim = new ContinualAnimation();
 
-    private final BooleanValue lightning = new BooleanValue("Lightning", true);
+    private final BoolValue lightning = new BoolValue("Lightning", true);
 
-    private final BooleanValue explosion = new BooleanValue("Explosion", true);
-    private final BooleanValue squidValue = new BooleanValue("Squid", true);
-    private final BooleanValue bloodValue = new BooleanValue("Blood", true);
-    private final BooleanValue soundEffect = new BooleanValue("Sound Effect", true);
+    private final BoolValue explosion = new BoolValue("Explosion", true);
+    private final BoolValue squidValue = new BoolValue("Squid", true);
+    private final BoolValue bloodValue = new BoolValue("Blood", true);
+    private final BoolValue soundEffect = new BoolValue("Sound Effect", true);
 
     private EntityLivingBase target;
 

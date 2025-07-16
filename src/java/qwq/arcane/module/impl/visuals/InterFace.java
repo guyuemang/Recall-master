@@ -12,7 +12,6 @@ import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.value.impl.*;
 
 import java.awt.*;
@@ -33,11 +32,11 @@ public class InterFace extends Module {
     public static final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> colorMode.is("Tenacity"), 4, 1, 10, 1);
     public static ColorValue mainColor = new ColorValue("MainColor", new Color(183, 109, 250));
     public static ColorValue secondColor = new ColorValue("SecondColor", new Color(115, 75, 109));
-    public static BooleanValue waterMark = new BooleanValue("WaterMark",false);
+    public static BoolValue waterMark = new BoolValue("WaterMark",false);
     public static ModeValue waterMarkmode = new ModeValue("WaterMarkMode",()-> waterMark.get(),"Exhi",new String[]{"Exhi","Arcane"});
-    public static BooleanValue info = new BooleanValue("Info",true);
+    public static BoolValue info = new BoolValue("Info",true);
     public static final ModeValue infomode = new ModeValue("InfoMode",()->info.get(),"Exhi",new String[]{"Exhi","Arcane"});
-    public static BooleanValue renderBossHealth = new BooleanValue("BossHealth",false);
+    public static BoolValue renderBossHealth = new BoolValue("BossHealth",false);
     private final DecimalFormat bpsFormat = new DecimalFormat("0.00");
     private final DecimalFormat xyzFormat = new DecimalFormat("0");
     @EventTarget

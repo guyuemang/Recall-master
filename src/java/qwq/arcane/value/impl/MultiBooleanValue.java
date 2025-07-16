@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
  * @Date：2025/6/1 00:47
  */
 public class MultiBooleanValue extends Value {
-    public List<BooleanValue> options;
+    public List<BoolValue> options;
     public int index;
 
-    public MultiBooleanValue(String name, Dependency dependency, List<BooleanValue> options) {
+    public MultiBooleanValue(String name, Dependency dependency, List<BoolValue> options) {
         super(name,dependency);
         this.options = options;
         index = options.size();
     }
 
-    public MultiBooleanValue(String name, List<BooleanValue> options) {
+    public MultiBooleanValue(String name, List<BoolValue> options) {
         super(name);
         this.options = options;
         index = options.size();
@@ -35,13 +35,13 @@ public class MultiBooleanValue extends Value {
         Objects.requireNonNull(this.options.stream().filter((option) -> option.getName().equalsIgnoreCase(name)).findFirst().orElse(null)).set(value);
     }
 
-    public List<BooleanValue> getToggled() {
-        return this.options.stream().filter(BooleanValue::get).collect(Collectors.toList());
+    public List<BoolValue> getToggled() {
+        return this.options.stream().filter(BoolValue::get).collect(Collectors.toList());
     }
 
     public String isEnabled() {
         List<String> includedOptions = new ArrayList<>();
-        for (BooleanValue option : options) {
+        for (BoolValue option : options) {
             if (option.get()) {
                 includedOptions.add(option.getName());
             }
@@ -57,7 +57,7 @@ public class MultiBooleanValue extends Value {
         return this.options.get(index).get();
     }
 
-    public List<BooleanValue> getValues() {
+    public List<BoolValue> getValues() {
         return this.options;
     }
 }

@@ -10,16 +10,16 @@ import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 
 import java.awt.*;
 
 public class BlockOverlay extends Module {
 
-    public final BooleanValue outline = new BooleanValue("Outline", true);
-    public final BooleanValue filled = new BooleanValue("Filled", false);
-    public final BooleanValue syncColor = new BooleanValue("Sync Color", false);
+    public final BoolValue outline = new BoolValue("Outline", true);
+    public final BoolValue filled = new BoolValue("Filled", false);
+    public final BoolValue syncColor = new BoolValue("Sync Color", false);
     public final ColorValue color = new ColorValue("Color",() -> !syncColor.get(),new Color(255,255,255));
 
     public BlockOverlay() {

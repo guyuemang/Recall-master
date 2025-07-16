@@ -36,6 +36,7 @@ public class ModuleManager {
     public void Init() {
         Client.Instance.getEventManager().register(this);
         registerModule(new InterFace());
+        registerModule(new TickBase());
         registerModule(new BackTrack());
         registerModule(new ClickGui());
         registerModule(new Health());
@@ -75,7 +76,7 @@ public class ModuleManager {
         registerModule(new NoRotate());
         registerModule(new Timer());
         registerModule(new AntiBot());
-        registerModule(new Velocity());
+        registerModule(new AntiKB());
         registerModule(new KillEffect());
         registerModule(new ESP());
         registerModule(new KillAura());

@@ -30,6 +30,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.ThreadQuickExitException;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
@@ -51,6 +52,7 @@ import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.PostUpdateEvent;
 import qwq.arcane.event.impl.events.player.SlowDownEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
+import qwq.arcane.module.impl.world.Disabler;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.MovementUtil;
 
@@ -252,6 +254,16 @@ public class EntityPlayerSP extends AbstractClientPlayer
             } else {
                 this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, eventMotion.getYaw(), eventMotion.getPitch(), eventMotion.isOnGround()));
                 flag2 = false;
+            }
+
+            if (Disabler.getGrimPost()) {
+                this.mc.lastTickSentC03 = true;
+                while (!this.mc.scheduledTasks.isEmpty()) {
+                    try {
+                        Util.runTask(this.mc.scheduledTasks.poll(), Minecraft.logger);
+                    }
+                    catch (ThreadQuickExitException threadQuickExitException) {}
+                }
             }
 
             ++this.positionUpdateTicks;

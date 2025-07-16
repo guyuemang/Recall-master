@@ -7,13 +7,13 @@ import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.player.MovementUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 
 public class Sprint extends Module {
     public Sprint() {
         super("Sprint", Category.Movement);
     }
-    private final BooleanValue omni = new BooleanValue("Omni", false);
+    private final BoolValue omni = new BoolValue("Omni", false);
 
     public static boolean keepSprinting = false;
 

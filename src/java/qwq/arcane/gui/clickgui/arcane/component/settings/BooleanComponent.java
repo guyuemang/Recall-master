@@ -9,17 +9,17 @@ import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 
 /**
  * @Author：Guyuemang
  * @Date：2025/7/3 23:16
  */
 public class BooleanComponent extends Component {
-    private final BooleanValue setting;
+    private final BoolValue setting;
     private final Animation enabled = new DecelerateAnimation(250,1);
     private final Animation hover = new DecelerateAnimation(250,1);
-    public BooleanComponent(BooleanValue setting) {
+    public BooleanComponent(BoolValue setting) {
         this.setting = setting;
         setHeight(22);
         enabled.setDirection(setting.get() ? Direction.FORWARDS : Direction.BACKWARDS);

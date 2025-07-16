@@ -26,7 +26,6 @@ import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.PlayerUtil;
-import qwq.arcane.utils.rotation.RotationManager;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.*;
@@ -45,26 +44,26 @@ public class KillAura extends Module {
     public NumberValue max = new NumberValue("MaxDelay",10,1,20,1);
     public NumberValue min = new NumberValue("MinDelay",10,1,20,1);
     public NumberValue range = new NumberValue("Range",3.0,1.0,6.0,0.1);
-    public BooleanValue keepsprint = new BooleanValue("KeepSprint",false);
-    public BooleanValue autoblock = new BooleanValue("AutoBlock",false);
+    public BoolValue keepsprint = new BoolValue("KeepSprint",false);
+    public BoolValue autoblock = new BoolValue("AutoBlock",false);
     public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
     private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "WatchDog", "Blink"});
-    public BooleanValue rotation = new BooleanValue("Rotation",false);
+    public BoolValue rotation = new BoolValue("Rotation",false);
     public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
     private final ModeValue rotationmode = new ModeValue("RotationMode",()->rotation.get(), "Normal", new String[]{"Normal", "HvH", "Smart"});
-    public static BooleanValue rayCastValue = new BooleanValue("RayCast", false);
-    public BooleanValue movefix = new BooleanValue("MoveFix",false);
-    public BooleanValue strictValue = new BooleanValue("FollowTarget", () -> movefix.getValue(), false);
+    public static BoolValue rayCastValue = new BoolValue("RayCast", false);
+    public BoolValue movefix = new BoolValue("MoveFix",false);
+    public BoolValue strictValue = new BoolValue("FollowTarget", () -> movefix.getValue(), false);
     private final ModeValue priority = new ModeValue("Priority", "Range", new String[]{"Range", "Armor", "Health", "HurtTime"});
-    public BooleanValue noscaffold = new BooleanValue("NoScaffold", false);
+    public BoolValue noscaffold = new BoolValue("NoScaffold", false);
     public MultiBooleanValue sorttargets = new MultiBooleanValue("Targets",Arrays.asList(
-            new BooleanValue("Animals",false)
-            ,new BooleanValue("Players",true),
-            new BooleanValue("Mobs",false),
-            new BooleanValue("Dead",false),
-            new BooleanValue("Invisible",false),
-            new BooleanValue("Teams",false)
+            new BoolValue("Animals",false)
+            ,new BoolValue("Players",true),
+            new BoolValue("Mobs",false),
+            new BoolValue("Dead",false),
+            new BoolValue("Invisible",false),
+            new BoolValue("Teams",false)
     ));
     public List<EntityLivingBase> targets = new ArrayList<>();
     public static EntityLivingBase target;

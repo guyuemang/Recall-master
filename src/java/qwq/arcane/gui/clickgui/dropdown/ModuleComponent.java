@@ -41,7 +41,7 @@ public class ModuleComponent implements IComponent {
         toggleAnimation.setDirection(Direction.BACKWARDS);
         hoverAnimation.setDirection(Direction.BACKWARDS);
         for (Value value : module.getSettings()) {
-            if (value instanceof BooleanValue boolValue) {
+            if (value instanceof BoolValue boolValue) {
                 settings.add(new BooleanComponent(boolValue));
             }else if (value instanceof ModeValue modeSetting) {
                 settings.add(new ModeComponent(modeSetting));

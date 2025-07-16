@@ -8,7 +8,7 @@ import qwq.arcane.utils.animations.impl.SmoothStepAnimation;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 
 import java.awt.*;
 
@@ -17,10 +17,10 @@ import java.awt.*;
  * @Date：2025/7/3 12:31
  */
 public class BooleanComponent extends Component {
-    private final BooleanValue setting;
+    private final BoolValue setting;
     private final SmoothStepAnimation toggleAnimation = new SmoothStepAnimation(175, 1);
 
-    public BooleanComponent(BooleanValue setting) {
+    public BooleanComponent(BoolValue setting) {
         this.setting = setting;
         this.toggleAnimation.setDirection(Direction.BACKWARDS);
         setHeight(FontManager.Bold.get(15).getHeight() + 5);

@@ -18,7 +18,7 @@ import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Noslow;
 import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.time.TimerUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,31 +29,24 @@ import java.util.Map;
  * @Date：7/7/2025 12:00 AM
  */
 public class Disabler extends Module {
-    public Disabler() {
-        super("Disabler", Category.World);
-        INSTANCE = this;
-    }
-    public static final BooleanValue postValue = new BooleanValue("Post", true);
-    public final BooleanValue oldPostValue = new BooleanValue("OldPost", false);
-    public final BooleanValue digValue = new BooleanValue("Digging", true);
-    public final BooleanValue blockValue = new BooleanValue("Cancel Blocking Packet", false);
-    private final BooleanValue badPacketsA = new BooleanValue("BadPacketsA", true);
-    public static final BooleanValue badPacketsF = new BooleanValue("BadPacketsF", true);
-    private final BooleanValue fakePingValue = new BooleanValue("FakePing", false);
-    public final BooleanValue fastBreak = new BooleanValue("FastBreak", true);
-    public final BooleanValue debug = new BooleanValue("Debug", true);
+    public static final BoolValue postValue = new BoolValue("Post", true);
+    public final BoolValue oldPostValue = new BoolValue("OldPost", false);
+    public final BoolValue digValue = new BoolValue("Digging", true);
+    public final BoolValue blockValue = new BoolValue("Cancel Blocking Packet", false);
+    private final BoolValue badPacketsA = new BoolValue("BadPacketsA", true);
+    public static final BoolValue badPacketsF = new BoolValue("BadPacketsF", true);
+    private final BoolValue fakePingValue = new BoolValue("FakePing", false);
+    public final BoolValue fastBreak = new BoolValue("FastBreak", true);
+    public final BoolValue debug = new BoolValue("Debug", true);
     private final HashMap<Packet<?>, Long> packetsMap = new HashMap();
     int lastSlot = -1;
     boolean lastSprinting;
     static Disabler INSTANCE;
     private boolean S08 = false;
-    private Noslow noSlow;
-
-    @Override
-    public void onEnable() {
-        this.noSlow = this.getModule(Noslow.class);
+    public Disabler() {
+        super("Disabler", Category.World);
+        INSTANCE = this;
     }
-
     @EventTarget
     @EventPriority(value=9)
     public void onupdate(UpdateEvent event) {

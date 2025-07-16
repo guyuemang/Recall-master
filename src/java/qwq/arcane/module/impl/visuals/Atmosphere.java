@@ -7,7 +7,7 @@ import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
@@ -15,15 +15,15 @@ import qwq.arcane.value.impl.NumberValue;
 import java.awt.*;
 
 public class Atmosphere extends Module {
-    private final BooleanValue time = new BooleanValue("Time Editor", true);
+    private final BoolValue time = new BoolValue("Time Editor", true);
     private final NumberValue timeValue = new NumberValue("Time", time::get, 18000, 0, 24000, 1000);
-    private static final BooleanValue weather = new BooleanValue("Weather Editor", true);
+    private static final BoolValue weather = new BoolValue("Weather Editor", true);
     public static final ModeValue weatherValue = new ModeValue("Weather", weather::get, "Clean",
             new String[]{"Clean", "Rain", "Thunder", "Snow", "Blizzard"});
-    public static final BooleanValue forceSnow = new BooleanValue("Force Snow", false);
-    public final BooleanValue worldColor = new BooleanValue("World Color", true);
+    public static final BoolValue forceSnow = new BoolValue("Force Snow", false);
+    public final BoolValue worldColor = new BoolValue("World Color", true);
     public final ColorValue worldColorRGB = new ColorValue("World Color RGB", worldColor::get, Color.WHITE);
-    public final BooleanValue worldFog = new BooleanValue("World Fog", false);
+    public final BoolValue worldFog = new BoolValue("World Fog", false);
     public final ColorValue worldFogRGB = new ColorValue("World Fog RGB", worldFog::get, Color.WHITE);
     public final NumberValue worldFogDistance = new NumberValue("World Fog Distance", worldFog::get, 0.10F, -1F, 0.9F, 0.1F);
 

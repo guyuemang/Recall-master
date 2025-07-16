@@ -1,13 +1,11 @@
 package qwq.arcane.module.impl.player;
 
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.client.C0EPacketClickWindow;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
@@ -23,7 +21,7 @@ import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.time.StopWatch;
 import qwq.arcane.utils.time.TimerUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.MultiBooleanValue;
 import qwq.arcane.value.impl.NumberValue;
 
@@ -41,9 +39,9 @@ public class Stealer extends Module {
     }
 
     private NumberValue delay = new NumberValue("Delay", 3, 0, 15, 1);
-    private BooleanValue slotMachineFix = new BooleanValue("SlotMachine Fix", false);
-    private MultiBooleanValue container = new MultiBooleanValue("Container", Arrays.asList(new BooleanValue("Chest", true),
-            new BooleanValue("Furnace", true)));
+    private BoolValue slotMachineFix = new BoolValue("SlotMachine Fix", false);
+    private MultiBooleanValue container = new MultiBooleanValue("Container", Arrays.asList(new BoolValue("Chest", true),
+            new BoolValue("Furnace", true)));
 
     public final LinkedBlockingQueue<Packet<INetHandlerPlayClient>> setSlots = new LinkedBlockingQueue<>();
     private final LinkedBlockingQueue<Packet<?>> packets = new LinkedBlockingQueue<>();

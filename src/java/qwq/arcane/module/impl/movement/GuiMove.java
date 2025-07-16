@@ -7,27 +7,13 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFood;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.network.play.client.C0EPacketClickWindow;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import qwq.arcane.event.annotations.EventTarget;
-import qwq.arcane.event.impl.events.packet.PacketSendEvent;
-import qwq.arcane.event.impl.events.player.MoveInputEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.pack.BlinkComponent;
-import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.MovementUtil;
-import qwq.arcane.value.impl.BooleanValue;
-
-import java.util.ArrayList;
-import java.util.List;
+import qwq.arcane.value.impl.BoolValue;
 
 /**
  * @Author：Guyuemang
@@ -38,10 +24,10 @@ public class GuiMove extends Module {
         super("GuiMove",Category.Movement);
     }
 
-    private final BooleanValue cancelInventory = new BooleanValue("NoInv", false);
-    private final BooleanValue cancelChest = new BooleanValue("No Chest", false);
-    private final BooleanValue wdChest = new BooleanValue("Watchdog Chest", false);
-    private final BooleanValue wdInv = new BooleanValue("Watchdog Inv", false);
+    private final BoolValue cancelInventory = new BoolValue("NoInv", false);
+    private final BoolValue cancelChest = new BoolValue("No Chest", false);
+    private final BoolValue wdChest = new BoolValue("Watchdog Chest", false);
+    private final BoolValue wdInv = new BoolValue("Watchdog Inv", false);
     private final KeyBinding[] keyBindings = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindJump};
 
     @Override

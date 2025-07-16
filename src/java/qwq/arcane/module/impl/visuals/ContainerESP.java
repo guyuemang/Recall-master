@@ -5,7 +5,7 @@ import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 import net.minecraft.tileentity.*;
 
@@ -16,14 +16,14 @@ import java.awt.*;
  * 2025/5/1
  */
 public class ContainerESP extends Module {
-    public final BooleanValue outline = new BooleanValue("Outline", false);
-    public final BooleanValue filled = new BooleanValue("Filled", true);
-    public final BooleanValue syncColor = new BooleanValue("SyncColor", false);
+    public final BoolValue outline = new BoolValue("Outline", false);
+    public final BoolValue filled = new BoolValue("Filled", true);
+    public final BoolValue syncColor = new BoolValue("SyncColor", false);
     public final ColorValue color = new ColorValue("Color",()-> !syncColor.get(),new Color(128, 244, 255));
 
-    public final BooleanValue chests = new BooleanValue("Chests", true);
-    public final BooleanValue furnaces = new BooleanValue("Furnaces", false);
-    public final BooleanValue brewingStands = new BooleanValue("BrewingStands", false);
+    public final BoolValue chests = new BoolValue("Chests", true);
+    public final BoolValue furnaces = new BoolValue("Furnaces", false);
+    public final BoolValue brewingStands = new BoolValue("BrewingStands", false);
 
     public ContainerESP() {
         super("ContainerESP",Category.Visuals);

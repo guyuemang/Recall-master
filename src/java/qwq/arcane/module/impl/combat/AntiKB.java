@@ -17,12 +17,12 @@ import java.util.Random;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:05 AM
  */
-public class Velocity extends Module {
-    public Velocity() {
-        super("Velocity",Category.Combat);
+public class AntiKB extends Module {
+    public AntiKB() {
+        super("AntiKB",Category.Combat);
     }
 
-    private final ModeValue mode = new ModeValue("Mode","Watchdog", new String[]{"Watchdog","Jump Reset"});
+    private final ModeValue mode = new ModeValue("Mode","Watchdog", new String[]{"Watchdog","Jump Reset","Prediction"});
     private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset"), "Packet", new String[]{"Hurt Time", "Packet", "Advanced"});
     private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
     private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 100, 0, 100, 1);

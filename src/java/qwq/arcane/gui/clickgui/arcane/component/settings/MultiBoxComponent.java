@@ -14,11 +14,10 @@ import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.MultiBooleanValue;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public class MultiBoxComponent extends Component {
     private float maxScroll = Float.MAX_VALUE, rawScroll, scroll;
     private Animation scrollAnimation = new SmoothStepAnimation(0, 0, Direction.BACKWARDS);
     private boolean opened;
-    private final Map<BooleanValue, DecelerateAnimation> select = new HashMap<>();
+    private final Map<BoolValue, DecelerateAnimation> select = new HashMap<>();
     public MultiBoxComponent(MultiBooleanValue setting) {
         this.setting = setting;
         setHeight(38);
@@ -54,7 +53,7 @@ public class MultiBoxComponent extends Component {
 
             RoundedUtil.drawRound(getX() + 10, getY() + 32, 145, outlineHeight, 2, INSTANCE.getArcaneClickGui().smallbackgroundColor2);
 
-            for (BooleanValue boolValue : setting.getValues()) {
+            for (BoolValue boolValue : setting.getValues()) {
                 select.putIfAbsent(boolValue,new DecelerateAnimation(250, 1));
                 select.get(boolValue).setDirection(boolValue.get() ? Direction.FORWARDS : Direction.BACKWARDS);
 
@@ -89,7 +88,7 @@ public class MultiBoxComponent extends Component {
             opened = !opened;
         }
         if (opened){
-            for (BooleanValue boolValue : setting.getValues()) {
+            for (BoolValue boolValue : setting.getValues()) {
                 if (RenderUtil.isHovering(getX() + 12, (float) ((getY() + 34 + (setting.getValues().indexOf(boolValue) * 20) * open.getOutput())) + getScroll(), 141, 18, mouseX, mouseY) && mouse == 0) {
                     boolValue.set(!boolValue.get());
                 }

@@ -5,7 +5,7 @@ import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
 
@@ -15,14 +15,14 @@ import qwq.arcane.value.impl.NumberValue;
  */
 @Getter
 public class Animations extends Module {
-    private final BooleanValue old = new BooleanValue("Old", false);
+    private final BoolValue old = new BoolValue("Old", false);
     private final ModeValue type = new ModeValue("Block Anim", () -> !old.get(), "Sigma", new String[]{"Swank", "Swing", "Swang", "Swong", "Swaing", "Punch", "Virtue", "Push", "Stella", "Styles", "Slide", "Interia", "Ethereal", "1.7", "Sigma", "Exhibition", "Old Exhibition", "Smooth", "Moon", "Leaked", "Astolfo", "Small"});
-    private final BooleanValue blockWhenSwing = new BooleanValue("Block Swing", false);
+    private final BoolValue blockWhenSwing = new BoolValue("Block Swing", false);
     private final ModeValue hit = new ModeValue("Hit", ()-> !old.get(),"Vanilla", new String[]{"Vanilla", "Smooth"});
     private final NumberValue slowdown = new NumberValue("Slow Down", 0.0, -5.0, 15.0, 1.0);
     private final NumberValue downscaleFactor = new NumberValue("Scale", 0.0, 0.0, 0.5, .1);
-    private final BooleanValue rotating = new BooleanValue("Rotating", ()-> !old.get(),false);
-    private final BooleanValue swingWhileUsingItem = new BooleanValue("Swing Using Item", false);
+    private final BoolValue rotating = new BoolValue("Rotating", ()-> !old.get(),false);
+    private final BoolValue swingWhileUsingItem = new BoolValue("Swing Using Item", false);
     private final NumberValue x = new NumberValue("Item-X", 0.0, -1.0, 1.0, .05);
     private final NumberValue y = new NumberValue("Item-Y", 0.0, -1.0, 1.0, .05);
     private final NumberValue z = new NumberValue("Item-Z", 0.0, -1.0, 1.0, .05);

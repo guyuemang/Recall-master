@@ -2,18 +2,16 @@
 package qwq.arcane.module.impl.visuals;
 
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
-import qwq.arcane.module.impl.combat.KillAura;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.render.GLUtil;
-import qwq.arcane.value.impl.BooleanValue;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
@@ -29,7 +27,7 @@ public class Hat extends Module {
     private final NumberValue offSetValue = new NumberValue("Off Set", 2000.0f, 0.0f, 5000.0f, 100.0f);
     public final ColorValue colorValue = new ColorValue("Color", () -> mode.is("Fade") || mode.is("Dynamic"), new Color(255, 255, 255));
     public final ColorValue secondColorValue = new ColorValue("Second Color", () -> mode.is("Fade"), new Color(0, 0, 0));
-    public final BooleanValue target = new BooleanValue("Target", true);
+    public final BoolValue target = new BoolValue("Target", true);
     private final double[][] positions = new double[(int) points.getMax() + 1][2];
     private int lastPoints;
     private double lastSize;
