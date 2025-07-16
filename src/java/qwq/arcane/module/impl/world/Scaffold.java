@@ -6,11 +6,13 @@ import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlaceData;
 import qwq.arcane.utils.player.ScaffoldUtil;
@@ -54,7 +56,9 @@ public class Scaffold extends Module {
     @EventTarget
     public void onPostMotion(MotionEvent event) {
         if (data != null) {
-            RotationUtil.setVisualRotations(MovementUtil.getDirection(mc.thePlayer.rotationYaw) - 180, mc.gameSettings.keyBindJump.isKeyDown() ? 85 : 80);
+            float[] rot = new float[0];
+            rot = RotationUtil.getRotationBlock2(data.getBlockPos());
+            Client.Instance.rotationManager.setRotation(new Vector2f(rot[0],rot[1]),180,true,false);
         }
     }
 
