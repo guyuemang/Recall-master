@@ -45,7 +45,7 @@ public class Noslow extends Module {
     public final BoolValue potionValue = new BoolValue("Potion",() -> this.mode.is("Blink"), false);
     public final BoolValue swordValue = new BoolValue("Sword",() -> this.mode.is("Blink"), false);
     public final BoolValue bowValue = new BoolValue("Bow",() -> this.mode.is("Blink"), false);
-    private final BoolValue bedWarsFood = new BoolValue("Food (Bed Wars)", false);
+    private final BoolValue bedWarsFood = new BoolValue("Food (Bed Wars)",() -> this.mode.is("Grim"), false);
     private final BoolValue food = new BoolValue("Food",() -> this.mode.is("Grim"), true);
     private final BoolValue bow = new BoolValue("Bow",() -> this.mode.is("Grim"), true);
     boolean usingItem;

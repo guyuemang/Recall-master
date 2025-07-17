@@ -12,7 +12,9 @@ import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.movement.Sprint;
 import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlaceData;
 import qwq.arcane.utils.player.ScaffoldUtil;
 import qwq.arcane.utils.rotation.RayCastUtil;
@@ -40,22 +42,22 @@ public class Scaffold extends Module {
     public BlockPos previousBlock;
 
     @EventTarget
-    public void onPreMotion(MotionEvent event){
+    public void onUpdate(UpdateEvent event) {
         if (sprint.get()) {
+            Sprint.keepSprinting = true;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
         } else {
+            Sprint.keepSprinting = false;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), false);
             mc.thePlayer.setSprinting(false);
         }
-    }
 
-    @EventTarget
-    public void onUpdate(UpdateEvent event){
+        data = null;
+
         double posY = mc.thePlayer.getEntityBoundingBox().minY;
         double posX = mc.thePlayer.posX;
         double posZ = mc.thePlayer.posZ;
-        previousBlock = new BlockPos(posX,posY,posZ).offset(EnumFacing.DOWN);
-
+        previousBlock = new BlockPos(posX, posY, posZ).offset(EnumFacing.DOWN);
         data = ScaffoldUtil.getPlaceData(previousBlock);
         place();
     }
