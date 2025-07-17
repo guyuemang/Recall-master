@@ -1,6 +1,11 @@
 package qwq.arcane.module.impl.world;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -17,11 +22,15 @@ import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlaceData;
 import qwq.arcane.utils.player.ScaffoldUtil;
+import qwq.arcane.utils.player.SlotSpoofComponent;
 import qwq.arcane.utils.rotation.RayCastUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author：Guyuemang
@@ -40,9 +49,28 @@ public class Scaffold extends Module {
 
     private PlaceData data;
     public BlockPos previousBlock;
+    public int slot;
+    private int prevItem = 0;
+
+    @Override
+    public void onEnable() {
+        prevItem = mc.thePlayer.inventory.currentItem;
+        this.slot = -1;
+    }
+
+    @Override
+    public void onDisable() {
+        mc.thePlayer.inventory.currentItem = prevItem;
+        SlotSpoofComponent.stopSpoofing();
+    }
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+        this.slot = getBlockSlot();
+        if (this.slot < 0) return;
+
+        mc.thePlayer.inventory.currentItem = this.slot;
+        SlotSpoofComponent.startSpoofing(prevItem);
         if (sprint.get()) {
             Sprint.keepSprinting = true;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
@@ -64,6 +92,7 @@ public class Scaffold extends Module {
 
     @EventTarget
     public void onPostMotion(MotionEvent event) {
+        if (this.slot < 0) return;
         if (data != null && rotation.get()) {
             float[] rot;
             rot = RotationUtil.getRotations(getVec3(data));
@@ -72,6 +101,7 @@ public class Scaffold extends Module {
     }
 
     private void place(){
+        if (this.slot < 0) return;
         if (data != null) {
             if (rayCastValue.get()) {
                 MovingObjectPosition ray = Client.Instance.rotationManager.rayTrace(mc.playerController.getBlockReachDistance(), 1);
@@ -94,6 +124,15 @@ public class Scaffold extends Module {
                 }
             }
         }
+    }
+
+    public int getBlockSlot() {
+        for (int i = 0; i < 9; ++i) {
+            if (!mc.thePlayer.inventoryContainer.getSlot(i + 36).getHasStack() || !(mc.thePlayer.inventoryContainer.getSlot(i + 36).getStack().getItem() instanceof ItemBlock))
+                continue;
+            return i;
+        }
+        return -1;
     }
 
     public static Vec3 getVec3(PlaceData data) {
