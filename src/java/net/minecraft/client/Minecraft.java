@@ -2326,23 +2326,21 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.mcProfiler.endSection();
         this.systemTime = getSystemTime();
         try {
-            {
-                if (getMinecraft().thePlayer != null && getMinecraft().theWorld != null && getMinecraft().thePlayer.ticksExisted > 10 && Shaders.configAntialiasingLevel == 0) {
+            if (getMinecraft().thePlayer != null && getMinecraft().theWorld != null && getMinecraft().thePlayer.ticksExisted > 10 && Shaders.configAntialiasingLevel == 0) {
 
-                    MotionBlur motionBlur = Client.INSTANCE.getModuleManager().getModule(MotionBlur.class);
-                    if (motionBlur.getState()) {
-                        if ((getMinecraft().entityRenderer.getShaderGroup() == null))
-                            getMinecraft().entityRenderer.loadShader(new ResourceLocation("minecraft", "shaders/post/motion_blur.json"));
-                        float uniform = 1F - Math.min(motionBlur.blurAmount.getValue().floatValue() / 10F, 0.9f);
-                        if (getMinecraft().entityRenderer.getShaderGroup() != null) {
-                            getMinecraft().entityRenderer.getShaderGroup().listShaders.get(0).getShaderManager().getShaderUniform("Phosphor").set(uniform, 0F, 0F);
-                        }
-                    } else {
-                        if (getMinecraft().entityRenderer.isShaderActive())
-                            getMinecraft().entityRenderer.stopUseShader();
+                MotionBlur motionBlur = Client.INSTANCE.getModuleManager().getModule(MotionBlur.class);
+                if (motionBlur.getState()) {
+                    if ((getMinecraft().entityRenderer.getShaderGroup() == null))
+                        getMinecraft().entityRenderer.loadShader(new ResourceLocation("minecraft", "shaders/post/motion_blur.json"));
+                    float uniform = 1F - Math.min(motionBlur.blurAmount.getValue().floatValue() / 10F, 0.9f);
+                    if (getMinecraft().entityRenderer.getShaderGroup() != null) {
+                        getMinecraft().entityRenderer.getShaderGroup().listShaders.get(0).getShaderManager().getShaderUniform("Phosphor").set(uniform, 0F, 0F);
                     }
-
+                } else {
+                    if (getMinecraft().entityRenderer.isShaderActive())
+                        getMinecraft().entityRenderer.stopUseShader();
                 }
+
             }
         } catch (Exception a) {
             a.printStackTrace();
