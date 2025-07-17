@@ -25,6 +25,7 @@ import java.util.concurrent.FutureTask;
 import javax.imageio.ImageIO;
 
 import lombok.Setter;
+import net.optifine.shaders.Shaders;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
@@ -200,6 +201,7 @@ import qwq.arcane.gui.MainMenu;
 import qwq.arcane.gui.SplashScreen;
 import qwq.arcane.gui.VideoPlayer;
 import qwq.arcane.module.impl.visuals.Animations;
+import qwq.arcane.module.impl.visuals.MotionBlur;
 import qwq.arcane.utils.animations.AnimationUtils;
 import qwq.arcane.utils.player.MovementInputKeyboard;
 
@@ -2323,6 +2325,28 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         this.mcProfiler.endSection();
         this.systemTime = getSystemTime();
+        try {
+            {
+                if (getMinecraft().thePlayer != null && getMinecraft().theWorld != null && getMinecraft().thePlayer.ticksExisted > 10 && Shaders.configAntialiasingLevel == 0) {
+
+                    MotionBlur motionBlur = Client.INSTANCE.getModuleManager().getModule(MotionBlur.class);
+                    if (motionBlur.getState()) {
+                        if ((getMinecraft().entityRenderer.getShaderGroup() == null))
+                            getMinecraft().entityRenderer.loadShader(new ResourceLocation("minecraft", "shaders/post/motion_blur.json"));
+                        float uniform = 1F - Math.min(motionBlur.blurAmount.getValue().floatValue() / 10F, 0.9f);
+                        if (getMinecraft().entityRenderer.getShaderGroup() != null) {
+                            getMinecraft().entityRenderer.getShaderGroup().listShaders.get(0).getShaderManager().getShaderUniform("Phosphor").set(uniform, 0F, 0F);
+                        }
+                    } else {
+                        if (getMinecraft().entityRenderer.isShaderActive())
+                            getMinecraft().entityRenderer.stopUseShader();
+                    }
+
+                }
+            }
+        } catch (Exception a) {
+            a.printStackTrace();
+        }
     }
 
     /**
