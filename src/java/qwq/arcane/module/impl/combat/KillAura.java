@@ -19,6 +19,7 @@ import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Sprint;
@@ -106,7 +107,7 @@ public class KillAura extends Module {
     }
 
     @EventTarget
-    public void preMotion(MotionEvent event){
+    public void UpdateEvent(UpdateEvent event){
         targets = setTargets();
         if (!targets.isEmpty()) {
             if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
@@ -221,9 +222,7 @@ public class KillAura extends Module {
         if (shouldRotation(entity)){
             switch (rotationmode.get()){
                 case "Smart":
-                    break;
                 case "Normal":
-                    break;
                 case "HvH":
                     rotaiton = RotationUtil.getHVHRotation(entity, Rotationrange.getValue());
                     break;

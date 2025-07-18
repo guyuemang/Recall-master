@@ -20,6 +20,8 @@ public final class RotationManager {
     private float rotationSpeed;
     private boolean modify, smoothed;
     private boolean movementFix, strict;
+    private boolean useRandomOffset = false;
+    private float randomOffsetRange = 0.0f;
 
     public RotationManager() {
         this.rotation = new Vector2f(0, 0);
@@ -27,6 +29,11 @@ public final class RotationManager {
 
     public Vector2f getRotation() {
         return rotation;
+    }
+
+    public void setRandomOffset(boolean enabled, float range) {
+        this.useRandomOffset = enabled;
+        this.randomOffsetRange = range;
     }
 
     public MovingObjectPosition rayTrace(double blockReachDistance, float partialTicks) {
@@ -37,14 +44,28 @@ public final class RotationManager {
     }
 
     public void setRotation(Vector2f rotation, float rotationSpeed, boolean movementFix, boolean strict) {
-        this.targetRotation = rotation;
+        this.targetRotation = applyRandomOffset(rotation);
         this.rotationSpeed = rotationSpeed;
         this.movementFix = movementFix;
-
         this.modify = true;
         this.strict = strict;
         smoothRotation();
     }
+
+    private Vector2f applyRandomOffset(Vector2f rotation) {
+        if (!useRandomOffset || randomOffsetRange <= 0) {
+            return rotation;
+        }
+
+        float randomYaw = (float) ((Math.random() * 2 - 1) * randomOffsetRange);
+        float randomPitch = (float) ((Math.random() * 2 - 1) * randomOffsetRange);
+
+        return new Vector2f(
+                rotation.getX() + randomYaw,
+                MathHelper.clamp_float(rotation.getY() + randomPitch, -90, 90)
+        );
+    }
+
 
     public void setRotation(Vector2f rotation, float rotationSpeed, boolean movementFix) {
         this.targetRotation = rotation;
@@ -247,7 +268,11 @@ public final class RotationManager {
             final float lastPitch = lastRotation.getY();
             final float targetYaw = targetRotation.getX();
             final float targetPitch = targetRotation.getY();
-
+            rotation = getSmoothRotation(
+                    new Vector2f(lastYaw, lastPitch),
+                    applyRandomOffset(new Vector2f(targetYaw, targetPitch)),
+                    rotationSpeed + Math.random()
+            );
             rotation = getSmoothRotation(new Vector2f(lastYaw, lastPitch), new Vector2f(targetYaw, targetPitch),
                     rotationSpeed + Math.random());
 

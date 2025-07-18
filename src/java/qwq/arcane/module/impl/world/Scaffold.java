@@ -13,6 +13,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
+import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
@@ -44,6 +45,8 @@ public class Scaffold extends Module {
     public final BoolValue sprint = new BoolValue("sprint", false);
     public BoolValue rotation = new BoolValue("Rotation",true);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
+    public BoolValue randomRotation = new BoolValue("RandomRotation",()->rotation.get(), true);
+    public NumberValue randomRange = new NumberValue("RandomRange",()->rotation.get(), 3.0, 0.5, 10.0, 0.5);
     public static BoolValue rayCastValue = new BoolValue("RayCast", false);
     public BoolValue movefix = new BoolValue("MoveFix",false);
 
@@ -65,12 +68,17 @@ public class Scaffold extends Module {
     }
 
     @EventTarget
+    public void Tickevent(TickEvent event){
+        this.slot = getBlockSlot();
+    }
+
+    @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.slot = getBlockSlot();
         if (this.slot < 0) return;
-
         mc.thePlayer.inventory.currentItem = this.slot;
         SlotSpoofComponent.startSpoofing(prevItem);
+
         if (sprint.get()) {
             Sprint.keepSprinting = true;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
@@ -90,6 +98,10 @@ public class Scaffold extends Module {
         place();
 
         if (data != null && rotation.get()) {
+            Client.Instance.rotationManager.setRandomOffset(
+                    randomRotation.get(),
+                    randomRange.get().floatValue()
+            );
             float[] rot;
             rot = RotationUtil.getRotations(getVec3(data));
             Client.Instance.rotationManager.setRotation(new Vector2f(rot[0],rot[1]),rotationspeed.get().intValue(),movefix.get(),false);

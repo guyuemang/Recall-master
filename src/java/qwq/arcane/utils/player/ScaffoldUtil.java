@@ -73,13 +73,11 @@ public class ScaffoldUtil implements Instance {
             }
         }
 
-        // 2 Blocks Under e.g. When jumping
         BlockPos posBelow = pos.add(0, -1, 0);
         if (canBePlacedOn(posBelow)) {
             return new PlaceData(posBelow, EnumFacing.UP);
         }
 
-        // 2 Block extension & diagonal
         for (BlockPos offset : offsets) {
             BlockPos blockPos = pos.add(offset);
             for (int i = 0; i < offsets.length; i++) {
@@ -90,7 +88,6 @@ public class ScaffoldUtil implements Instance {
             }
         }
 
-        // Original checks for previousBlock and interactable blocks
         for (int lastCheck = 0; lastCheck < 2; lastCheck++) {
             for (int i = 0; i < offsets.length; i++) {
                 BlockPos newPos = pos.add(offsets[i]);
