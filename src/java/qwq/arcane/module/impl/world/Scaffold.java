@@ -88,11 +88,7 @@ public class Scaffold extends Module {
         previousBlock = new BlockPos(posX, posY, posZ).offset(EnumFacing.DOWN);
         data = ScaffoldUtil.getPlaceData(previousBlock);
         place();
-    }
 
-    @EventTarget
-    public void onPostMotion(MotionEvent event) {
-        if (this.slot < 0) return;
         if (data != null && rotation.get()) {
             float[] rot;
             rot = RotationUtil.getRotations(getVec3(data));
