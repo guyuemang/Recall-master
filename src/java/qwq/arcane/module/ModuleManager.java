@@ -10,6 +10,7 @@ import qwq.arcane.module.impl.combat.*;
 import qwq.arcane.module.impl.display.ArrayList;
 import qwq.arcane.module.impl.display.Notification;
 import qwq.arcane.module.impl.misc.*;
+import qwq.arcane.module.impl.misc.Timer;
 import qwq.arcane.module.impl.movement.*;
 import qwq.arcane.module.impl.player.*;
 import qwq.arcane.module.impl.world.Disabler;
@@ -19,10 +20,7 @@ import qwq.arcane.module.impl.visuals.*;
 import qwq.arcane.value.Value;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
  * @Date：2025/6/1 13:06
  */
 public class ModuleManager {
-    private final Map<Class<? extends Module>, Module> modules = new ConcurrentHashMap<>();
+    private final Map<Class<? extends Module>, Module> modules = new LinkedHashMap<>();
 
     public void Init() {
         Client.Instance.getEventManager().register(this);
