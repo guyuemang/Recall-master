@@ -116,7 +116,6 @@ public final class RotationManager {
         return ((((a - b) % 360F) + 540F) % 360F) - 180F;
     }
 
-
     public double getRotationDifference(final Rotation a, final Vector2f b) {
         return Math.hypot(getAngleDifference(a.getYaw(), b.getX()), a.getPitch() - b.getY());
     }

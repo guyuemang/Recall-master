@@ -1,20 +1,12 @@
 package qwq.arcane.module.impl.world;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.TickEvent;
-import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
@@ -24,14 +16,10 @@ import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlaceData;
 import qwq.arcane.utils.player.ScaffoldUtil;
 import qwq.arcane.utils.player.SlotSpoofComponent;
-import qwq.arcane.utils.rotation.RayCastUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @Author：Guyuemang
@@ -45,8 +33,7 @@ public class Scaffold extends Module {
     public final BoolValue sprint = new BoolValue("sprint", false);
     public BoolValue rotation = new BoolValue("Rotation",true);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
-    public BoolValue randomRotation = new BoolValue("RandomRotation",()->rotation.get(), true);
-    public NumberValue randomRange = new NumberValue("RandomRange",()->rotation.get(), 0.1, 0.1, 3, 0.1);
+    public ModeValue modeValue = new ModeValue("RotationMode","Back",new String[]{"Normal","Back"});
     public static BoolValue rayCastValue = new BoolValue("RayCast", false);
     public BoolValue movefix = new BoolValue("MoveFix",false);
 
@@ -71,7 +58,6 @@ public class Scaffold extends Module {
     public void Tickevent(TickEvent event){
         this.slot = getBlockSlot();
     }
-
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.slot = getBlockSlot();
@@ -98,13 +84,16 @@ public class Scaffold extends Module {
         place();
 
         if (data != null && rotation.get()) {
-            Client.Instance.rotationManager.setRandomOffset(
-                    randomRotation.get(),
-                    randomRange.get().floatValue()
-            );
-            float[] rot;
-            rot = RotationUtil.getRotations(getVec3(data));
-            Client.Instance.rotationManager.setRotation(new Vector2f(rot[0],rot[1]),rotationspeed.get().intValue(),movefix.get(),false);
+            float[] rotation = new float[0];
+            switch (modeValue.get()){
+                case "Normal":
+                    rotation = RotationUtil.getRotations(getVec3(data));
+                    break;
+                case "Back":
+                    rotation = new float[]{RotationUtil.oppositeYaw(MovementUtil.getBindsDirection(mc.thePlayer.rotationYaw)), (float) (75 + Math.random() + mc.thePlayer.offGroundTicks * 0.2)};
+                    break;
+            }
+            Client.Instance.rotationManager.setRotation(new Vector2f(rotation[0],rotation[1]),rotationspeed.get().intValue(),movefix.get(),false);
         }
     }
 

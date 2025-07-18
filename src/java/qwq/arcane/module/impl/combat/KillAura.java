@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -36,6 +37,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
+
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura",Category.Combat);
@@ -48,7 +51,7 @@ public class KillAura extends Module {
     public BoolValue keepsprint = new BoolValue("KeepSprint",false);
     public BoolValue autoblock = new BoolValue("AutoBlock",false);
     public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
-    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "WatchDog", "Blink"});
+    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "Interact", "Blink"});
     public BoolValue rotation = new BoolValue("Rotation",false);
     public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
@@ -247,7 +250,9 @@ public class KillAura extends Module {
                 case "Fake":
                     blocking = true;
                     break;
-                case "WatchDog":
+                case "Interact":
+                    sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.INTERACT));
+                    sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
                     blocking = true;
                     break;
                 case "Blink":
@@ -261,14 +266,16 @@ public class KillAura extends Module {
         if (blocking){
             switch (blockmode.get()) {
                 case "Grim":
-                    blocking = false;
-                case "WatchDog":
                     mc.gameSettings.keyBindUseItem.pressed = false;
                     mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(
                             C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
                     if (target != null) {
                         mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.INTERACT));
                     }
+                    blocking = false;
+                    break;
+                case "Interact":
+                    sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
                     blocking = false;
                     break;
                 case "Blink":

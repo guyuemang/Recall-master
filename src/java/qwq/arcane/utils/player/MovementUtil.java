@@ -1,5 +1,6 @@
 package qwq.arcane.utils.player;
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
@@ -19,6 +20,32 @@ public class MovementUtil implements Instance {
 
     public static boolean isMoving(EntityLivingBase player) {
         return player != null && (player.moveForward != 0F || player.moveStrafing != 0F);
+    }
+    public static float getBindsDirection(float rotationYaw) {
+        int moveForward = 0;
+        if (GameSettings.isKeyDown(mc.gameSettings.keyBindForward)) moveForward++;
+        if (GameSettings.isKeyDown(mc.gameSettings.keyBindBack)) moveForward--;
+
+        int moveStrafing = 0;
+        if (GameSettings.isKeyDown(mc.gameSettings.keyBindRight)) moveStrafing++;
+        if (GameSettings.isKeyDown(mc.gameSettings.keyBindLeft)) moveStrafing--;
+
+        boolean reversed = moveForward < 0;
+        double strafingYaw = 90 * (moveForward > 0 ? .5 : reversed ? -.5 : 1);
+
+        if (reversed)
+            rotationYaw += 180.f;
+        if (moveStrafing > 0)
+            rotationYaw += strafingYaw;
+        else if (moveStrafing < 0)
+            rotationYaw -= strafingYaw;
+
+        return rotationYaw;
+    }
+    public static boolean isMovingStraight() {
+        float direction = getRawDirection() + 180;
+        float movingYaw = Math.round(direction / 45) * 45;
+        return movingYaw % 90 == 0f;
     }
     public static void setMotion2(double d, float f) {
         mc.thePlayer.motionX = -Math.sin(Math.toRadians(f)) * d;

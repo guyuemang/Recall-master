@@ -24,7 +24,16 @@ import static net.minecraft.client.entity.EntityPlayerSP.getNearestPointBB;
 
 @UtilityClass
 public class RotationUtil implements Instance {
-
+    public static float oppositeYaw(float yaw) {
+        Vector2f from = new Vector2f((float)mc.thePlayer.lastTickPosX, (float)mc.thePlayer.lastTickPosZ);
+        Vector2f to = new Vector2f((float)mc.thePlayer.posX, (float)mc.thePlayer.posZ);
+        Vector2f difference = new Vector2f(to.x - from.x, to.y - from.y);
+        float x = difference.x, z = difference.y;
+        if (x != 0f && z != 0f) {
+            yaw = (float) Math.toDegrees((Math.atan2(-x, z) + MathHelper.PI2) % MathHelper.PI2);
+        }
+        return yaw - 180f;
+    }
     public Vector2f calculate(final Vector3d from, final Vector3d to) {
         final Vector3d diff = to.subtract(from);
         final double distance = Math.hypot(diff.getX(), diff.getZ());
