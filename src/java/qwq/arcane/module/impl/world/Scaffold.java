@@ -46,7 +46,7 @@ public class Scaffold extends Module {
     public BoolValue rotation = new BoolValue("Rotation",true);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
     public BoolValue randomRotation = new BoolValue("RandomRotation",()->rotation.get(), true);
-    public NumberValue randomRange = new NumberValue("RandomRange",()->rotation.get(), 3.0, 0.5, 10.0, 0.5);
+    public NumberValue randomRange = new NumberValue("RandomRange",()->rotation.get(), 0.1, 0.1, 3, 0.1);
     public static BoolValue rayCastValue = new BoolValue("RayCast", false);
     public BoolValue movefix = new BoolValue("MoveFix",false);
 

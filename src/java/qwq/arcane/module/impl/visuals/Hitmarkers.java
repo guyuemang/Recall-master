@@ -40,7 +40,7 @@ public final class Hitmarkers extends Module {
 
     private final BoolValue soundsProperty = new BoolValue("Sounds", true);
     public final NumberValue volumeProperty = new NumberValue("Volume",()-> soundsProperty.get(), 100, 0, 100, 1);
-    private final ModeValue soundTypeProperty = new ModeValue("Sound Type","SKEET", new String[]{"BASIC", "NEKO", "RIFK", "SKEET"});
+    private final ModeValue soundTypeProperty = new ModeValue("Sound Type",()-> soundsProperty.get(),"Custom", new String[]{"BASIC", "RIFK", "SKEET"});
 
     private final TimerUtil attackTimeOut = new TimerUtil();
     private final TimerUtil killTimeOut = new TimerUtil();

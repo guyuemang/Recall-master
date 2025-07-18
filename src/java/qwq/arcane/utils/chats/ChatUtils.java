@@ -1,6 +1,7 @@
 package qwq.arcane.utils.chats;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.EnumChatFormatting;
 
 /**
  * @Author: Guyuemang
@@ -11,7 +12,7 @@ public class ChatUtils {
 
     public static void sendMessage(String message) {
         if (mc.thePlayer != null) {
-            mc.thePlayer.addChatMessage(new net.minecraft.util.ChatComponentText(message));
+            mc.thePlayer.addChatMessage(new net.minecraft.util.ChatComponentText(EnumChatFormatting.RED + "[Arcane] " + EnumChatFormatting.RESET + message));
         }
     }
 }

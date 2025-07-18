@@ -2,15 +2,21 @@ package qwq.arcane.module.impl.combat;
 
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import net.minecraft.util.Vec3;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
+import qwq.arcane.event.impl.events.player.MoveInputEvent;
 import qwq.arcane.event.impl.events.player.StrafeEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -22,7 +28,7 @@ public class AntiKB extends Module {
         super("AntiKB",Category.Combat);
     }
 
-    private final ModeValue mode = new ModeValue("Mode","Watchdog", new String[]{"Watchdog","Jump Reset","Prediction"});
+    private final ModeValue mode = new ModeValue("Mode","Predicted", new String[]{"Watchdog","Predicted","Jump Reset","Prediction"});
     private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset"), "Packet", new String[]{"Hurt Time", "Packet", "Advanced"});
     private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
     private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 100, 0, 100, 1);
@@ -109,6 +115,29 @@ public class AntiKB extends Module {
                 veloPacket = false;
                 hitsCount = 0;
                 ticksCount = 0;
+            }
+        }
+    }
+    @EventTarget
+    public void onMoveInput(MoveInputEvent event) {
+        if (mode.is("Predicted") && getModule(KillAura.class).target != null && mc.thePlayer.hurtTime > 0) {
+            ArrayList<Vec3> vec3s = new ArrayList<>();
+            HashMap<Vec3, Integer> map = new HashMap<>();
+            Vec3 playerPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+            Vec3 onlyForward = PlayerUtil.getPredictedPos(1.0F, 0.0F).add(playerPos);
+            Vec3 strafeLeft = PlayerUtil.getPredictedPos(1.0F, 1.0F).add(playerPos);
+            Vec3 strafeRight = PlayerUtil.getPredictedPos(1.0F, -1.0F).add(playerPos);
+            map.put(onlyForward, 0);
+            map.put(strafeLeft, 1);
+            map.put(strafeRight, -1);
+            vec3s.add(onlyForward);
+            vec3s.add(strafeLeft);
+            vec3s.add(strafeRight);
+            Vec3 targetVec = new Vec3(getModule(KillAura.class).target.posX, getModule(KillAura.class).target.posY, getModule(KillAura.class).target.posZ);
+            vec3s.sort(Comparator.comparingDouble(targetVec::distanceXZTo));
+            if (!mc.thePlayer.movementInput.sneak) {
+                System.out.println(map.get(vec3s.get(0)));
+                mc.thePlayer.movementInput.moveStrafe = map.get(vec3s.get(0));
             }
         }
     }

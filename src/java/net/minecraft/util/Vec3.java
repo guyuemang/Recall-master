@@ -24,6 +24,12 @@ public class Vec3
     public Vec3 mul(double factorX, double factorY, double factorZ) {
         return new Vec3(this.xCoord * factorX, this.yCoord * factorY, this.zCoord * factorZ);
     }
+
+    public double distanceXZTo(Vec3 vec) {
+        double d0 = vec.xCoord - this.xCoord;
+        double d2 = vec.zCoord - this.zCoord;
+        return MathHelper.sqrt_double(d0 * d0 + d2 * d2);
+    }
     public Vec3(double x, double y, double z)
     {
         if (x == -0.0D)

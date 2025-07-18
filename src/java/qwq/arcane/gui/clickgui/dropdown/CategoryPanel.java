@@ -16,6 +16,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import qwq.arcane.utils.render.shader.KawaseBlur;
+
+import java.awt.*;
 
 /**
  * @Author：Guyuemang
@@ -42,9 +45,11 @@ public class CategoryPanel implements IComponent, Instance {
     @Override
     public void drawScreen(int mouseX, int mouseY) {
         update(mouseX, mouseY);
-        RenderUtil.scaleStart((float) new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() / 2, (float) new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight() / 2, (float) DropDownClickGui.openingAnimation.getOutput().doubleValue());
 
-        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19) * openAnimation.getOutput())), 6, InterFace.mainColor.get().darker().darker());
+        KawaseBlur.startBlur();
+        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19) * openAnimation.getOutput())), 8,new Color(1,1,1));
+        KawaseBlur.endBlur(6,2);
+        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19) * openAnimation.getOutput())), 8,new Color(1,1,1,120));
 
         FontManager.Bold.get(20).drawCenteredString(category.name(), x + width / 2, y + 4.5, -1);
 
@@ -61,7 +66,6 @@ public class CategoryPanel implements IComponent, Instance {
         }
         height = componentOffsetY + 8;
 
-        RenderUtil.scaleEnd();
         IComponent.super.drawScreen(mouseX, mouseY);
     }
     @Override

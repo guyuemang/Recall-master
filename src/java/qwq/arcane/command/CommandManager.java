@@ -44,20 +44,20 @@ public class CommandManager {
             case "binds":
                 return handleBindsCommand();
             default:
-                ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Unknown command. Type .help for a list of commands.");
+                ChatUtils.sendMessage(" Unknown command. Type .help for a list of commands.");
                 return true;
         }
     }
 
     private boolean handleBindCommand(String[] args) {
         if (args.length < 2) {
-            ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Usage: .bind <module> <key>");
+            ChatUtils.sendMessage(" Usage: .bind <module> <key>");
             return true;
         }
 
         Module module = moduleManager.getModule(args[0]);
         if (module == null) {
-            ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Module not found: " + args[0]);
+            ChatUtils.sendMessage(" Module not found: " + args[0]);
             return true;
         }
 
@@ -68,34 +68,34 @@ public class CommandManager {
             }
 
             module.setKey(key);
-            ChatUtils.sendMessage(EnumChatFormatting.GREEN + "[Arcane] Bound " + module.getName() + " to " + (key == Keyboard.KEY_NONE ? "NONE" : Keyboard.getKeyName(key)));
+            ChatUtils.sendMessage(" Bound " + module.getName() + " to " + (key == Keyboard.KEY_NONE ? "NONE" : Keyboard.getKeyName(key)));
             return true;
         } catch (NumberFormatException e) {
-            ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Invalid key: " + args[1]);
+            ChatUtils.sendMessage(" Invalid key: " + args[1]);
             return true;
         }
     }
 
     private boolean handleToggleCommand(String[] args) {
         if (args.length < 1) {
-            ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Usage: .toggle <module>");
+            ChatUtils.sendMessage(" Usage: .toggle <module>");
             return true;
         }
 
         Module module = moduleManager.getModule(args[0]);
         if (module == null) {
-            ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Module not found: " + args[0]);
+            ChatUtils.sendMessage(" Module not found: " + args[0]);
             return true;
         }
 
         module.toggle();
-        ChatUtils.sendMessage(EnumChatFormatting.GREEN + "[Arcane] " + module.getName() + " has been " + (module.getState() ? "enabled" : "disabled"));
+        ChatUtils.sendMessage(" " + module.getName() + " has been " + (module.getState() ? "enabled" : "disabled"));
         return true;
     }
 
     private boolean handleConfigCommand(String[] args) {
         if (args.length < 1) {
-            ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Usage: .config <save/load/delete/list> <name>");
+            ChatUtils.sendMessage(" Usage: .config <save/load/delete/list> <name>");
             return true;
         }
 
@@ -104,29 +104,29 @@ public class CommandManager {
         switch (subCommand) {
             case "save":
                 if (args.length < 2) {
-                    ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Usage: .config save <name>");
+                    ChatUtils.sendMessage(" Usage: .config save <name>");
                     return true;
                 }
                 ConfigManager.saveConfig(args[1], moduleManager);
-                ChatUtils.sendMessage(EnumChatFormatting.GREEN + "[Arcane] Config saved as: " + args[1]);
+                ChatUtils.sendMessage(" Config saved as: " + args[1]);
                 return true;
 
             case "load":
                 if (args.length < 2) {
-                    ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Usage: .config load <name>");
+                    ChatUtils.sendMessage(" Usage: .config load <name>");
                     return true;
                 }
                 ConfigManager.loadConfig(args[1], moduleManager);
-                ChatUtils.sendMessage(EnumChatFormatting.GREEN + "[Arcane] Config loaded: " + args[1]);
+                ChatUtils.sendMessage(" Config loaded: " + args[1]);
                 return true;
 
             case "delete":
                 if (args.length < 2) {
-                    ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Usage: .config delete <name>");
+                    ChatUtils.sendMessage(" Usage: .config delete <name>");
                     return true;
                 }
                 ConfigManager.deleteConfig(args[1]);
-                ChatUtils.sendMessage(EnumChatFormatting.GREEN + "[Arcane] Config deleted: " + args[1]);
+                ChatUtils.sendMessage(" Config deleted: " + args[1]);
                 return true;
 
             case "list":
@@ -142,7 +142,7 @@ public class CommandManager {
                 return true;
 
             default:
-                ChatUtils.sendMessage(EnumChatFormatting.RED + "[Arcane] Unknown config command. Usage: .config <save/load/delete/list> <name>");
+                ChatUtils.sendMessage(" Unknown config command. Usage: .config <save/load/delete/list> <name>");
                 return true;
         }
     }

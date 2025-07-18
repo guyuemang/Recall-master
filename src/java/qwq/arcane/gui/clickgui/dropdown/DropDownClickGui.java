@@ -56,10 +56,7 @@ public class DropDownClickGui extends GuiScreen {
 
         GlStateManager.translate(0, scroll, 0);
         if (closing) {
-            openingAnimation.setDirection(Direction.BACKWARDS);
-            if (openingAnimation.finished(Direction.BACKWARDS)) {
                 mc.displayGuiScreen(null);
-            }
         }
 
         int finalMouseY = mouseY;

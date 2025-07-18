@@ -33,57 +33,62 @@ public class ModuleManager {
 
     public void Init() {
         Client.Instance.getEventManager().register(this);
-        registerModule(new InterFace());
-        registerModule(new TickBase());
-        registerModule(new BackTrack());
-        registerModule(new ClickGui());
-        registerModule(new Health());
-        registerModule(new Chams());
-        registerModule(new AutoWeapon());
-        registerModule(new Projectile());
-        registerModule(new MotionBlur());
-        registerModule(new BlockOverlay());
+        registerModule(new AntiBot());
         registerModule(new AutoClicker());
-        registerModule(new FreeLook());
-        registerModule(new Hat());
-        registerModule(new Atmosphere());
-        registerModule(new Breadcrumbs());
-        registerModule(new Hitmarkers());
-        registerModule(new ContainerESP());
-        registerModule(new Noslow());
-        registerModule(new Sprint());
-        registerModule(new GuiMove());
-        registerModule(new NoJumpDelay());
-        registerModule(new Scaffold());
-        registerModule(new FastPlace());
-        registerModule(new Disabler());
-        registerModule(new Stealer());
-        registerModule(new InvManager());
-        registerModule(new BedNuker());
-        registerModule(new AutoTool());
-        registerModule(new AntiVoid());
-        registerModule(new NoFall());
-        registerModule(new Freeze());
-        registerModule(new LongJump());
-        registerModule(new SafeWalk());
-        registerModule(new Speed());
-        registerModule(new NoWeb());
+        registerModule(new AutoWeapon());
+        registerModule(new BackTrack());
+        registerModule(new KillAura());
+        registerModule(new TickBase());
+        registerModule(new AntiKB());
+
         registerModule(new AutoPlay());
         registerModule(new ClientSpoofer());
         registerModule(new FakeLag());
         registerModule(new NoRotate());
         registerModule(new Timer());
-        registerModule(new AntiBot());
-        registerModule(new AntiKB());
-        registerModule(new KillEffect());
-        registerModule(new ESP());
-        registerModule(new KillAura());
-        registerModule(new ItemESP());
+
+        registerModule(new Freeze());
+        registerModule(new GuiMove());
+        registerModule(new LongJump());
+        registerModule(new NoJumpDelay());
+        registerModule(new Noslow());
+        registerModule(new SafeWalk());
+        registerModule(new Speed());
+        registerModule(new Sprint());
+
+        registerModule(new AntiVoid());
+        registerModule(new AutoTool());
+        registerModule(new BedNuker());
+        registerModule(new InvManager());
+        registerModule(new Stealer());
+        registerModule(new NoFall());
+
         registerModule(new Animations());
-        registerModule(new ArrayList());
-        registerModule(new NoHurtCam());
-        registerModule(new FullBright());
+        registerModule(new Atmosphere());
+        registerModule(new BlockOverlay());
+        registerModule(new Breadcrumbs());
         registerModule(new Camera());
+        registerModule(new Chams());
+        registerModule(new ClickGui());
+        registerModule(new ContainerESP());
+        registerModule(new ESP());
+        registerModule(new FreeLook());
+        registerModule(new FullBright());
+        registerModule(new Hat());
+        registerModule(new Health());
+        registerModule(new Hitmarkers());
+        registerModule(new InterFace());
+        registerModule(new ItemESP());
+        registerModule(new KillEffect());
+        registerModule(new MotionBlur());
+        registerModule(new NoHurtCam());
+        registerModule(new Projectile());
+
+        registerModule(new Disabler());
+        registerModule(new FastPlace());
+        registerModule(new Scaffold());
+
+        registerModule(new ArrayList());
         registerModule(new Notification());
     }
 

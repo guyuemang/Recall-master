@@ -49,6 +49,9 @@ public class RenderUtil {
     public static Framebuffer createFrameBuffer(Framebuffer framebuffer) {
         return createFrameBuffer(framebuffer, false);
     }
+    public static void bindTexture(int texture) {
+        GlStateManager.bindTexture(texture);
+    }
     public static void renderBoundingBox(EntityLivingBase entityLivingBase, Color color, float alpha) {
         AxisAlignedBB bb = getInterpolatedBoundingBox(entityLivingBase);
         GlStateManager.pushMatrix();

@@ -6,6 +6,8 @@ import com.viaversion.viaversion.exception.CancelException;
 import net.minecraft.network.Packet;
 import qwq.arcane.utils.Instance;
 
+import java.util.Arrays;
+
 /**
  * @Author：Guyuemang
  * @Date：7/7/2025 12:44 AM
@@ -13,6 +15,21 @@ import qwq.arcane.utils.Instance;
 public class PacketUtil implements Instance {
     public static void sendPacket(Packet<?> packet) {
         mc.getNetHandler().addToSendQueue(packet);
+    }
+    public static void queue(final Packet packet) {
+        if (packet == null) {
+            System.out.println("Packet is null");
+            return;
+        }
+
+        if (isClientPacket(packet)) {
+            mc.getNetHandler().addToSendQueueUnregistered(packet);
+        } else {
+            packet.processPacket(mc.getNetHandler().getNetworkManager().getNetHandler());
+        }
+    }
+    public static boolean isClientPacket(final Packet<?> packet) {
+        return Arrays.stream(NetworkAPI.serverbound).anyMatch(clazz -> clazz == packet.getClass());
     }
     public static void sendToServer(PacketWrapper packet, Class<? extends Protocol> packetProtocol, boolean skipCurrentPipeline, boolean currentThread) {
         try {
