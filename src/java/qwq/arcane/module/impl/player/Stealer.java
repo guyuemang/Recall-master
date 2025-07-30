@@ -39,7 +39,6 @@ public class Stealer extends Module {
     }
 
     private NumberValue delay = new NumberValue("Delay", 3, 0, 15, 1);
-    private BoolValue slotMachineFix = new BoolValue("SlotMachine Fix", false);
     private MultiBooleanValue container = new MultiBooleanValue("Container", Arrays.asList(new BoolValue("Chest", true),
             new BoolValue("Furnace", true)));
 
@@ -48,9 +47,6 @@ public class Stealer extends Module {
     public static final TimerUtil timer = new TimerUtil();
     private int nextDelay = 0;
     private boolean hasItems = false;
-    private final StopWatch stopWatch = new StopWatch();
-    private boolean action = false;
-    private boolean inchest;
     @EventTarget
     public void onWorld(WorldLoadEvent e){
         this.setState(false);
@@ -64,18 +60,12 @@ public class Stealer extends Module {
             for (int i = 0; i < furnace.tileFurnace.getSizeInventory(); ++i) {
                 if (furnace.tileFurnace.getStackInSlot(i) != null) {
                     hasItems = true;
-                    inchest = true;
                     break;
                 }
             }
             for (int i = 0; i < furnace.tileFurnace.getSizeInventory(); ++i) {
                 if (furnace.tileFurnace.getStackInSlot(i) != null) {
                     if (timer.delay(nextDelay)) {
-                        inchest = true;
-                        if (slotMachineFix.get()) {
-                            stopWatch.reset();
-                            action = true;
-                        }
                         mc.playerController.windowClick(furnace.windowId, i, 0, 1, mc.thePlayer);
                         nextDelay = (int) ((delay.get().floatValue() * 10) * MathHelper.getRandomDoubleInRange(0.75, 1.25));
                         timer.reset();
@@ -85,7 +75,6 @@ public class Stealer extends Module {
             if (!hasItems) {
                 if (timer.delay(delay.get().floatValue())) {
                     mc.thePlayer.closeScreen();
-                    inchest = false;
                 }
                 return;
             }
@@ -96,18 +85,12 @@ public class Stealer extends Module {
             for (int i = 0; i < container.getLowerChestInventory().getSizeInventory(); ++i) {
                 if (container.getLowerChestInventory().getStackInSlot(i) != null) {
                     hasItems = true;
-                    inchest = true;
                     break;
                 }
             }
             for (int i = 0; i < container.getLowerChestInventory().getSizeInventory(); ++i) {
                 if (container.getLowerChestInventory().getStackInSlot(i) != null) {
                     if (timer.delay(nextDelay)) {
-                        inchest = true;
-                        if (slotMachineFix.get()) {
-                            stopWatch.reset();
-                            action = true;
-                        }
                         mc.playerController.windowClick(container.windowId, i, 0, 1, mc.thePlayer);
                         nextDelay = (int) ((delay.get().floatValue() * 10) * MathHelper.getRandomDoubleInRange(0.75, 1.25));
                         timer.reset();
@@ -117,56 +100,8 @@ public class Stealer extends Module {
             if (!hasItems) {
                 if (timer.delay(delay.get().floatValue())) {
                     mc.thePlayer.closeScreen();
-                    inchest = false;
                 }
             }
         }
-    }
-
-    @EventTarget
-    public void onPacketSend(PacketSendEvent event){
-        Packet<?> packet = event.getPacket();
-        if (packet instanceof C0EPacketClickWindow || packet instanceof C0DPacketCloseWindow) {
-            if (inchest){
-                event.setCancelled(true);
-                packets.add(packet);
-            }
-        }else {
-            packets.forEach(mc.getNetHandler()::addToSendQueueUnregistered);
-            packets.clear();
-        }
-        if (packet instanceof S2DPacketOpenWindow || (packet instanceof C16PacketClientStatus && ((C16PacketClientStatus) packet).getStatus() == C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT)) {
-            inchest = true;
-        }
-        if (packet instanceof S2EPacketCloseWindow || packet instanceof C0DPacketCloseWindow) {
-            inchest = false;
-        }
-    }
-
-    @EventTarget
-    public void onPacketReceiveSync(PacketReceiveSyncEvent event) {
-        if (slotMachineFix.getValue()) {
-            if (action) {
-                if (event.getPacket() instanceof S2FPacketSetSlot || event.getPacket() instanceof S30PacketWindowItems || event.getPacket() instanceof C0EPacketClickWindow) {
-                    event.setCancelled(true);
-                    setSlots.add((Packet<INetHandlerPlayClient>) event.getPacket());
-                }
-                if (stopWatch.hasTimePassed(delay.get().longValue())) slotMachineReset();
-            }
-
-            if (event.getPacket() instanceof S2DPacketOpenWindow || event.getPacket() instanceof S2EPacketCloseWindow)
-                slotMachineReset();
-        }
-    }
-
-    private void slotMachineReset() {
-        while (!setSlots.isEmpty()) {
-            try {
-                setSlots.poll().processPacket(mc.getNetHandler());
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }
-        action = false;
     }
 }

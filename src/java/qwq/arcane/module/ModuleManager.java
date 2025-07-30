@@ -7,8 +7,8 @@ import qwq.arcane.event.impl.events.render.ChatGUIEvent;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.impl.combat.*;
+import qwq.arcane.module.impl.display.*;
 import qwq.arcane.module.impl.display.ArrayList;
-import qwq.arcane.module.impl.display.Notification;
 import qwq.arcane.module.impl.misc.*;
 import qwq.arcane.module.impl.misc.Timer;
 import qwq.arcane.module.impl.movement.*;
@@ -52,7 +52,6 @@ public class ModuleManager {
         registerModule(new LongJump());
         registerModule(new NoJumpDelay());
         registerModule(new Noslow());
-        registerModule(new SafeWalk());
         registerModule(new Speed());
         registerModule(new Sprint());
 
@@ -90,6 +89,10 @@ public class ModuleManager {
 
         registerModule(new ArrayList());
         registerModule(new Notification());
+        registerModule(new EffectHUD());
+        registerModule(new Inventory());
+        registerModule(new TargetRender());
+        registerModule(new Session());
     }
 
     public void registerModule(Module module) {

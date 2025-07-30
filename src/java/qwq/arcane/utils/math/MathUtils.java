@@ -11,6 +11,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MathUtils {
 
@@ -25,6 +26,19 @@ public class MathUtils {
         } else {
             return Math.min(num, max);
         }
+    }
+    public static int getRandom(int min, int max) {
+        if (min == max) {
+            return min;
+        } else if (min > max) {
+            final int d = min;
+            min = max;
+            max = d;
+        }
+        return ThreadLocalRandom.current().nextInt(min, max);
+    }
+    public static int randomizeInt(float min, float max) {
+        return (int) randomizeDouble(min, max);
     }
     public static Vec3 closestPointOnFace(AxisAlignedBB aabb, EnumFacing face, Vec3 vec) {
         return closestPointOnFace(aabb, face, vec.xCoord, vec.yCoord, vec.zCoord);

@@ -256,16 +256,6 @@ public class EntityPlayerSP extends AbstractClientPlayer
                 flag2 = false;
             }
 
-            if (Disabler.getGrimPost()) {
-                this.mc.lastTickSentC03 = true;
-                while (!this.mc.scheduledTasks.isEmpty()) {
-                    try {
-                        Util.runTask(this.mc.scheduledTasks.poll(), Minecraft.logger);
-                    }
-                    catch (ThreadQuickExitException threadQuickExitException) {}
-                }
-            }
-
             ++this.positionUpdateTicks;
 
             if (flag2) {

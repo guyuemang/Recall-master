@@ -95,12 +95,12 @@ public class GuiButton extends Gui
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            RoundedUtil.drawRound(this.xPosition, this.yPosition, this.width, this.height, 5, ColorUtil.applyOpacity(InterFace.color(1),0.2f + 0.2f * Animation.getOutput().floatValue()));
+            RoundedUtil.drawGradientHorizontal(this.xPosition, this.yPosition, this.width, this.height, 0, ColorUtil.applyOpacity(InterFace.color(1),0.2f + 0.2f * Animation.getOutput().floatValue()), ColorUtil.applyOpacity(InterFace.color(7),0.2f + 0.2f * Animation.getOutput().floatValue()));
             Animation.setDirection(hovered ? Direction.FORWARDS : Direction.BACKWARDS);
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
 
-            FontManager.Bold.get(18).drawCenteredString(this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 6) / 2, j);
+            mc.fontRendererObj.drawStringWithShadow(this.displayString, this.xPosition + this.width / 2 - mc.fontRendererObj.getStringWidth(this.displayString) / 2, this.yPosition + (this.height - 6) / 2, j);
         }
     }
 

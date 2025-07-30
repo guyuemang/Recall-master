@@ -18,6 +18,8 @@ import net.minecraft.util.ReportedException;
 
 public class InventoryPlayer implements IInventory
 {
+    public boolean alternativeSlot, breakNotNative;
+    public int currentItem, alternativeCurrentItem;
     /**
      * An array of 36 item stacks indicating the main player inventory (including the visible bar).
      */
@@ -27,7 +29,6 @@ public class InventoryPlayer implements IInventory
     public ItemStack[] armorInventory = new ItemStack[4];
 
     /** The index of the currently held item (0-8). */
-    public int currentItem;
 
     /** The player whose inventory this is. */
     public EntityPlayer player;

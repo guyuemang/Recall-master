@@ -7,6 +7,10 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import qwq.arcane.utils.render.GLUtil;
+import qwq.arcane.utils.render.RenderUtil;
+
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public class Gui
 {
@@ -44,7 +48,40 @@ public class Gui
 
         drawRect(x, startY + 1, x + 1, endY, color);
     }
+    public static void drawRect2(double x, double y, double width, double height, int color) {
+        RenderUtil.resetColor();
+        RenderUtil.setAlphaLimit(0);
+        GLUtil.setup2DRendering(true);
 
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+
+        worldrenderer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.pos(x, y, 0.0D).color(color).endVertex();
+        worldrenderer.pos(x, y + height, 0.0D).color(color).endVertex();
+        worldrenderer.pos(x + width, y + height, 0.0D).color(color).endVertex();
+        worldrenderer.pos(x + width, y, 0.0D).color(color).endVertex();
+        tessellator.draw();
+
+        GLUtil.end2DRendering();
+    }
+    public static void drawTexturedModalRect3(float xCoord, float yCoord, int minU, int minV, int maxU, int maxV)
+    {
+        float tx = minU * 0.00390625f;
+        float txw = (minU + maxU) * 0.00390625f;
+        float ty = minV * 0.00390625f;
+        float tyh = (minV + maxV) * 0.00390625f;
+        GL11.glBegin(7);
+        GL11.glTexCoord2f(tx, tyh);
+        GL11.glVertex2f(xCoord, (yCoord + maxV));
+        GL11.glTexCoord2f(txw, tyh);
+        GL11.glVertex2f((xCoord + maxU), (yCoord + maxV));
+        GL11.glTexCoord2f(txw, ty);
+        GL11.glVertex2f((xCoord + maxU), yCoord);
+        GL11.glTexCoord2f(tx, ty);
+        GL11.glVertex2f(xCoord, yCoord);
+        GL11.glEnd();
+    }
     /**
      * Draws a solid color rectangle with the specified coordinates and color (ARGB format). Args: x1, y1, x2, y2, color
      */

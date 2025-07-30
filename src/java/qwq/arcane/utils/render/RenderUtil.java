@@ -4,15 +4,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.*;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
@@ -21,10 +23,13 @@ import org.lwjgl.opengl.GL11;
 import qwq.arcane.Client;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.color.ColorUtil;
+import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.math.MathUtils;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static java.lang.Math.PI;
@@ -37,6 +42,7 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glHint;
 import static org.lwjgl.opengl.GL11.glPointSize;
 import static org.lwjgl.opengl.GL11.glVertex2d;
+import static qwq.arcane.utils.Instance.INSTANCE;
 import static qwq.arcane.utils.Instance.mc;
 
 /**
@@ -48,6 +54,328 @@ public class RenderUtil {
     private static final Frustum FRUSTUM = new Frustum();
     public static Framebuffer createFrameBuffer(Framebuffer framebuffer) {
         return createFrameBuffer(framebuffer, false);
+    }
+    public static String sessionTime() {
+        int elapsedTime = ((int)System.currentTimeMillis() - INSTANCE.getStartTime()) / 1000;
+        String days = elapsedTime > 86400 ? elapsedTime / 86400 + "d " : "";
+        elapsedTime = !days.isEmpty() ? elapsedTime % 86400 : elapsedTime;
+        String hours = elapsedTime > 3600 ? elapsedTime / 3600 + "h " : "";
+        elapsedTime = !hours.isEmpty() ? elapsedTime % 3600 : elapsedTime;
+        String minutes = elapsedTime > 60 ? elapsedTime / 60 + "m " : "";
+        elapsedTime = !minutes.isEmpty() ? elapsedTime % 60 : elapsedTime;
+        String seconds = elapsedTime > 0 ? elapsedTime + "s" : "";
+        return days + hours + minutes + seconds;
+    }
+    public static void renderItemStack(ItemStack stack, double x, double y, float scale) {
+        renderItemStack(stack, x, y, scale, false);
+    }
+
+    public static void renderItemStack(ItemStack stack, double x, double y, float scale, boolean enchantedText) {
+        renderItemStack(stack, x, y, scale, enchantedText, scale);
+    }
+
+    public static void renderItemStack(ItemStack stack, double x, double y, float scale, boolean enchantedText, float textScale) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, x);
+        GlStateManager.scale(scale, scale, scale);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        RenderHelper.enableGUIStandardItemLighting();
+        mc.getRenderItem().renderItemAndEffectIntoGUI(stack, 0, 0);
+        //mc.getRenderItem().renderItemOverlays(mc.fontRendererObj, stack, 0, 0);
+        if (enchantedText)
+            renderEnchantText(stack, 0, 0, textScale);
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+    private static void drawEnchantTag(String text, double x, double y, float scale) {
+        GlStateManager.pushMatrix();
+        GlStateManager.disableDepth();
+        GL11.glTranslated(x, y, x);
+        GL11.glScaled(scale, scale, scale);
+        mc.fontRendererObj.drawOutlinedString(text, (float) 0, (float) 0, 1.0f, -1, new Color(0, 0, 0, 140).getRGB());
+        GlStateManager.enableDepth();
+        GlStateManager.popMatrix();
+    }
+
+    private static String getColor(final int n) {
+        if (n != 1) {
+            if (n == 2) {
+                return "§a";
+            }
+            if (n == 3) {
+                return "§3";
+            }
+            if (n == 4) {
+                return "§4";
+            }
+            if (n >= 5) {
+                return "§e";
+            }
+        }
+        return "§f";
+    }
+    public static void drawExhiRect(float x, float y, float x2, float y2, float alpha) {
+        x2 = x + x2;
+        y2 = y + y2;
+        Gui.drawRect(x - 3.5F, y - 3.5F, x2 + 3.5F, y2 + 3.5F, new Color(0, 0, 0, alpha).getRGB());
+        Gui.drawRect(x - 3F, y - 3F, x2 + 3F, y2 + 3F, new Color(50F / 255F, 50F / 255F, 50F / 255F, alpha).getRGB());
+        Gui.drawRect(x - 2.5F, y - 2.5F, x2 + 2.5F, y2 + 2.5F, new Color(26F / 255F, 26F / 255F, 26F / 255F, alpha).getRGB());
+        Gui.drawRect(x - 0.5F, y - 0.5F, x2 + 0.5F, y2 + 0.5F, new Color(50F / 255F, 50F / 255F, 50F / 255F, alpha).getRGB());
+        Gui.drawRect(x, y, x2, y2, new Color(18F / 255F, 18 / 255F, 18F / 255F, alpha).getRGB());
+    }
+    public static void drawBorderedRect(float x, float y, float width, float height, final float outlineThickness, int rectColor, int outlineColor) {
+        drawRect(x,y,width,height,rectColor);
+        drawBorder(x,y,width,height,outlineThickness,outlineColor);
+    }
+    public static void drawBorder(float x, float y, float width, float height, final float outlineThickness, int outlineColor) {
+        glEnable(GL_LINE_SMOOTH);
+        color(outlineColor);
+
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableTexture2D();
+
+        glLineWidth(outlineThickness);
+        float cornerValue = (float) (outlineThickness * .19);
+
+        glBegin(GL_LINES);
+        glVertex2d(x, y - cornerValue);
+        glVertex2d(x, y + height + cornerValue);
+        glVertex2d(x + width, y + height + cornerValue);
+        glVertex2d(x + width, y - cornerValue);
+        glVertex2d(x, y);
+        glVertex2d(x + width, y);
+        glVertex2d(x, y + height);
+        glVertex2d(x + width, y + height);
+        glEnd();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+
+        glDisable(GL_LINE_SMOOTH);
+    }
+    public static void drawEntityOnScreen(float yaw, float pitch, EntityLivingBase entityLivingBase) {
+        GlStateManager.resetColor();
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.enableColorMaterial();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0f, 0.0f, 50.0f);
+        GlStateManager.scale(-50.0f, 50.0f, 50.0f);
+        GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
+        float renderYawOffset = entityLivingBase.renderYawOffset;
+        float rotationYaw = entityLivingBase.rotationYaw;
+        float rotationPitch = entityLivingBase.rotationPitch;
+        float prevRotationYawHead = entityLivingBase.prevRotationYawHead;
+        float rotationYawHead = entityLivingBase.rotationYawHead;
+        GlStateManager.rotate(135.0f, 0.0f, 1.0f, 0.0f);
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.rotate(-135.0f, 0.0f, 1.0f, 0.0f);
+        GlStateManager.rotate((float)(-Math.atan(pitch / 40.0f) * 20.0), 1.0f, 0.0f, 0.0f);
+        entityLivingBase.renderYawOffset = yaw - 0.4f;
+        entityLivingBase.rotationYaw = yaw - 0.2f;
+        entityLivingBase.rotationPitch = pitch;
+        entityLivingBase.rotationYawHead = entityLivingBase.rotationYaw;
+        entityLivingBase.prevRotationYawHead = entityLivingBase.rotationYaw;
+        GlStateManager.translate(0.0f, 0.0f, 0.0f);
+        RenderManager renderManager = mc.getRenderManager();
+        renderManager.setPlayerViewY(180.0f);
+        renderManager.setRenderShadow(false);
+        renderManager.renderEntityWithPosYaw(entityLivingBase, 0.0, 0.0, 0.0, 0.0f, 1.0f);
+        renderManager.setRenderShadow(true);
+        entityLivingBase.renderYawOffset = renderYawOffset;
+        entityLivingBase.rotationYaw = rotationYaw;
+        entityLivingBase.rotationPitch = rotationPitch;
+        entityLivingBase.prevRotationYawHead = prevRotationYawHead;
+        entityLivingBase.rotationYawHead = rotationYawHead;
+        GlStateManager.popMatrix();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GlStateManager.resetColor();
+    }
+    public static void drawGradientRect(final double left, final double top, double right, double bottom, final boolean sideways, final int startColor, final int endColor) {
+        right = left + right;
+        bottom = top + bottom;
+        GL11.glDisable(3553);
+        GLUtil.startBlend();
+        GL11.glShadeModel(7425);
+        GL11.glBegin(7);
+        color(startColor);
+        if (sideways) {
+            GL11.glVertex2d(left, top);
+            GL11.glVertex2d(left, bottom);
+            color(endColor);
+            GL11.glVertex2d(right, bottom);
+            GL11.glVertex2d(right, top);
+        } else {
+            GL11.glVertex2d(left, top);
+            color(endColor);
+            GL11.glVertex2d(left, bottom);
+            GL11.glVertex2d(right, bottom);
+            color(startColor);
+            GL11.glVertex2d(right, top);
+        }
+        GL11.glEnd();
+        GL11.glDisable(3042);
+        GL11.glShadeModel(7424);
+        GLUtil.endBlend();
+        GL11.glEnable(3553);
+    }
+    public static void drawHorizontalGradientSideways(double x, double y, double width, double height, int leftColor, int rightColor) {
+        drawGradientRect(x,y,width,height,true,leftColor,rightColor);
+    }
+    public static void drawVerticalGradientSideways(double x, double y, double width, double height, int topColor, int bottomColor) {
+        drawGradientRect(x,y,width,height,false,topColor,bottomColor);
+    }
+    public static void drawEntityOnScreen(float posX, float posY, float scale, EntityLivingBase ent) {
+        GlStateManager.enableColorMaterial();
+        GlStateManager.pushMatrix();
+        GlStateManager.color(255, 255, 255);
+        GlStateManager.translate(posX, posY, 50.0F);
+        GlStateManager.scale(-scale, scale, scale);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.translate(0.0F, 0.0F, 0.0F);
+        final RenderManager rendermanager = mc.getRenderManager();
+        rendermanager.setPlayerViewY(1F);
+        rendermanager.setRenderShadow(false);
+        rendermanager.renderEntityWithPosYaw(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        rendermanager.setRenderShadow(true);
+        GlStateManager.popMatrix();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+    }
+    public static void renderItemStack(EntityPlayer target, float x, float y, float scale, boolean enchantedText, float textScale, boolean bg, boolean info) {
+        List<ItemStack> items = new ArrayList<>();
+        if (target.getHeldItem() != null) {
+            items.add(target.getHeldItem());
+        }
+        for (int index = 3; index >= 0; index--) {
+            ItemStack stack = target.inventory.armorInventory[index];
+            if (stack != null) {
+                items.add(stack);
+            }
+        }
+        float i = x;
+
+        for (ItemStack stack : items) {
+            if(bg)
+                RenderUtil.drawRect(i,y,16 * scale,16 * scale,new Color(0,0,0,150).getRGB());
+            if(info) {
+                final int damage = stack.getMaxDamage() - stack.getItemDamage();
+
+                FontManager.Regular.get(16 / 2f * scale).drawCenteredStringWithShadow(damage + "", i + (16 * scale) / 2, (y + 16 + 2) * scale, -1);
+            }
+            RenderUtil.renderItemStack(stack, i, y, scale, enchantedText, textScale);
+            i += 16;
+        }
+    }
+
+    public static void renderItemStack(EntityPlayer target, float x, float y, float scale,boolean bg,boolean info) {
+        renderItemStack(target,x,y,scale,false,0,bg,info);
+    }
+
+    public static void renderItemStack(EntityPlayer target, float x, float y, float scale, float textScale) {
+        renderItemStack(target,x,y,scale,true,textScale,false,false);
+    }
+
+    public static void renderItemStack(EntityPlayer target, float x, float y, float scale) {
+        renderItemStack(target,x,y,scale,scale);
+    }
+    public static void renderEnchantText(ItemStack stack, double x, double y, float scale) {
+        int unBreakingLevel;
+        RenderHelper.disableStandardItemLighting();
+        double height = y;
+        if (stack.getItem() instanceof ItemArmor) {
+            int protectionLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, stack);
+            int unBreakingLevel2 = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
+            int thornLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.thorns.effectId, stack);
+            if (protectionLevel > 0) {
+                drawEnchantTag("P" + getColor(protectionLevel) + protectionLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (unBreakingLevel2 > 0) {
+                drawEnchantTag("U" + getColor(unBreakingLevel2) + unBreakingLevel2, x, height, scale);
+                height += 8 * scale;
+            }
+            if (thornLevel > 0) {
+                drawEnchantTag("T" + getColor(thornLevel) + thornLevel, x, height, scale);
+                height += 8 * scale;
+            }
+        }
+        if (stack.getItem() instanceof ItemBow) {
+            int powerLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);
+            int punchLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
+            int flameLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack);
+            unBreakingLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
+            if (powerLevel > 0) {
+                drawEnchantTag("Pow" + getColor(powerLevel) + powerLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (punchLevel > 0) {
+                drawEnchantTag("Pun" + getColor(punchLevel) + punchLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (flameLevel > 0) {
+                drawEnchantTag("F" + getColor(flameLevel) + flameLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (unBreakingLevel > 0) {
+                drawEnchantTag("U" + getColor(unBreakingLevel) + unBreakingLevel, x, height, scale);
+                height += 8 * scale;
+            }
+        }
+        if (stack.getItem() instanceof ItemSword) {
+            int sharpnessLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack);
+            int knockBackLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.knockback.effectId, stack);
+            int fireAspectLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack);
+            unBreakingLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
+            if (sharpnessLevel > 0) {
+                drawEnchantTag("S" + getColor(sharpnessLevel) + sharpnessLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (knockBackLevel > 0) {
+                drawEnchantTag("K" + getColor(knockBackLevel) + knockBackLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (fireAspectLevel > 0) {
+                drawEnchantTag("F" + getColor(fireAspectLevel) + fireAspectLevel, x, height, scale);
+                height += 8 * scale;
+            }
+            if (unBreakingLevel > 0) {
+                drawEnchantTag("U" + getColor(unBreakingLevel) + unBreakingLevel, x, height, scale);
+                height += 8 * scale;
+            }
+        }
+        if (stack.getRarity() == EnumRarity.EPIC) {
+            GlStateManager.pushMatrix();
+            GlStateManager.disableDepth();
+            GL11.glTranslated(x, y, x);
+            GL11.glScaled(scale, scale, scale);
+            mc.fontRendererObj.drawOutlinedString("God", (float) (x), (float) height, 1.0f, new Color(255, 255, 0).getRGB(), new Color(100, 100, 0, 140).getRGB());
+            GlStateManager.enableDepth();
+            GlStateManager.popMatrix();
+        }
+    }
+    public static void drawGoodCircle(double x, double y, float radius, int color) {
+        color(color);
+        GLUtil.setup2DRendering(() -> {
+            glEnable(GL_POINT_SMOOTH);
+            glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+            glPointSize(radius * (2 * Minecraft.getMinecraft().gameSettings.guiScale));
+            GLUtil.render(GL_POINTS, () -> glVertex2d(x, y));
+        });
     }
     public static void bindTexture(int texture) {
         GlStateManager.bindTexture(texture);

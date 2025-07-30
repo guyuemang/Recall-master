@@ -91,7 +91,7 @@ public class Notification implements Instance {
 
         int x1 = (int) ((resolution.getScaledWidth() - 6) - width + animationX), y1 = (int) posY;
 
-        RoundedUtil.drawRound((float) x1, y1, (float) width, (float) height, 2, new Color(1,1,1,190));
+        RoundedUtil.drawRound((float) x1, y1, (float) width, (float) height, 2, new Color(1,1,1,100));
         RoundedUtil.drawRound((float) x1 + 5, (float) (y1 + height - 10), (float) Bold.get(14).getStringWidth(title + " " + message), (float) 2, 1, new Color(100,100,100,100));
         RoundedUtil.drawRound((float) x1 + 5, (float) (y1 + height - 10), (float) Bold.get(14).getStringWidth(title + " " + message) * progress, (float) 2, 1, type.getColor());
 

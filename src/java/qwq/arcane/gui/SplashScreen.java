@@ -100,15 +100,13 @@ public class SplashScreen implements Instance {
             progress3Anim.setDirection(Direction.FORWARDS);
             progress4Anim.setDirection(Direction.FORWARDS);
 
-
-            float rcanAlpha = progress4Anim.getOutput().floatValue();
             FontManager.Bold.get(80).drawString("A", 5 + width / 2 - aWidth / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) * progress3Anim.getOutput() - 5,7 + height / 2 - 50, ColorUtil.applyOpacity(InterFace.color(1),1).getRGB());
             FontManager.Bold.get(80).drawString("rcane",width / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) + aWidth / 2, 7 + height / 2 - 50 - 120 * progress3Anim.getOutput() + 120, ColorUtil.applyOpacity(-1,progress4Anim.getOutput().floatValue()));
         } else {
             FontManager.Bold.get(80).drawStringDynamic("A",5 + width / 2 - aWidth / 2, height / 2 - 50 + 7 , -1, 7);
         }
 
-        RoundedUtil.drawRound(width / 2 - 170 / 2, height / 2 + 15, 170, 5, 2, new Color(221, 228, 255));
-        RoundedUtil.drawGradientHorizontal(width / 2 - 170 / 2, height / 2 + 15, 170 * progress, 5, 2, InterFace.color(1),InterFace.color(7));
+        RoundedUtil.drawRound(width / 2 - 170 / 2, height / 2 + 15, 170, 5, 4, new Color(221, 228, 255));
+        RoundedUtil.drawGradientHorizontal(width / 2 - 170 / 2, height / 2 + 15, 170 * progress, 5, 4, InterFace.color(1),InterFace.color(7));
     }
 }

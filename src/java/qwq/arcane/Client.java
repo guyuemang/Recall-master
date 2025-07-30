@@ -21,6 +21,7 @@ import qwq.arcane.gui.notification.NotificationManager;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.pack.BlinkComponent;
+import qwq.arcane.utils.player.PingerUtils;
 import qwq.arcane.utils.player.SlotSpoofComponent;
 import qwq.arcane.utils.rotation.RotationManager;
 
@@ -45,9 +46,12 @@ public class Client implements Instance {
     private VideoComponent videoComponent;
     private NotificationManager notification;
     private CommandManager commandManager;
+    private PingerUtils pingerUtils;
     public RotationManager rotationManager;
+    int startTime;
 
     public void Init(){
+        startTime = (int) System.currentTimeMillis();
         ViaMCP.create();
         ViaMCP.INSTANCE.initAsyncSlider();
         Display.setTitle(name + " " + version);
@@ -57,6 +61,8 @@ public class Client implements Instance {
         eventManager.register(new SlotSpoofComponent());
         rotationManager = new RotationManager();
         eventManager.register(rotationManager);
+        pingerUtils = new PingerUtils();
+        eventManager.register(pingerUtils);
 
         moduleManager = new ModuleManager();
         moduleManager.Init();

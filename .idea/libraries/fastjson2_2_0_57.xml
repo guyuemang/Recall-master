@@ -8,11 +8,12 @@
       <root url="jar://$PROJECT_DIR$/libs/client/javacpp-1.5.10.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/javacv-1.5.10.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/lombok.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/client/ViaBackwards-5.2.0-downgraded.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/client/ViaRewind-4.0.4-downgraded.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/client/ViaVersion-5.2.0-downgraded.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/hutool-all-5.8.32.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/client/openauth-1.1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/snakeyaml-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/ViaBackwards-4.9.2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/viarewind-common-3.0.6-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/client/viaversion-4.9.3-SNAPSHOT.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

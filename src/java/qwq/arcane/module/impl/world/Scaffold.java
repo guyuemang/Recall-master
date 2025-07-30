@@ -12,11 +12,9 @@ import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Sprint;
 import qwq.arcane.utils.math.Vector2f;
-import qwq.arcane.utils.player.MovementUtil;
-import qwq.arcane.utils.player.PlaceData;
-import qwq.arcane.utils.player.ScaffoldUtil;
-import qwq.arcane.utils.player.SlotSpoofComponent;
+import qwq.arcane.utils.player.*;
 import qwq.arcane.utils.rotation.RotationUtil;
+import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
@@ -29,27 +27,33 @@ public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold",Category.World);
     }
+    public ModeValue mode = new ModeValue("Mode","Normal",new String[]{"Normal","Telly","Snap"});
     public final BoolValue swing = new BoolValue("Swing", true);
-    public final BoolValue sprint = new BoolValue("sprint", false);
+    public final BoolValue sprint = new BoolValue("sprint", true);
     public BoolValue rotation = new BoolValue("Rotation",true);
-    public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
-    public ModeValue modeValue = new ModeValue("RotationMode","Back",new String[]{"Normal","Back"});
-    public static BoolValue rayCastValue = new BoolValue("RayCast", false);
-    public BoolValue movefix = new BoolValue("MoveFix",false);
+    public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,360,1);
+    public ModeValue modeValue = new ModeValue("RotationMode","Normal",new String[]{"Normal"});
+    public static BoolValue rayCastValue = new BoolValue("RayCast", true);
+    public BoolValue movefix = new BoolValue("MoveFix",true);
 
     private PlaceData data;
     public BlockPos previousBlock;
     public int slot;
     private int prevItem = 0;
+    private TimerUtil timerUtil = new TimerUtil();
 
     @Override
     public void onEnable() {
-        prevItem = mc.thePlayer.inventory.currentItem;
+        timerUtil.reset();
+        if (mc.thePlayer != null) {
+            prevItem = mc.thePlayer.inventory.currentItem;
+        }
         this.slot = -1;
     }
 
     @Override
     public void onDisable() {
+        timerUtil.reset();
         mc.thePlayer.inventory.currentItem = prevItem;
         SlotSpoofComponent.stopSpoofing();
     }
@@ -83,14 +87,12 @@ public class Scaffold extends Module {
         data = ScaffoldUtil.getPlaceData(previousBlock);
         place();
 
-        if (data != null && rotation.get()) {
+        if (data != null && rotation.get() && mode.get().equals("Normal") || mode.is("Snap") && timerUtil.getTime() > 50) {
+            timerUtil.reset();
             float[] rotation = new float[0];
             switch (modeValue.get()){
                 case "Normal":
                     rotation = RotationUtil.getRotations(getVec3(data));
-                    break;
-                case "Back":
-                    rotation = new float[]{RotationUtil.oppositeYaw(MovementUtil.getBindsDirection(mc.thePlayer.rotationYaw)), (float) (75 + Math.random() + mc.thePlayer.offGroundTicks * 0.2)};
                     break;
             }
             Client.Instance.rotationManager.setRotation(new Vector2f(rotation[0],rotation[1]),rotationspeed.get().intValue(),movefix.get(),false);
@@ -99,7 +101,7 @@ public class Scaffold extends Module {
 
     private void place(){
         if (this.slot < 0) return;
-        if (data != null) {
+        if (data != null && mode.is("Normal") || data != null && mode.is("Snap") && timerUtil.getTime() > 50) {
             if (rayCastValue.get()) {
                 MovingObjectPosition ray = Client.Instance.rotationManager.rayTrace(mc.playerController.getBlockReachDistance(), 1);
                 if (ray != null) {

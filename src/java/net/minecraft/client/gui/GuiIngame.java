@@ -365,6 +365,7 @@ public class GuiIngame extends Gui
             this.overlayPlayerList.updatePlayerList(false);
         }
 
+        Client.Instance.getModuleManager().getModule(InterFace.class).renderShaders();
         Client.Instance.getEventManager().call(new Render2DEvent(scaledresolution,partialTicks));
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

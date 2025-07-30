@@ -1,5 +1,6 @@
 package qwq.arcane.module.impl.movement;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -7,13 +8,28 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0DPacketCloseWindow;
+import net.minecraft.network.play.client.C0EPacketClickWindow;
+import net.minecraft.network.play.client.C16PacketClientStatus;
+import org.lwjgl.input.Keyboard;
 import qwq.arcane.event.annotations.EventTarget;
+import qwq.arcane.event.impl.events.packet.PacketSendEvent;
+import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.MoveInputEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.player.InvManager;
 import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.value.impl.BoolValue;
+import qwq.arcane.value.impl.ModeValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author：Guyuemang
@@ -22,49 +38,5 @@ import qwq.arcane.value.impl.BoolValue;
 public class GuiMove extends Module {
     public GuiMove() {
         super("GuiMove",Category.Movement);
-    }
-
-    private final BoolValue cancelInventory = new BoolValue("NoInv", false);
-    private final BoolValue cancelChest = new BoolValue("No Chest", false);
-    private final BoolValue wdChest = new BoolValue("Watchdog Chest", false);
-    private final BoolValue wdInv = new BoolValue("Watchdog Inv", false);
-    private final KeyBinding[] keyBindings = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindJump};
-
-    @Override
-    public void onDisable() {
-        for (KeyBinding keyBinding : this.keyBindings) {
-            KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
-        }
-    }
-    boolean sb;
-
-    @EventTarget
-    private void onUpdate(UpdateEvent event) {
-        if (!(mc.currentScreen instanceof GuiChat) && !(mc.currentScreen instanceof GuiIngameMenu)) {
-            if (cancelInventory.get() && (mc.currentScreen instanceof GuiContainer))
-                return;
-
-            if (cancelChest.get() && mc.currentScreen instanceof GuiChest)
-                return;
-
-            for (KeyBinding keyBinding : this.keyBindings) {
-                KeyBinding.setKeyBindState(keyBinding.getKeyCode(), GameSettings.isKeyDown(keyBinding));
-            }
-            if (mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChest) {
-                if (MovementUtil.isMoving()) {
-                    sb = true;
-                    BlinkComponent.blinking = true;
-                }
-            }else if (sb){
-                sb = false;
-                BlinkComponent.blinking = false;
-            }
-
-            if (wdChest.get() && mc.currentScreen instanceof GuiChest)
-                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-
-            if (wdInv.get() && mc.currentScreen instanceof GuiInventory)
-                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-        }
     }
 }

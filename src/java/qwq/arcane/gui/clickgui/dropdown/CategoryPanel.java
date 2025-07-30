@@ -46,9 +46,6 @@ public class CategoryPanel implements IComponent, Instance {
     public void drawScreen(int mouseX, int mouseY) {
         update(mouseX, mouseY);
 
-        KawaseBlur.startBlur();
-        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19) * openAnimation.getOutput())), 8,new Color(1,1,1));
-        KawaseBlur.endBlur(6,2);
         RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19) * openAnimation.getOutput())), 8,new Color(1,1,1,120));
 
         FontManager.Bold.get(20).drawCenteredString(category.name(), x + width / 2, y + 4.5, -1);

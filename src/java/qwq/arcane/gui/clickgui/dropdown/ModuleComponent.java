@@ -65,10 +65,7 @@ public class ModuleComponent implements IComponent {
         toggleAnimation.setDirection(module.getState() ? Direction.FORWARDS : Direction.BACKWARDS);
         hoverAnimation.setDirection(isHovered(mouseX, mouseY) ? Direction.FORWARDS : Direction.BACKWARDS);
 
-        KawaseBlur.startBlur();
         RenderUtil.drawRect(x,y,width,yOffset, ColorUtil.applyOpacity(InterFace.mainColor.get().getRGB(), (float) toggleAnimation.getOutput().floatValue()));
-        KawaseBlur.endBlur(6,2);
-        RenderUtil.drawRect(x,y,width,yOffset, ColorUtil.applyOpacity(InterFace.mainColor.get().getRGB(), (float) toggleAnimation.getOutput().floatValue() - 0.2f));
 
         FontManager.Bold.get((float) (14 - 1 * hoverAnimation.getOutput())).drawCenteredString(module.getName(), x + getWidth() / 2, y + yOffset / 2 - 3 + 0.5 * hoverAnimation.getOutput(), new Color(234, 234, 234).getRGB());
 

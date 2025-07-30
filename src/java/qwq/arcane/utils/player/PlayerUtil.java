@@ -1,6 +1,9 @@
 package qwq.arcane.utils.player;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.EntityDragon;
@@ -12,6 +15,7 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
@@ -23,6 +27,43 @@ import qwq.arcane.utils.Instance;
  * @Date：7/6/2025 11:57 PM
  */
 public class PlayerUtil implements Instance {
+    private static final Int2IntMap GOOD_POTIONS = new Int2IntOpenHashMap() {{
+        put(6, 1); // Instant Health
+        put(10, 2); // Regeneration
+        put(11, 3); // Resistance
+        put(21, 4); // Health Boost
+        put(22, 5); // Absorption
+        put(23, 6); // Saturation
+        put(5, 7); // Strength
+        put(1, 8); // Speed
+        put(12, 9); // Fire Resistance
+        put(14, 10); // Invisibility
+        put(3, 11); // Haste
+        put(13, 12); // Water Breathing
+    }};
+    public static int findTool(final BlockPos blockPos) {
+        float bestSpeed = 1;
+        int bestSlot = -1;
+
+        final IBlockState blockState = mc.theWorld.getBlockState(blockPos);
+
+        for (int i = 0; i < 9; i++) {
+            final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
+
+            if (itemStack != null) {
+
+                final float speed = itemStack.getStrVsBlock(blockState.getBlock());
+
+                if (speed > bestSpeed) {
+                    bestSpeed = speed;
+                    bestSlot = i;
+                }
+            }
+        }
+
+        return bestSlot;
+    }
+
     public static boolean isInTeam(Entity entity) {
         if (mc.thePlayer.getDisplayName() != null && entity.getDisplayName() != null) {
             String targetName = entity.getDisplayName().getFormattedText().replace("§r", "");
@@ -30,6 +71,9 @@ public class PlayerUtil implements Instance {
             return targetName.startsWith("§" + clientName.charAt(1));
         }
         return false;
+    }
+    public static int potionRanking(final int id) {
+        return GOOD_POTIONS.getOrDefault(id, -1);
     }
     public static Vec3 getPredictedPos(float forward, float strafe) {
         strafe *= 0.98F;

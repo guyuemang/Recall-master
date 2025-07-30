@@ -34,6 +34,12 @@ public class RotationUtil implements Instance {
         }
         return yaw - 180f;
     }
+    public static MovingObjectPosition rayTrace(float[] rot, double blockReachDistance, float partialTicks) {
+        Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
+        Vec3 vec31 = mc.thePlayer.getLookCustom(rot[0], rot[1]);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance, vec31.zCoord * blockReachDistance);
+        return mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
+    }
     public Vector2f calculate(final Vector3d from, final Vector3d to) {
         final Vector3d diff = to.subtract(from);
         final double distance = Math.hypot(diff.getX(), diff.getZ());

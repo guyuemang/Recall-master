@@ -141,11 +141,12 @@ public class KillAura extends Module {
                     }
                 }
                 final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
-                final int minValue = (int) ((min.getMax() - min.getValue()) * 20);
+                final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
                 cps = MathUtils.getRandomInRange(minValue, maxValue);
                 attacktimer.reset();
             }
         } else {
+            Sprint.keepSprinting = false;
             index = 0;
             cps = 0;
             switchTimer.reset();

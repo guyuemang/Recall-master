@@ -40,25 +40,28 @@ public class ArrayList extends ModuleWidget {
     public final ModeValue color = new ModeValue("Color Setting","Fade", new String[]{"Custom", "Rainbow", "Dynamic","Double","Astolfo","Tenacity"});
     public final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> color.is("Dynamic") || color.is("Fade") || color.is("Tenacity"), 4, 1, 10, 1);
     public final NumberValue colorIndex = new NumberValue("Color Seperation", 1, 1, 50, 1);
-    public ColorValue FirstColor = new ColorValue("MainColor", new Color(167, 59, 255));
-    public ColorValue SecondColor = new ColorValue("SecondColor", new Color(217, 191, 255));
+    public ColorValue FirstColor = new ColorValue("MainColor", new Color(213, 63, 119));
+    public ColorValue SecondColor = new ColorValue("SecondColor", new Color(157, 68, 110));
     public BoolValue background = new BoolValue("BackGround",false);
     public ModeValue misc = new ModeValue("Rectangle","None",new String[]{"None", "Top", "Side"});
     public NumberValue radius = new NumberValue("radius",()-> background.get(),3,0,8,1);
     public ModeValue backgroundmod = new ModeValue("BackGroundMod",()-> background.get(),"Rect",new String[]{"Rect","Round"});
     public final NumberValue backgroundAlpha = new NumberValue("Background Alpha", ()-> background.get(), 0.5, 0, 1, .01);
-    public NumberValue hight2 = new NumberValue("RectangleHight",12.0,1.0,20.0,0.1);
-    public NumberValue hight = new NumberValue("ArrayHight",12.0,1.0,20.0,0.1);
-    public NumberValue sb = new NumberValue("FontCount",12.0,-20.0,20.0,0.1);
+    public NumberValue hight2 = new NumberValue("RectangleHight",1,1.0,20.0,0.1);
+    public NumberValue hight = new NumberValue("ArrayHight",14,1.0,20.0,0.1);
+    public NumberValue sb = new NumberValue("FontCount",0.0,-20.0,20.0,0.1);
     public NumberValue count = new NumberValue("ArrayCount",1,1.0,5,0.1);
 
     @Override
     public void onShader(Shader2DEvent event) {
-
+        rendermodule();
     }
 
     @Override
     public void render() {
+        rendermodule();
+    }
+    public void rendermodule(){
         FontRenderer fontManager = FontManager.Regular.get(18);
         switch (fontmode.get()){
             case "Bold":

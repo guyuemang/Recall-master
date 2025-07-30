@@ -39,6 +39,7 @@ public abstract class ModuleWidget extends Module {
     private int dragX, dragY;
     protected ScaledResolution sr;
     public static InterFace INTERFACE = Client.Instance.getModuleManager().getModule(InterFace.class);
+    public static InterFace setting = Client.Instance.getModuleManager().getModule(InterFace.class);
 
     public ModuleWidget(String name, Category category) {
         super(name, category);

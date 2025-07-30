@@ -76,6 +76,7 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import qwq.arcane.utils.animations.impl.ContinualAnimation;
 
 @SuppressWarnings("incomplete-switch")
 public abstract class EntityPlayer extends EntityLivingBase
@@ -83,6 +84,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     /** Inventory of the player */
     public InventoryPlayer inventory = new InventoryPlayer(this);
     private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
+    public ContinualAnimation healthAnimation = new ContinualAnimation();
 
     /**
      * The Container for the player's inventory (which opens when they press E)
