@@ -13,9 +13,7 @@ import qwq.arcane.module.impl.misc.*;
 import qwq.arcane.module.impl.misc.Timer;
 import qwq.arcane.module.impl.movement.*;
 import qwq.arcane.module.impl.player.*;
-import qwq.arcane.module.impl.world.Disabler;
-import qwq.arcane.module.impl.world.FastPlace;
-import qwq.arcane.module.impl.world.Scaffold;
+import qwq.arcane.module.impl.world.*;
 import qwq.arcane.module.impl.visuals.*;
 import qwq.arcane.value.Value;
 
@@ -37,7 +35,9 @@ public class ModuleManager {
         registerModule(new AutoClicker());
         registerModule(new AutoWeapon());
         registerModule(new BackTrack());
+        registerModule(new Gapple());
         registerModule(new KillAura());
+        registerModule(new ThrowableAura());
         registerModule(new TickBase());
         registerModule(new AntiKB());
 
@@ -46,6 +46,7 @@ public class ModuleManager {
         registerModule(new FakeLag());
         registerModule(new NoRotate());
         registerModule(new Timer());
+        registerModule(new Teams());
 
         registerModule(new Freeze());
         registerModule(new GuiMove());
@@ -56,6 +57,7 @@ public class ModuleManager {
         registerModule(new Sprint());
 
         registerModule(new AntiVoid());
+        registerModule(new Blink());
         registerModule(new AutoTool());
         registerModule(new BedNuker());
         registerModule(new InvManager());
@@ -85,7 +87,10 @@ public class ModuleManager {
 
         registerModule(new Disabler());
         registerModule(new FastPlace());
+        registerModule(new ChestAura());
+        registerModule(new PlayerTracker());
         registerModule(new Scaffold());
+        registerModule(new BlockFly());
 
         registerModule(new ArrayList());
         registerModule(new Notification());

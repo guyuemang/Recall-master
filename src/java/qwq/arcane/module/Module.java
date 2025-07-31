@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.Client;
 import qwq.arcane.gui.notification.Notification;
+import qwq.arcane.module.impl.combat.Gapple;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;
@@ -44,7 +45,15 @@ public class Module implements Instance {
     public <M extends Module> M getModule(Class<M> clazz) {
         return Client.Instance.getModuleManager().getModule(clazz);
     }
-
+    public boolean isGapple() {
+        Gapple gapple = Client.Instance.getModuleManager().getModule(Gapple.class);
+        if (gapple.getState()){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public <M extends Module> boolean isEnabled(Class<M> module) {
         Module mod = Client.Instance.getModuleManager().getModule(module);
         return mod != null && mod.isEnabled();

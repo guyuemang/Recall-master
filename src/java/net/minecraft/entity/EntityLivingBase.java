@@ -55,8 +55,11 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import qwq.arcane.Client;
+import qwq.arcane.event.EventManager;
 import qwq.arcane.event.impl.events.player.JumpEvent;
 import qwq.arcane.event.impl.events.player.MoveEvent;
+import qwq.arcane.event.impl.events.player.MoveMathEvent;
+import qwq.arcane.module.impl.combat.Gapple;
 import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.utils.player.MovementUtil;
 
@@ -1626,6 +1629,20 @@ public abstract class EntityLivingBase extends Entity
      */
     public void moveEntityWithHeading(float strafe, float forward)
     {
+        if (this == Minecraft.getMinecraft().thePlayer) {
+            if (Client.Instance.getModuleManager().getModule(Gapple.class).getState()) {
+                if (Minecraft.getMinecraft().thePlayer.positionUpdateTicks < 19 && !Gapple.isS12) {
+                    return;
+                } else if (Gapple.isS12) {
+                    Gapple.isS12 = false;
+                }
+            }
+        }
+        MoveMathEvent motionEvent = new MoveMathEvent();
+        Client.Instance.getEventManager().call(motionEvent);
+        if (motionEvent.isCancelled()) {
+            return;
+        }
         if (this.isServerWorld())
         {
             this.ticksSinceJump++;

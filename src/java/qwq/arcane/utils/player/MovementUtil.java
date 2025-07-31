@@ -21,6 +21,77 @@ public class MovementUtil implements Instance {
     public static boolean isMoving(EntityLivingBase player) {
         return player != null && (player.moveForward != 0F || player.moveStrafing != 0F);
     }
+    public static double predictedMotion(final double motion, final int ticks) {
+        if (ticks == 0) return motion;
+        double predicted = motion;
+
+        for (int i = 0; i < ticks; i++) {
+            predicted = (predicted - 0.08) * 0.98F;
+        }
+
+        return predicted;
+    }
+
+    public static int getSpeedEffect() {
+        if (mc.thePlayer.isPotionActive(Potion.moveSpeed))
+            return mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() + 1;
+        else return 0;
+    }
+    public static void setSpeed(double moveSpeed, float yaw, double strafe, double forward) {
+        if (forward != 0.0D) {
+            if (strafe > 0.0D) {
+                yaw += (float)(forward > 0.0D ? -45 : 45);
+            } else if (strafe < 0.0D) {
+                yaw += (float)(forward > 0.0D ? 45 : -45);
+            }
+
+            strafe = 0.0D;
+            if (forward > 0.0D) {
+                forward = 1.0D;
+            } else if (forward < 0.0D) {
+                forward = -1.0D;
+            }
+        }
+
+        if (strafe > 0.0D) {
+            strafe = 1.0D;
+        } else if (strafe < 0.0D) {
+            strafe = -1.0D;
+        }
+
+        double mx = Math.cos(Math.toRadians((double)(yaw + 90.0F)));
+        double mz = Math.sin(Math.toRadians((double)(yaw + 90.0F)));
+        mc.thePlayer.motionX = forward * moveSpeed * mx + strafe * moveSpeed * mz;
+        mc.thePlayer.motionZ = forward * moveSpeed * mz - strafe * moveSpeed * mx;
+    }
+
+    public static void setSpeed(double moveSpeed) {
+        setSpeed(moveSpeed, mc.thePlayer.rotationYaw, (double) mc.thePlayer.movementInput.getMoveStrafe(), (double) mc.thePlayer.movementInput.getMoveForward());
+    }
+
+    public static double getBaseMoveSpeed() {
+        double baseSpeed = mc.thePlayer.capabilities.getWalkSpeed() * 2.873;
+        if (mc.thePlayer.isPotionActive(Potion.moveSlowdown)) {
+            baseSpeed /= 1.0 + 0.2 * (mc.thePlayer.getActivePotionEffect(Potion.moveSlowdown).getAmplifier() + 1);
+        }
+        if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
+            baseSpeed *= 1.0 + 0.2 * (mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() + 1);
+        }
+        return baseSpeed;
+    }
+    public static double strafe(final double d) {
+        if (!isMoving())
+            return mc.thePlayer.rotationYaw;
+
+        final double yaw = getDirection1();
+        mc.thePlayer.motionX = -MathHelper.sin((float) yaw) * d;
+        mc.thePlayer.motionZ = MathHelper.cos((float) yaw) * d;
+
+        return yaw;
+    }
+    public static boolean isOnGround(double height) {
+        return !mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0.0D, -height, 0.0D)).isEmpty();
+    }
     public static float getBindsDirection(float rotationYaw) {
         int moveForward = 0;
         if (GameSettings.isKeyDown(mc.gameSettings.keyBindForward)) moveForward++;

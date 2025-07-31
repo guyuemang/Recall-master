@@ -1,5 +1,6 @@
 package net.minecraft.client.entity;
 
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -28,6 +29,7 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.ThreadQuickExitException;
@@ -95,7 +97,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     private boolean serverSneakState;
 
     /** the last sprinting state sent to the server */
-    private boolean serverSprintState;
+    public boolean serverSprintState;
 
     /**
      * Reset to 0 every time position is sent to the server, used to send periodic updates every 20 ticks even when the
@@ -255,8 +257,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
                 this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, eventMotion.getYaw(), eventMotion.getPitch(), eventMotion.isOnGround()));
                 flag2 = false;
             }
+            this.processPackets();
 
-            ++this.positionUpdateTicks;
+                ++this.positionUpdateTicks;
 
             if (flag2) {
                 this.lastReportedPosX = eventMotion.getX();
@@ -691,7 +694,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag = this.movementInput != null ? this.movementInput.sneak : false;
         return flag && !this.sleeping;
     }
-
+    public boolean isEatingOrDrinking() {
+        return this.isUsingItem() && (this.getItemInUse().getItem().getItemUseAction(this.getItemInUse()) == EnumAction.EAT || this.getItemInUse().getItem().getItemUseAction(this.getItemInUse()) == EnumAction.DRINK);
+    }
     public void updateEntityActionState()
     {
         super.updateEntityActionState();
@@ -917,6 +922,17 @@ public class EntityPlayerSP extends AbstractClientPlayer
         {
             this.capabilities.isFlying = false;
             this.sendPlayerAbilities();
+        }
+    }
+    private void processPackets() {
+        if (Disabler.getGrimPost()) {
+            this.mc.lastTickSentC03 = true;
+            while (!this.mc.scheduledTasks.isEmpty()) {
+                try {
+                    Util.runTask(this.mc.scheduledTasks.poll(), Minecraft.logger);
+                }
+                catch (ThreadQuickExitException threadQuickExitException) {}
+            }
         }
     }
     public static net.minecraft.util.Vec3 getNearestPointBB(final net.minecraft.util.Vec3 eye, final AxisAlignedBB box) {

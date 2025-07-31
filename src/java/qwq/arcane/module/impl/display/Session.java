@@ -2,6 +2,7 @@ package qwq.arcane.module.impl.display;
 
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
+import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.ModuleWidget;
@@ -31,7 +32,12 @@ public class Session extends ModuleWidget {
         this.height = 50;
     }
     public int lost = 0, killed = 0, won = 0;
-
+    @EventTarget
+    public void onAttackEvent(AttackEvent event){
+        if (event.getTargetEntity().isDead){
+            ++this.killed;
+        }
+    }
     @EventTarget
     public void onPacket(PacketReceiveEvent event) {
         Packet<?> packet = event.getPacket();

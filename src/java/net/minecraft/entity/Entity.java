@@ -109,7 +109,7 @@ public abstract class Entity implements ICommandSender
     public float prevRotationPitch;
 
     /** Axis aligned bounding box. */
-    private AxisAlignedBB boundingBox;
+    public AxisAlignedBB boundingBox;
     public boolean onGround;
 
     /**
@@ -2869,5 +2869,9 @@ public abstract class Entity implements ICommandSender
         }
 
         EnchantmentHelper.applyArthropodEnchantments(entityLivingBaseIn, entityIn);
+    }
+    public double getDistance(BlockPos pos) {
+        double x = posX - pos.getX(), y = posY - pos.getY(), z = posZ - pos.getZ();
+        return MathHelper.sqrt_double(x * x + y * y + z * z);
     }
 }

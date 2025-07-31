@@ -28,6 +28,10 @@ public class PacketUtil implements Instance {
             packet.processPacket(mc.getNetHandler().getNetworkManager().getNetHandler());
         }
     }
+    public static boolean isCPacket(Packet<?> packet) {
+        return packet.getClass().getSimpleName().startsWith("C");
+    }
+
     public static boolean isClientPacket(final Packet<?> packet) {
         return Arrays.stream(NetworkAPI.serverbound).anyMatch(clazz -> clazz == packet.getClass());
     }

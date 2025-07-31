@@ -34,6 +34,50 @@ public class RotationUtil implements Instance {
         }
         return yaw - 180f;
     }
+    public static float[] getBlockRotations(double x, double y, double z) {
+        double var4 = x - RotationUtil.mc.thePlayer.posX + 0.5;
+        double var6 = z - RotationUtil.mc.thePlayer.posZ + 0.5;
+        double var8 = y - (RotationUtil.mc.thePlayer.posY + (double)RotationUtil.mc.thePlayer.getEyeHeight() - 1.0);
+        double var14 = MathHelper.sqrt_double(var4 * var4 + var6 * var6);
+        float var12 = (float)(Math.atan2(var6, var4) * 180.0 / Math.PI) - 90.0f;
+        return new float[]{var12, (float)(-Math.atan2(var8, var14) * 180.0 / Math.PI)};
+    }
+    public static double getRotationDifference(Entity entity) {
+        Vector2f rotation = RotationUtil.toRotation(RotationUtil.getCenter(entity.getEntityBoundingBox()), true);
+        return RotationUtil.getRotationDifference(rotation, new Vector2f(RotationUtil.mc.thePlayer.rotationYaw, RotationUtil.mc.thePlayer.rotationPitch));
+    }
+    public static Vec3 getCenter(final AxisAlignedBB bb) {
+        return new Vec3(bb.minX + (bb.maxX - bb.minX) * 0.5, bb.minY + (bb.maxY - bb.minY) * 0.5, bb.minZ + (bb.maxZ - bb.minZ) * 0.5);
+    }
+
+    public static double getRotationDifference(Vector2f a ,Vector2f b2) {
+        return Math.hypot(RotationUtil.getAngleDifference(a.getX(), b2.getX()), a.getY() - b2.getY());
+    }
+    public static float[] getRotationsNeededBall(final Entity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        Minecraft mc = Minecraft.getMinecraft();
+        double xSize = entity.posX - mc.thePlayer.posX;
+        double ySize = (entity.posY + entity.getEyeHeight() / 2) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
+        double zSize = entity.posZ - mc.thePlayer.posZ;
+
+        double theta = MathHelper.sqrt_double(xSize * xSize + zSize * zSize);
+        float yaw = (float) Math.toDegrees(Math.atan2(zSize, xSize)) - 90.0f;
+        float pitch = (float) -Math.toDegrees(Math.atan2(ySize, theta));
+
+        float playerYaw = mc.thePlayer.rotationYaw;
+        float playerPitch = mc.thePlayer.rotationPitch;
+
+        float deltaYaw = MathHelper.wrapAngleTo180_float(yaw - playerYaw);
+        float deltaPitch = MathHelper.wrapAngleTo180_float(pitch - playerPitch);
+
+        float newYaw = playerYaw + deltaYaw;
+        float newPitch = playerPitch + deltaPitch;
+
+        return new float[]{ newYaw % 360.0f, newPitch % 360.0f };
+    }
     public static MovingObjectPosition rayTrace(float[] rot, double blockReachDistance, float partialTicks) {
         Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
         Vec3 vec31 = mc.thePlayer.getLookCustom(rot[0], rot[1]);

@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -53,6 +54,51 @@ public class RenderUtil {
     private static final Frustum FRUSTUM = new Frustum();
     public static Framebuffer createFrameBuffer(Framebuffer framebuffer) {
         return createFrameBuffer(framebuffer, false);
+    }
+    public static void scissorStart(double x, double y, double width, double height) {
+        glEnable(GL_SCISSOR_TEST);
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        final double scale = sr.getScaleFactor();
+        double finalHeight = height * scale;
+        double finalY = (sr.getScaledHeight() - y) * scale;
+        double finalX = x * scale;
+        double finalWidth = width * scale;
+        glScissor((int) finalX, (int) (finalY - finalHeight), (int) finalWidth, (int) finalHeight);
+    }
+
+    public static void scissorEnd() {
+        glDisable(GL_SCISSOR_TEST);
+    }
+    public static void drawItemStack(ItemStack stack, float x, float y) {
+        GL11.glPushMatrix();
+
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (mc.theWorld != null) {
+            RenderHelper.enableGUIStandardItemLighting();
+        }
+
+        GlStateManager.pushMatrix();
+        GlStateManager.disableAlpha();
+        GlStateManager.clear(256);
+        GlStateManager.enableBlend();
+
+        mc.getRenderItem().zLevel = -150.0F;
+        mc.getRenderItem().renderItemAndEffectIntoGUI(stack, (int) x, (int) y);
+        mc.getRenderItem().zLevel = 0.0F;
+
+        GlStateManager.enableBlend();
+        final float z = 0.5F;
+
+        GlStateManager.scale(z, z, z);
+        GlStateManager.disableDepth();
+        GlStateManager.disableLighting();
+        GlStateManager.enableDepth();
+        GlStateManager.scale(2.0f, 2.0f, 2.0f);
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
+
+        GL11.glPopMatrix();
     }
     public static String sessionTime() {
         int elapsedTime = ((int)System.currentTimeMillis() - INSTANCE.getStartTime()) / 1000;

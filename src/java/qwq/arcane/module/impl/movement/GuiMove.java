@@ -39,4 +39,29 @@ public class GuiMove extends Module {
     public GuiMove() {
         super("GuiMove",Category.Movement);
     }
+    private final BoolValue cancelInventory = new BoolValue("NoInv", false);
+    private final BoolValue cancelChest = new BoolValue("No Chest", false);
+    private final KeyBinding[] keyBindings = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindJump};
+
+    @Override
+    public void onDisable() {
+        for (KeyBinding keyBinding : this.keyBindings) {
+            KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
+        }
+    }
+
+    @EventTarget
+    private void onUpdate(UpdateEvent event) {
+        if (!(mc.currentScreen instanceof GuiChat) && !(mc.currentScreen instanceof GuiIngameMenu)) {
+            if (cancelInventory.get() && (mc.currentScreen instanceof GuiContainer))
+                return;
+
+            if (cancelChest.get() && mc.currentScreen instanceof GuiChest)
+                return;
+
+            for (KeyBinding keyBinding : this.keyBindings) {
+                KeyBinding.setKeyBindState(keyBinding.getKeyCode(), GameSettings.isKeyDown(keyBinding));
+            }
+        }
+    }
 }

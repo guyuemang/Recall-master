@@ -15,11 +15,15 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+import org.apache.commons.lang3.StringUtils;
 import qwq.arcane.utils.Instance;
 
 /**
@@ -41,6 +45,31 @@ public class PlayerUtil implements Instance {
         put(3, 11); // Haste
         put(13, 12); // Water Breathing
     }};
+    public static boolean scoreTeam(EntityPlayer entityPlayer) {
+        return mc.thePlayer.isOnSameTeam(entityPlayer);
+    }
+    public static boolean colorTeam(EntityPlayer sb) {
+        String targetName = StringUtils.replace(sb.getDisplayName().getFormattedText(),"§r", "");
+        String clientName = mc.thePlayer.getDisplayName().getFormattedText().replace("§r", "");
+        return targetName.startsWith("§" + clientName.charAt(1));
+    }
+
+    public static boolean armorTeam(EntityPlayer entityPlayer) {
+        if (mc.thePlayer.inventory.armorInventory[3] != null && entityPlayer.inventory.armorInventory[3] != null) {
+            ItemStack myHead = mc.thePlayer.inventory.armorInventory[3];
+            ItemArmor myItemArmor = (ItemArmor) myHead.getItem();
+            ItemStack entityHead = entityPlayer.inventory.armorInventory[3];
+            ItemArmor entityItemArmor = (ItemArmor) entityHead.getItem();
+            if (String.valueOf(entityItemArmor.getColor(entityHead)).equals("10511680")) {
+                return true;
+            }
+            return myItemArmor.getColor(myHead) == entityItemArmor.getColor(entityHead);
+        }
+        return false;
+    }
+    public static boolean isBlockUnder(Entity ent) {
+        return mc.theWorld.getBlockState(new BlockPos(ent.posX, ent.posY -1, ent.posZ)).getBlock() != Blocks.air && mc.theWorld.getBlockState(new BlockPos(ent.posX, ent.posY -1, ent.posZ)).getBlock().isFullBlock();
+    }
     public static int findTool(final BlockPos blockPos) {
         float bestSpeed = 1;
         int bestSlot = -1;

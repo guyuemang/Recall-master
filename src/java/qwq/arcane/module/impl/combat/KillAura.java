@@ -25,6 +25,7 @@ import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Sprint;
+import qwq.arcane.module.impl.player.Blink;
 import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
@@ -49,7 +50,7 @@ public class KillAura extends Module {
     public NumberValue switchdelay = new NumberValue("SwitchDelay",()-> modeValue.getValue().equals("Switch"),10,1,20,1);
     public NumberValue max = new NumberValue("MaxDelay",10,1,20,1);
     public NumberValue min = new NumberValue("MinDelay",10,1,20,1);
-    public NumberValue range = new NumberValue("Range",3.0,1.0,6.0,0.1);
+    public static NumberValue range = new NumberValue("Range",3.0,1.0,6.0,0.1);
     public BoolValue keepsprint = new BoolValue("KeepSprint",false);
     public BoolValue autoblock = new BoolValue("AutoBlock",false);
     public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
@@ -62,7 +63,7 @@ public class KillAura extends Module {
     public BoolValue movefix = new BoolValue("MoveFix",false);
     public BoolValue strictValue = new BoolValue("FollowTarget", () -> movefix.getValue(), false);
     private final ModeValue priority = new ModeValue("Priority", "Range", new String[]{"Range", "Armor", "Health", "HurtTime"});
-    public BoolValue noscaffold = new BoolValue("NoScaffold", false);
+    public static BoolValue noscaffold = new BoolValue("NoScaffold", false);
     public MultiBooleanValue sorttargets = new MultiBooleanValue("Targets",Arrays.asList(
             new BoolValue("Animals",false)
             ,new BoolValue("Players",true),
@@ -292,7 +293,7 @@ public class KillAura extends Module {
         }
     }
 
-    public boolean shouldAttack(){
+    public static boolean shouldAttack(){
         if (target == null) return false;
         if (rayCastValue.get()) {
             final MovingObjectPosition movingObjectPosition = mc.objectMouseOver;
@@ -330,6 +331,9 @@ public class KillAura extends Module {
     }
 
     public boolean setTarget(Entity entity){
+        if (Client.Instance.getModuleManager().getModule(Blink.class).getState()){
+            return false;
+        }
         if ((sorttargets.isEnabled("Teams") && PlayerUtil.isInTeam(entity))) {
             return false;
         }
