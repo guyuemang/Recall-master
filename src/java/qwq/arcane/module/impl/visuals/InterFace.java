@@ -140,13 +140,11 @@ public class InterFace extends Module {
             }
         }
     }
-    @EventTarget
-    public void onShader(Shader2DEvent event) {
-    }
+
     public void renderShaders() {
         if (!this.getState()) return;
 
-        if (this.blur.get()) {
+        if (blur.get()) {
             Blur.startBlur();
             Client.Instance.getEventManager().call(new Shader2DEvent(Shader2DEvent.ShaderType.BLUR));
             Blur.endBlur(blurRadius.getValue().floatValue(), blurCompression.getValue().floatValue());

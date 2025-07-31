@@ -58,7 +58,7 @@ public class Inventory extends ModuleWidget {
                 height = (itemHeight * 3.0F + 19.0F);
                 break;
             case "Normal":
-                RoundedUtil.drawRound(x,y, itemWidth + 120, 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 89));
+                RoundedUtil.drawRound(x,y, itemWidth + 120, 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 255));
                 for (int i = 9; i < 36; ++i) {
                     ItemStack slot = mc.thePlayer.inventory.getStackInSlot(i);
                     RenderUtil.renderItemStack(slot, x + 0.7F, y + 17.5F, 0.80F);

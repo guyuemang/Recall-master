@@ -13,6 +13,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -27,6 +28,7 @@ import qwq.arcane.module.impl.movement.Sprint;
 import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
@@ -78,6 +80,7 @@ public class KillAura extends Module {
     public TimerUtil attacktimer = new TimerUtil();
     private int index;
     private int cps;
+    private int tick = 0;
 
     @Override
     public void onEnable() {
