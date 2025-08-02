@@ -2,6 +2,9 @@ package qwq.arcane.module;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -19,6 +22,9 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/6/1 14:41
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 @Getter
 @Setter
 public abstract class ModuleWidget extends Module {

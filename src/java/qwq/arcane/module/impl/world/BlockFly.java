@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.world;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -34,6 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class BlockFly
 extends qwq.arcane.module.Module {
     private final Animation anim = new DecelerateAnimation(250, 1.0);

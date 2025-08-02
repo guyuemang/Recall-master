@@ -1,5 +1,8 @@
 package qwq.arcane.gui.clickgui.arcane.component.settings;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.util.MathHelper;
 import qwq.arcane.gui.clickgui.Component;
 import qwq.arcane.module.impl.visuals.InterFace;
@@ -19,6 +22,9 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/7/3 23:27
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class NumberComponent extends Component {
     private final NumberValue setting;
     private boolean dragging;

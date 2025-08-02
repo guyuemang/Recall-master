@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.visuals;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
@@ -42,6 +45,9 @@ import java.util.Map;
  * @Author：Guyuemang
  * @Date：2025/6/29 01:06
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class InterFace extends Module {
     public InterFace() {
         super("InterFace", Category.Visuals);

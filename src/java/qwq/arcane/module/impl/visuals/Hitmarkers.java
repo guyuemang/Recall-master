@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.visuals;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.network.Packet;
@@ -24,6 +27,9 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/7/3 12:31
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public final class Hitmarkers extends Module {
     public Hitmarkers() {
         super("Hitmarkers",Category.Visuals);

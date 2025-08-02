@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.display;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.ModuleWidget;
@@ -17,6 +20,9 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/6/2 13:35
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Inventory extends ModuleWidget {
     public Inventory() {
         super("Inventory",Category.Display);

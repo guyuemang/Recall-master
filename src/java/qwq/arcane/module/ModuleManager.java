@@ -1,5 +1,8 @@
 package qwq.arcane.module;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.KeyPressEvent;
@@ -26,6 +29,9 @@ import java.util.stream.Collectors;
  * @Author：Guyuemang
  * @Date：2025/6/1 13:06
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ModuleManager {
     private final Map<Class<? extends Module>, Module> modules = new LinkedHashMap<>();
 

@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.combat;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.block.Block;
@@ -43,12 +46,15 @@ import java.util.Random;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:05 AM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class AntiKB extends Module {
     public AntiKB() {
         super("AntiKB",Category.Combat);
     }
 
-    private final ModeValue mode = new ModeValue("Mode","Predicted", new String[]{"Watchdog","Grim","Predicted","Jump Reset","Prediction"});
+    private final ModeValue mode = new ModeValue("Mode","Predicted", new String[]{"Watchdog","Grim","Predicted","Jump Reset"});
     private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset"), "Packet", new String[]{"Hurt Time", "Packet", "Advanced"});
     private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
     private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 100, 0, 100, 1);

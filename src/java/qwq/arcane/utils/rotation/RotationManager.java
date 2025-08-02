@@ -1,5 +1,8 @@
 package qwq.arcane.utils.rotation;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.MathHelper;
@@ -11,7 +14,9 @@ import qwq.arcane.event.impl.events.player.*;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.Rotation;
-
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public final class RotationManager {
     private Minecraft mc = Minecraft.getMinecraft();
     public static Vector2f rotation;

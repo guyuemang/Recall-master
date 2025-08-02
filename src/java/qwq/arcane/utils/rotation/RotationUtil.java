@@ -1,5 +1,8 @@
 package qwq.arcane.utils.rotation;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import lombok.experimental.UtilityClass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -21,7 +24,9 @@ import static net.minecraft.client.entity.EntityPlayerSP.getNearestPointBB;
  * @author Patrick
  * @since 11/17/2021
  */
-
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 @UtilityClass
 public class RotationUtil implements Instance {
     public static float oppositeYaw(float yaw) {

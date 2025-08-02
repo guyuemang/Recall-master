@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.misc;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
@@ -14,6 +17,9 @@ import qwq.arcane.value.impl.ModeValue;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:06 AM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ClientSpoofer extends Module {
     public ClientSpoofer() {
         super("ClientSpoofer", Category.Misc);

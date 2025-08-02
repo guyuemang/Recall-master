@@ -1,5 +1,8 @@
 package qwq.arcane.gui.clickgui.arcane.panel;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +26,9 @@ import qwq.arcane.utils.render.RenderUtil;
  * @Author：Guyuemang
  * @Date：2025/7/3 19:53
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 @Getter
 @Setter
 public class CategoryPanel implements IComponent, Instance {

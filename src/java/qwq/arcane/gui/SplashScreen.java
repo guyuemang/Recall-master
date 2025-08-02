@@ -1,5 +1,8 @@
 package qwq.arcane.gui;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
@@ -20,6 +23,9 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/6/28 23:23
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class SplashScreen implements Instance {
     public static Animation progressAnim;
     public static boolean menu;

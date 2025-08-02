@@ -1,5 +1,8 @@
 package qwq.arcane.utils.player;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -8,7 +11,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class HYTUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
 

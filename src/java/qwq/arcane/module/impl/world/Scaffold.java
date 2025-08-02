@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.world;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.C0APacketAnimation;
@@ -35,6 +38,9 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：7/6/2025 11:54 PM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold",Category.World);

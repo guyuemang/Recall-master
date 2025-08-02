@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.movement;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.settings.KeyBinding;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.MotionEvent;
@@ -9,6 +12,9 @@ import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.value.impl.BoolValue;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Sprint extends Module {
     public Sprint() {
         super("Sprint", Category.Movement);

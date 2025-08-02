@@ -1,5 +1,8 @@
 package qwq.arcane.module;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.input.Keyboard;
@@ -23,6 +26,9 @@ import java.util.Optional;
  */
 @Getter
 @Setter
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Module implements Instance {
     public String name;
     public Category category;

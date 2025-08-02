@@ -5,6 +5,9 @@ import com.viaversion.viarewind.utils.PacketUtil;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -35,6 +38,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:00 AM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Noslow extends Module {
     public Noslow() {
         super("Noslow",Category.Movement);

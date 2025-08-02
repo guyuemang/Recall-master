@@ -1,6 +1,9 @@
 package qwq.arcane.module.impl.world;
 
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBrewingStand;
 import net.minecraft.block.BlockChest;
@@ -41,6 +44,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ChestAura extends Module {
     private final NumberValue range = new NumberValue("Range", 4.0, 0.0, 15.0, 0.1);
     public TimerUtil waitBoxOpenTimer = new TimerUtil();

@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.combat;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +26,9 @@ import java.util.List;
  * @Author：Guyuemang
  * @Date：2025/6/2 15:55
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class AntiBot extends Module {
     static List<Integer> bots = new ArrayList<>();
     static ModeValue mode = new ModeValue("Mode","Hypixel",new String[]{"Hypixel","Mineland"});

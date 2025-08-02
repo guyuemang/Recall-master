@@ -1,5 +1,8 @@
 package qwq.arcane.gui.clickgui.arcane;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -27,6 +30,9 @@ import java.util.Locale;
  * @Author：Guyuemang
  * @Date：2025/7/3 18:57
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 @Getter
 public class ArcaneClickGui extends GuiScreen {
     private final List<CategoryPanel> categoryPanels = new ArrayList<>();

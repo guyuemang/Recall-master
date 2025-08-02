@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.display;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.StringUtils;
 import qwq.arcane.Client;
@@ -26,6 +29,9 @@ import java.util.Comparator;
  * @Author：Guyuemang
  * @Date：2025/7/4 16:06
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ArrayList extends ModuleWidget {
     public ArrayList() {
         super("ArrayList",Category.Display);

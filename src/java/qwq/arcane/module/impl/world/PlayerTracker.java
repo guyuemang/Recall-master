@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.world;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import qwq.arcane.event.annotations.EventTarget;
@@ -13,6 +16,9 @@ import qwq.arcane.utils.player.HYTUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class PlayerTracker
         extends Module {
     public static List<Entity> flaggedEntity = new ArrayList<Entity>();

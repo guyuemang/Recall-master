@@ -1,5 +1,11 @@
 package qwq.arcane.utils;
 
+import com.viaversion.viaversion.libs.gson.JsonObject;
+import com.viaversion.viaversion.libs.gson.JsonParser;
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
+import com.yumegod.obfuscation.StringObfuscate;
 import net.minecraft.client.Minecraft;
 
 import javax.swing.*;
@@ -14,6 +20,10 @@ import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.prefs.Preferences;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
+@StringObfuscate
 public class AuthClient extends JFrame {
     private static final String APP_NAME = "ArcaneClient";
     private static final String SERVER_BASE_URL = "http://2697v22.mc5173.cn:13765/api"; // 修改为您的服务器地址
@@ -209,24 +219,18 @@ public class AuthClient extends JFrame {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // 解析响应
-            String responseBody = response.body();
-            if (responseBody.contains("\"success\":true")) {
-                // 提取token和用户信息
-                int tokenStart = responseBody.indexOf("\"token\":\"") + 9;
-                int tokenEnd = responseBody.indexOf("\"", tokenStart);
-                authToken = responseBody.substring(tokenStart, tokenEnd);
-                currentUser = username;
+            // 解析JSON响应
+            JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+
+            if (jsonResponse.get("success").getAsBoolean()) {
+                authToken = jsonResponse.get("token").getAsString();
+                currentUser = jsonResponse.get("username").getAsString();
 
                 // 保存token
                 Preferences.userRoot().node(APP_NAME).put("authToken", authToken);
                 return true;
             } else {
-                // 提取错误信息
-                int errorStart = responseBody.indexOf("\"error\":\"") + 9;
-                int errorEnd = responseBody.indexOf("\"", errorStart);
-                String errorMsg = errorStart > 8 ? responseBody.substring(errorStart, errorEnd) : "未知错误";
-
+                String errorMsg = jsonResponse.get("error").getAsString();
                 SwingUtilities.invokeLater(() ->
                         showMessage("登录失败: " + errorMsg, "错误", JOptionPane.ERROR_MESSAGE));
                 return false;

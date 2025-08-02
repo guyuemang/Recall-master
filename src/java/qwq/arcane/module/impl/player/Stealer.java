@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.player;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.network.Packet;
@@ -35,6 +38,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:02 AM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 //这是真自写的方法除了老虎机修复
 public class Stealer extends Module {
     public Stealer() {

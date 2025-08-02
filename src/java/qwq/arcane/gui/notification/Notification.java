@@ -1,5 +1,8 @@
 package qwq.arcane.gui.notification;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;
@@ -16,6 +19,9 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 @Getter
 public class Notification implements Instance {
     private ResourceLocation image;

@@ -1,5 +1,9 @@
 package qwq.arcane.gui;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
+import com.yumegod.obfuscation.StringObfuscate;
 import net.minecraft.client.gui.*;
 import org.bytedeco.javacv.FrameGrabber;
 import qwq.arcane.Client;
@@ -27,6 +31,10 @@ import java.util.List;
  * @Author：Guyuemang
  * @Date：2025/6/28 23:22
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
+@StringObfuscate
 public class MainMenu extends GuiScreen {
     List<Button> buttons = Arrays.asList(
             new Button("Single Player","B"),

@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.movement;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -35,6 +38,9 @@ import java.util.List;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:03 AM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class GuiMove extends Module {
     public GuiMove() {
         super("GuiMove",Category.Movement);

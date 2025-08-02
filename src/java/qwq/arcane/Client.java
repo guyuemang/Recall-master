@@ -4,6 +4,10 @@ import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.protocol.remapper.PacketHandlers;
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
+import com.yumegod.obfuscation.StringObfuscate;
 import de.florianmichael.viamcp.ViaMCP;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +39,10 @@ import java.util.Date;
  * @Author：Guyuemang
  * @Date：2025/6/28 19:42
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
+@StringObfuscate
 @Getter
 @Setter
 public class Client implements Instance {

@@ -1,5 +1,8 @@
 package qwq.arcane.gui.clickgui.arcane.component.settings;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.gui.clickgui.Component;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
@@ -15,6 +18,9 @@ import qwq.arcane.value.impl.BoolValue;
  * @Author：Guyuemang
  * @Date：2025/7/3 23:16
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class BooleanComponent extends Component {
     private final BoolValue setting;
     private final Animation enabled = new DecelerateAnimation(250,1);

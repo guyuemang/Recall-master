@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.display;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
@@ -12,6 +15,9 @@ import qwq.arcane.value.impl.ModeValue;
  * @Author：Guyuemang
  * @Date：2025/6/2 13:38
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Notification extends ModuleWidget {
     public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
 

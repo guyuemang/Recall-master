@@ -1,5 +1,8 @@
 package qwq.arcane.value;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +10,9 @@ import lombok.Setter;
  * @Author：Guyuemang
  * @Date：2025/6/1 00:47
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 @Getter
 @Setter
 public abstract class Value<T> {

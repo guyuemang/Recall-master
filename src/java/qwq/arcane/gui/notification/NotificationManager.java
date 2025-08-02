@@ -1,10 +1,16 @@
 package qwq.arcane.gui.notification;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.Client;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class NotificationManager {
     private final List<Notification> notifications;
 

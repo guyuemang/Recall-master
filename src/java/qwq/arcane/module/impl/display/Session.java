@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.display;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
@@ -23,6 +26,9 @@ import java.text.DecimalFormat;
  * @Author：Guyuemang
  * @Date：2025/6/2 11:22
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Session extends ModuleWidget {
     public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
 

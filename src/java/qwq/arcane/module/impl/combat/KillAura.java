@@ -6,6 +6,7 @@ import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
 import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
 import com.yumegod.obfuscation.Native;
 import com.yumegod.obfuscation.Rename;
 import de.florianmichael.viamcp.fixes.AttackOrder;
@@ -48,9 +49,9 @@ import java.util.List;
 
 import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
 
-@Native
 @Rename
 @FlowObfuscate
+@InvokeDynamic
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura",Category.Combat);

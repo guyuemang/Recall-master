@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.combat;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +42,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ThrowableAura extends Module {
     private final NumberValue dealy = new NumberValue("Delay", 8, 0, 1000, 1);
     private final NumberValue range = new NumberValue("Range", 5, 1, 8, 1);

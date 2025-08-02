@@ -1,5 +1,8 @@
 package qwq.arcane.gui.clickgui.arcane.component.settings;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Mouse;
@@ -26,6 +29,9 @@ import static org.lwjgl.opengl.GL11.glEnable;
  * @Author：Guyuemang
  * @Date：2025/6/14 14:03
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ModeComponent extends Component {
     private final ModeValue setting;
     private float maxScroll = Float.MAX_VALUE, rawScroll, scroll;

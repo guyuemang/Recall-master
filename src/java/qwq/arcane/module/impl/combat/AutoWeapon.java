@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.combat;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -27,6 +30,9 @@ import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:01 AM
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class AutoWeapon extends Module {
     public AutoWeapon() {
         super("AutoWeapon", Category.Combat);

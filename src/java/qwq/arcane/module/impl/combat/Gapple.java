@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.combat;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,7 +37,9 @@ import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Gapple extends Module {
     public BoolValue render = new BoolValue("Render", true);
     public ModeValue renderMode = new ModeValue("RenderMode", "SouthSide", new String[]{"Client", "SouthSide", "Old","Naven"});

@@ -1,6 +1,9 @@
 
 package qwq.arcane.gui.clickgui.arcane.component.settings;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Mouse;
@@ -25,6 +28,9 @@ import java.util.Map;
  * @Author：Guyuemang
  * @Date：2025/7/3 23:16
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class MultiBoxComponent extends Component {
     private final MultiBooleanValue setting;
     private final Animation open = new DecelerateAnimation(175, 1);

@@ -1,5 +1,8 @@
 package qwq.arcane.utils.color;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 
@@ -8,7 +11,9 @@ import java.awt.image.BufferedImage;
 
 import static qwq.arcane.utils.math.MathUtils.interpolateFloat;
 import static qwq.arcane.utils.math.MathUtils.interpolateInt;
-
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ColorUtil {
     public static Color reAlpha(Color color, int alpha) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);

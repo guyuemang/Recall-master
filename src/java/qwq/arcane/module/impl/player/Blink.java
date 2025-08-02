@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.player;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.network.Packet;
@@ -25,6 +28,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class Blink extends Module {
     private final LinkedList<List<Packet<?>>> packets = new LinkedList<>();
     public EntityOtherPlayerMP fakePlayer;

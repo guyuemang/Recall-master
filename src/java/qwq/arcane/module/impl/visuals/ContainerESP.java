@@ -1,5 +1,8 @@
 package qwq.arcane.module.impl.visuals;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
@@ -15,6 +18,9 @@ import java.awt.*;
  * @Author: Guyuemang
  * 2025/5/1
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public class ContainerESP extends Module {
     public final BoolValue outline = new BoolValue("Outline", false);
     public final BoolValue filled = new BoolValue("Filled", true);

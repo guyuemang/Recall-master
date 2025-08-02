@@ -1,6 +1,9 @@
 package qwq.arcane.utils.rotation;
 
 import com.google.common.base.Predicates;
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Rename;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.*;
@@ -13,6 +16,9 @@ import java.util.List;
  * @author Patrick
  * @since 11/17/2021
  */
+@Rename
+@FlowObfuscate
+@InvokeDynamic
 public final class RayCastUtil implements Instance {
 
     public static MovingObjectPosition rayCast(final Vector2f rotation, final double range) {

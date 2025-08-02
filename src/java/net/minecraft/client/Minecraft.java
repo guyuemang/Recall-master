@@ -27,6 +27,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.InvokeDynamic;
+import com.yumegod.obfuscation.Native;
+import com.yumegod.obfuscation.Rename;
 import lombok.Setter;
 import net.optifine.shaders.Shaders;
 import org.apache.commons.io.IOUtils;
@@ -209,6 +213,7 @@ import qwq.arcane.utils.AuthClient;
 import qwq.arcane.utils.animations.AnimationUtils;
 import qwq.arcane.utils.player.MovementInputKeyboard;
 
+@Native
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
     public static final Logger logger = LogManager.getLogger();
@@ -393,6 +398,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private static final Lock threadLock = new ReentrantLock();
     private static final Condition condition = threadLock.newCondition();
     public static boolean isPaused = true;
+
     public static void resumeGame() {
         try {
             threadLock.lock();
