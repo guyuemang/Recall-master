@@ -27,9 +27,11 @@ public class Sprint extends Module {
 
     @EventTarget
     public void onMotion(MotionEvent event) {
-            if (!keepSprinting) {
+        if (!keepSprinting) {
             if (!isEnabled(Scaffold.class))
                 KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
+        }else {
+            keepSprinting = false;
         }
 
         if (omni.get()) {

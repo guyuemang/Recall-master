@@ -5,6 +5,9 @@ import com.viaversion.viarewind.utils.PacketUtil;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
+import com.yumegod.obfuscation.FlowObfuscate;
+import com.yumegod.obfuscation.Native;
+import com.yumegod.obfuscation.Rename;
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,11 +17,13 @@ import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
+import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
@@ -30,6 +35,7 @@ import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.BlinkComponent;
+import qwq.arcane.utils.player.BlinkUtils;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
@@ -42,6 +48,9 @@ import java.util.List;
 
 import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
 
+@Native
+@Rename
+@FlowObfuscate
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura",Category.Combat);
@@ -54,7 +63,7 @@ public class KillAura extends Module {
     public BoolValue keepsprint = new BoolValue("KeepSprint",false);
     public BoolValue autoblock = new BoolValue("AutoBlock",false);
     public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
-    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "Interact", "Blink"});
+    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "Interact"});
     public BoolValue rotation = new BoolValue("Rotation",false);
     public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
@@ -81,8 +90,6 @@ public class KillAura extends Module {
     public TimerUtil attacktimer = new TimerUtil();
     private int index;
     private int cps;
-    private int tick = 0;
-
     @Override
     public void onEnable() {
         StopAutoBlock();
@@ -240,6 +247,7 @@ public class KillAura extends Module {
     }
 
     public void onAutoBlock(){
+        final int currentSlot = mc.thePlayer.inventory.currentItem;
         if (shouldAutoBlock(blockTarget)) {
             switch (blockmode.get()) {
                 case "Grim":
@@ -256,12 +264,15 @@ public class KillAura extends Module {
                     blocking = true;
                     break;
                 case "Interact":
-                    sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.INTERACT));
-                    sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
-                    blocking = true;
+                    if (mc.thePlayer.ticksExisted % 4 == 0) {
+                        mc.gameSettings.keyBindUseItem.setPressed(true);
+                        blocking = true;
+                    } else {
+                        mc.gameSettings.keyBindUseItem.setPressed(false);
+                        blocking = false;
+                    }
                     break;
                 case "Blink":
-                    blocking = true;
                     break;
             }
         }
@@ -280,10 +291,11 @@ public class KillAura extends Module {
                     blocking = false;
                     break;
                 case "Interact":
-                    sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                    mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
-                    break;
                 case "Blink":
+                    sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                    BlinkUtils.stopBlink();
                     blocking = false;
                     break;
                 case "Fake":

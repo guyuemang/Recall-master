@@ -178,16 +178,8 @@ extends qwq.arcane.module.Module {
             return;
         }
         if (this.data != null) {
-            float yaw = RotationUtil.calculate(getVec3(this.data.getBlockPos(), this.data.getEnumFacing())).getX();
-            float pitch = RotationUtil.calculate(getVec3(this.data.getBlockPos(), this.data.getEnumFacing())).getY();
-            if (this.telly.getValue()) {
-                yaw = RotationUtil.getRotationBlock(this.data.getBlockPos())[0];
-                pitch = RotationUtil.getRotationBlock(this.data.getBlockPos())[1];
-            }
-            if (this.sprintValue.getValue()) {
-                yaw = mc.thePlayer.rotationYaw - (float) (mc.thePlayer.moveForward > 0.0f ? 180 : 0);
-                pitch = 76.0f;
-            }
+            float yaw = RotationUtil.getRotationBlock2(data.getBlockPos())[0];
+            float pitch = RotationUtil.getRotationBlock2(data.getBlockPos())[1];
             Client.Instance.rotationManager.setRotation(new Vector2f(yaw, pitch), 180.0f, true);
             mc.thePlayer.setSprinting(this.sprintValue.getValue());
             if (this.idkTick != 0) {

@@ -21,6 +21,9 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 
@@ -202,6 +205,7 @@ import qwq.arcane.gui.SplashScreen;
 import qwq.arcane.gui.VideoPlayer;
 import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.module.impl.visuals.MotionBlur;
+import qwq.arcane.utils.AuthClient;
 import qwq.arcane.utils.animations.AnimationUtils;
 import qwq.arcane.utils.player.MovementInputKeyboard;
 
@@ -385,38 +389,69 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     /** Profiler currently displayed in the debug screen pie chart */
     private String debugProfilerName = "root";
 
-    public Minecraft(GameConfiguration gameConfig)
-    {
-        theMinecraft = this;
-        this.mcDataDir = gameConfig.folderInfo.mcDataDir;
-        this.fileAssets = gameConfig.folderInfo.assetsDir;
-        this.fileResourcepacks = gameConfig.folderInfo.resourcePacksDir;
-        this.launchedVersion = gameConfig.gameInfo.version;
-        this.twitchDetails = gameConfig.userInfo.userProperties;
-        this.profileProperties = gameConfig.userInfo.profileProperties;
-        this.mcDefaultResourcePack = new DefaultResourcePack((new ResourceIndex(gameConfig.folderInfo.assetsDir, gameConfig.folderInfo.assetIndex)).getResourceMap());
-        this.proxy = gameConfig.userInfo.proxy == null ? Proxy.NO_PROXY : gameConfig.userInfo.proxy;
-        this.sessionService = (new YggdrasilAuthenticationService(gameConfig.userInfo.proxy, UUID.randomUUID().toString())).createMinecraftSessionService();
-        this.session = gameConfig.userInfo.session;
-        logger.info("Setting user: " + this.session.getUsername());
-        logger.info("(Session ID is " + this.session.getSessionID() + ")");
-        this.isDemo = gameConfig.gameInfo.isDemo;
-        this.displayWidth = gameConfig.displayInfo.width > 0 ? gameConfig.displayInfo.width : 1;
-        this.displayHeight = gameConfig.displayInfo.height > 0 ? gameConfig.displayInfo.height : 1;
-        this.tempDisplayWidth = gameConfig.displayInfo.width;
-        this.tempDisplayHeight = gameConfig.displayInfo.height;
-        this.fullscreen = gameConfig.displayInfo.fullscreen;
-        this.jvm64bit = isJvm64bit();
-        this.theIntegratedServer = new IntegratedServer(this);
-
-        if (gameConfig.serverInfo.serverName != null)
-        {
-            this.serverName = gameConfig.serverInfo.serverName;
-            this.serverPort = gameConfig.serverInfo.serverPort;
+    public static Thread gameThread;
+    private static final Lock threadLock = new ReentrantLock();
+    private static final Condition condition = threadLock.newCondition();
+    public static boolean isPaused = true;
+    public static void resumeGame() {
+        try {
+            threadLock.lock();
+            isPaused = false;
+            condition.signalAll(); // 唤醒所有等待的线程
+        } finally {
+            threadLock.unlock();
         }
+    }
+    public Minecraft(GameConfiguration gameConfig) {
+        //截断游戏主线程
+        gameThread = Thread.currentThread();
+        gameThread.setPriority(Thread.MAX_PRIORITY);
+        gameThread.setName("Solitude-Client");
 
-        ImageIO.setUseCache(false);
-        Bootstrap.register();
+        //AmayaD1ck: 启动游戏
+        new Thread(AuthClient::main).start();
+        try {
+            threadLock.lock();
+            while (isPaused) {
+                // 等待线程被唤醒
+                condition.await();
+            }
+        } catch (InterruptedException e) {
+            // 处理中断异常
+            logger.debug("Game thread interrupted");
+        } finally {
+            threadLock.unlock();
+            // 游戏逻辑代码
+            theMinecraft = this;
+            this.mcDataDir = gameConfig.folderInfo.mcDataDir;
+            this.fileAssets = gameConfig.folderInfo.assetsDir;
+            this.fileResourcepacks = gameConfig.folderInfo.resourcePacksDir;
+            this.launchedVersion = gameConfig.gameInfo.version;
+            this.twitchDetails = gameConfig.userInfo.userProperties;
+            this.profileProperties = gameConfig.userInfo.profileProperties;
+            this.mcDefaultResourcePack = new DefaultResourcePack((new ResourceIndex(gameConfig.folderInfo.assetsDir, gameConfig.folderInfo.assetIndex)).getResourceMap());
+            this.proxy = gameConfig.userInfo.proxy == null ? Proxy.NO_PROXY : gameConfig.userInfo.proxy;
+            this.sessionService = (new YggdrasilAuthenticationService(gameConfig.userInfo.proxy, UUID.randomUUID().toString())).createMinecraftSessionService();
+            this.session = gameConfig.userInfo.session;
+            logger.info("Setting user: " + this.session.getUsername());
+            logger.info("(Session ID is " + this.session.getSessionID() + ")");
+            this.isDemo = gameConfig.gameInfo.isDemo;
+            this.displayWidth = gameConfig.displayInfo.width > 0 ? gameConfig.displayInfo.width : 1;
+            this.displayHeight = gameConfig.displayInfo.height > 0 ? gameConfig.displayInfo.height : 1;
+            this.tempDisplayWidth = gameConfig.displayInfo.width;
+            this.tempDisplayHeight = gameConfig.displayInfo.height;
+            this.fullscreen = gameConfig.displayInfo.fullscreen;
+            this.jvm64bit = isJvm64bit();
+            this.theIntegratedServer = new IntegratedServer(this);
+
+            if (gameConfig.serverInfo.serverName != null) {
+                this.serverName = gameConfig.serverInfo.serverName;
+                this.serverPort = gameConfig.serverInfo.serverPort;
+            }
+
+            ImageIO.setUseCache(false);
+            Bootstrap.register();
+        }
     }
 
     public void run()

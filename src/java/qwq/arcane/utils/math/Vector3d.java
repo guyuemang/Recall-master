@@ -6,9 +6,9 @@ package qwq.arcane.utils.math;
  */
 public class Vector3d {
 
-    private final double x;
-    private final double y;
-    private final double z;
+    public final double x;
+    public final double y;
+    public final double z;
 
     public Vector3d(final double x, final double y, final double z) {
         this.x = x;

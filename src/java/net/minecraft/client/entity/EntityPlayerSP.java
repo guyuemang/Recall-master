@@ -50,6 +50,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.misc.ChatEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.PostUpdateEvent;
 import qwq.arcane.event.impl.events.player.SlowDownEvent;
@@ -301,7 +302,11 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void sendChatMessage(String message)
     {
-        this.sendQueue.addToSendQueue(new C01PacketChatMessage(message));
+        ChatEvent playerSendMessageEvent = new ChatEvent(message);
+        Client.Instance.getEventManager().call(playerSendMessageEvent);
+        if (!playerSendMessageEvent.isCancelled()) {
+            this.sendQueue.addToSendQueue(new C01PacketChatMessage(message));
+        }
     }
 
     /**

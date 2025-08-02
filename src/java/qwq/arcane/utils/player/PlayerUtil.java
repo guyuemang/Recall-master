@@ -20,11 +20,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import org.apache.commons.lang3.StringUtils;
 import qwq.arcane.utils.Instance;
+import qwq.arcane.utils.rotation.RotationUtil;
 
 /**
  * @Author：Guyuemang
@@ -69,6 +71,26 @@ public class PlayerUtil implements Instance {
     }
     public static boolean isBlockUnder(Entity ent) {
         return mc.theWorld.getBlockState(new BlockPos(ent.posX, ent.posY -1, ent.posZ)).getBlock() != Blocks.air && mc.theWorld.getBlockState(new BlockPos(ent.posX, ent.posY -1, ent.posZ)).getBlock().isFullBlock();
+    }  public static boolean isBlockUnder(double height, boolean boundingBox) {
+        if (boundingBox) {
+            int offset = 0;
+            while ((double)offset < height) {
+                AxisAlignedBB bb = RotationUtil.mc.thePlayer.getEntityBoundingBox().offset(0.0, -offset, 0.0);
+                if (!RotationUtil.mc.theWorld.getCollidingBoundingBoxes(RotationUtil.mc.thePlayer, bb).isEmpty()) {
+                    return true;
+                }
+                offset += 2;
+            }
+        } else {
+            int offset = 0;
+            while ((double)offset < height) {
+                if (PlayerUtil.blockRelativeToPlayer(0.0, -offset, 0.0).isFullBlock()) {
+                    return true;
+                }
+                ++offset;
+            }
+        }
+        return false;
     }
     public static int findTool(final BlockPos blockPos) {
         float bestSpeed = 1;

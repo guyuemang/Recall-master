@@ -20,6 +20,8 @@ import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.combat.KillAura;
+import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.player.InventoryUtil;
 import qwq.arcane.utils.time.StopWatch;
@@ -76,6 +78,7 @@ public class InvManager extends Module {
 
     @EventTarget
     public void onPacketSend(PacketSendEvent event) {
+        if (INSTANCE.getModuleManager().getModule(Scaffold.class).getState() || INSTANCE.getModuleManager().getModule(KillAura.class).target != null) return;
         if (usingItemCheck.get() && mc.thePlayer.isUsingItem()) return;
         final Packet<?> packet = event.getPacket();
 
@@ -148,6 +151,7 @@ public class InvManager extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         setsuffix(String.valueOf(maxDelay.get()));
+        if (INSTANCE.getModuleManager().getModule(Scaffold.class).getState() || INSTANCE.getModuleManager().getModule(KillAura.class).target != null) return;
         if (usingItemCheck.get() && mc.thePlayer.isUsingItem()) return;
         final long delay = (MathUtils.nextInt((int) minDelay.get().intValue(), (int) maxDelay.get().intValue()) * 50L);
         if ((this.clientOpen || (mc.currentScreen == null && !Objects.equals(this.mode.get(), "Open Inventory")))) {

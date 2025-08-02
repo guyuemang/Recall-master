@@ -92,6 +92,9 @@ public class Noslow extends Module {
     @EventTarget
     public void onMotion(MotionEvent event) {
         setsuffix(String.valueOf(mode.get()));
+        if (this.isGapple()) {
+            return;
+        }
         if (mode.is("Blink")) {
             if (mc.thePlayer.isUsingItem() && usingItem){
                 mc.thePlayer.setJumping(true);
@@ -154,6 +157,9 @@ public class Noslow extends Module {
     }
     @EventTarget
     public void onSlowDown(SlowDownEvent event) {
+        if (this.isGapple()) {
+            return;
+        }
         switch (mode.get()) {
             case "Grim":
                 if (mc.thePlayer.getHeldItem() != null && (mc.thePlayer.getHeldItem().getItem() instanceof ItemFood || (mc.thePlayer.getHeldItem().getItem() instanceof ItemPotion && !ItemPotion.isSplash(mc.thePlayer.getHeldItem().getMetadata())))) {
@@ -187,6 +193,9 @@ public class Noslow extends Module {
     }
     @EventTarget
     public void onReceive(PacketReceiveEvent event) {
+        if (this.isGapple()) {
+            return;
+        }
         if (mode.is("Grim")) {
             Packet<?> packet = event.getPacket();
             if (packet instanceof C08PacketPlayerBlockPlacement) {
@@ -203,6 +212,9 @@ public class Noslow extends Module {
     }
     @EventTarget
     public void onPacketSend(PacketSendEvent event) {
+        if (this.isGapple()) {
+            return;
+        }
         Packet<?> packet = event.getPacket();
 
         if (mc.thePlayer == null) return;

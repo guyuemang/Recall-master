@@ -53,6 +53,7 @@ public class ModuleManager {
         registerModule(new LongJump());
         registerModule(new NoJumpDelay());
         registerModule(new Noslow());
+        registerModule(new TargetStrafe());
         registerModule(new Speed());
         registerModule(new Sprint());
 

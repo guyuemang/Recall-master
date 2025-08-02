@@ -22,6 +22,7 @@ import qwq.arcane.utils.player.*;
 import qwq.arcane.utils.render.BlockUtil;
 import qwq.arcane.utils.render.PlaceInfo;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.rotation.RayCastUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
@@ -53,7 +54,6 @@ public class Scaffold extends Module {
     private int prevItem = 0;
     private TimerUtil timerUtil = new TimerUtil();
     private double onGroundY;
-    private float[] smoothRotation = new float[]{0, 85F};
     @Override
     public void onEnable() {
         timerUtil.reset();
@@ -62,7 +62,6 @@ public class Scaffold extends Module {
         }
         onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
         this.slot = -1;
-        smoothRotation = new float[]{mc.thePlayer.rotationYaw, 85F};
     }
     @Override
     public void onDisable() {
@@ -113,24 +112,40 @@ public class Scaffold extends Module {
 
         if (data != null && rotation.get()) {
             float[] rotation;
+            float[] rotations = new float[2];
             switch (modeValue.get()){
                 case "Normal":
                     rotation = RotationUtil.getRotations(getVec3(data));
                     Client.Instance.rotationManager.setRotation(new Vector2f(rotation[0],rotation[1]),rotationspeed.get().intValue(),movefix.get(),false);
                     break;
                 case "Telly":
-                    if (mc.gameSettings.keyBindJump.isKeyDown()) {
-                        smoothRotation[0] = MovementUtil.getBindsDirection(mc.thePlayer.rotationYaw) - 115;
+                    if (mc.thePlayer.offGroundTicks >= 7) {
+                        rotations[0] = MovementUtil.getDirection();
+                        rotations[1] = 60;
                     } else {
-                        if (mc.thePlayer.offGroundTicks > 5) {
-                            smoothRotation[0] = MovementUtil.getBindsDirection(mc.thePlayer.rotationYaw) - 180;
-                        } else if (mc.thePlayer.offGroundTicks > 2) {
-                            smoothRotation[0] = MovementUtil.getBindsDirection(mc.thePlayer.rotationYaw) - 90;
-                        } else {
-                            smoothRotation[0] = MovementUtil.getBindsDirection(mc.thePlayer.rotationYaw) - 125;
+                        rotations[0] = MovementUtil.getDirection() - 180;
+                        rotations[1] = 82.5f;
+                        if (data.getBlockPos() != null && rayCastValue.getValue()) {
+                            for (float possiblePitch = 90; possiblePitch > 30; possiblePitch -= possiblePitch > (mc.thePlayer
+                                    .isPotionActive(Potion.moveSpeed) ? 60 : 80) ? 1 : 10) {
+                                if (RayCastUtil.isOnBlock(data.getFacing(), data.getBlockPos(), true, mc.playerController.getBlockReachDistance(),
+                                        rotations[0], possiblePitch)) {
+                                    rotations[1] = possiblePitch;
+                                }
+                            }
                         }
                     }
-                    Client.Instance.rotationManager.setRotation(new Vector2f(smoothRotation[0],smoothRotation[1]),rotationspeed.get().intValue(),movefix.get(),false);
+                    Client.Instance.rotationManager.setRotation(new Vector2f(rotations[0],rotations[1]),rotationspeed.get().intValue(),movefix.get(),false);
+                    break;
+                case "Hypixel":
+                    if (mc.thePlayer.offGroundTicks >= 9) {
+                        rotations[0] = MovementUtil.getDirection();
+                        rotations[1] = 60;
+                    } else {
+                        rotations[0] = Client.Instance.rotationManager.snapToHypYaw(MovementUtil.getDirection(), false);
+                        rotations[1] = 82.5f;
+                    }
+                    Client.Instance.rotationManager.setRotation(new Vector2f(rotations[0],rotations[1]),rotationspeed.get().intValue(),movefix.get(),false);
                     break;
             }
         }

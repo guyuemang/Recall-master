@@ -2,11 +2,13 @@ package qwq.arcane.module.impl.world;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.*;
+import net.minecraft.potion.Potion;
 import qwq.arcane.event.annotations.EventPriority;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
@@ -16,6 +18,7 @@ import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Noslow;
+import qwq.arcane.module.impl.player.InvManager;
 import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
@@ -24,11 +27,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
+
 /**
  * @Author：Guyuemang
  * @Date：7/7/2025 12:00 AM
  */
 public class Disabler extends Module {
+    public static final BoolValue invmove = new BoolValue("Dog Invmove", true);
     public static final BoolValue postValue = new BoolValue("Post", true);
     public final BoolValue oldPostValue = new BoolValue("OldPost", false);
     public final BoolValue digValue = new BoolValue("Digging", true);
@@ -43,6 +49,9 @@ public class Disabler extends Module {
     boolean lastSprinting;
     static Disabler INSTANCE;
     private boolean S08 = false;
+    private boolean c16;
+    private boolean c0d;
+
     public Disabler() {
         super("Disabler", Category.World);
         INSTANCE = this;
@@ -50,6 +59,17 @@ public class Disabler extends Module {
     @EventTarget
     @EventPriority(value=9)
     public void onupdate(UpdateEvent event) {
+        if (invmove.get()) {
+            c16 = false;
+            c0d = false;
+            if (mc.currentScreen instanceof GuiInventory || getModule(InvManager.class).isEnabled() && getModule(InvManager.class).clientOpen) {
+                if (mc.thePlayer.ticksExisted % (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 3 : 4) == 0) {
+                    sendPacketNoEvent(new C0DPacketCloseWindow());
+                } else if (mc.thePlayer.ticksExisted % (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 3 : 4) == 1) {
+                    sendPacketNoEvent(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+                }
+            }
+        }
         if (this.fakePingValue.getValue().booleanValue()) {
             try {
                 HashMap<Packet<?>, Long> hashMap = this.packetsMap;
@@ -123,6 +143,22 @@ public class Disabler extends Module {
     @EventTarget
     public void onPacket(PacketSendEvent event) {
         Packet packet = event.getPacket();
+        if (invmove.get()){
+
+            if (event.getPacket() instanceof C16PacketClientStatus) {
+                if (c16) {
+                    event.setCancelled(true);
+                }
+                c16 = true;
+            }
+
+            if (event.getPacket() instanceof C0DPacketCloseWindow) {
+                if (c0d) {
+                    event.setCancelled(true);
+                }
+                c0d = true;
+            }
+        }
         if (Disabler.mc.thePlayer == null) {
             return;
         }
@@ -146,7 +182,7 @@ public class Disabler extends Module {
             PacketUtil.sendPacket(new C0FPacketConfirmTransaction(114, (short) 514, true));
         }
         if (this.fastBreak.getValue().booleanValue() && packet instanceof C07PacketPlayerDigging && ((C07PacketPlayerDigging)packet).getStatus() == C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK) {
-            PacketUtil.sendPacketNoEvent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, ((C07PacketPlayerDigging)packet).getPosition(), ((C07PacketPlayerDigging)packet).getFacing()));
+            sendPacketNoEvent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, ((C07PacketPlayerDigging)packet).getPosition(), ((C07PacketPlayerDigging)packet).getFacing()));
         }
         if (this.badPacketsA.getValue().booleanValue() && packet instanceof C09PacketHeldItemChange) {
             int slot = ((C09PacketHeldItemChange)packet).getSlotId();

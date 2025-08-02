@@ -18,7 +18,30 @@ public final class RayCastUtil implements Instance {
     public static MovingObjectPosition rayCast(final Vector2f rotation, final double range) {
         return rayCast(rotation, range, 0);
     }
+    private static MovingObjectPosition rayTraceBlocks(float yaw, float pitch, float reach) {
+        final Vec3 vec3 = mc.thePlayer.getPositionEyes(1.0F);
+        final Vec3 vec31 = Entity.getVectorForRotation(pitch, yaw);
+        final Vec3 vec32 = vec3.addVector(vec31.xCoord * (double) reach, vec31.yCoord * (double) reach, vec31.zCoord * (double) reach);
+        return mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
+    }
+    public static boolean isOnBlock(EnumFacing facing, BlockPos position, boolean strict, float reach, float yaw, float pitch) {
+        MovingObjectPosition blockHitResult = rayTraceBlocks(yaw, pitch, reach);
+        if (blockHitResult == null) {
+            return false;
+        }
 
+        if (blockHitResult.getBlockPos().getX() == position.getX() && blockHitResult.getBlockPos().getY() == position.getY() && blockHitResult.getBlockPos().getZ() == position.getZ()) {
+            if (strict) {
+                mc.objectMouseOver = blockHitResult;
+                return blockHitResult.sideHit == facing;
+            } else {
+                mc.objectMouseOver = blockHitResult;
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
     public static MovingObjectPosition rayCast(final Vector2f rotation, final double range, final float expand) {
         return rayCast(rotation, range, expand, mc.thePlayer);
     }

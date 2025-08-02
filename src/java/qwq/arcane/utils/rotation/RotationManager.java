@@ -9,6 +9,7 @@ import qwq.arcane.event.annotations.EventPriority;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.player.*;
 import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.Rotation;
 
 public final class RotationManager {
@@ -42,7 +43,25 @@ public final class RotationManager {
         Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance, vec31.zCoord * blockReachDistance);
         return mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
     }
-
+    public float snapToHypYaw(final float yaw, final boolean slowdown) {
+        final float snappedBase = Math.round(yaw / 45.0f) * 45.0f;
+        float lowerOffset;
+        float upperOffset;
+        if (Math.abs(snappedBase % 90.0f) < 0.001f) {
+            lowerOffset = 111.0f;
+            upperOffset = 111.0f;
+        }
+        else {
+            lowerOffset = 137.0f;
+            upperOffset = 137.0f;
+            if (slowdown) {
+                MovementUtil.strafe(0.009999999776482582);
+            }
+        }
+        final float lowerCandidate = snappedBase - lowerOffset;
+        final float upperCandidate = snappedBase + upperOffset;
+        return (Math.abs(yaw - lowerCandidate) <= Math.abs(upperCandidate - yaw)) ? lowerCandidate : upperCandidate;
+    }
     public void setRotation(Vector2f rotation, float rotationSpeed, boolean movementFix, boolean strict) {
         this.targetRotation = applyRandomOffset(rotation);
         this.rotationSpeed = rotationSpeed;

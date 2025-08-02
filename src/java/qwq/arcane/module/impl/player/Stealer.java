@@ -6,6 +6,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.client.C0EPacketClickWindow;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
@@ -19,6 +20,8 @@ import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.combat.KillAura;
+import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.time.StopWatch;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
@@ -39,6 +42,7 @@ public class Stealer extends Module {
     }
 
     private NumberValue delay = new NumberValue("Delay", 3, 0, 15, 1);
+    private BoolValue c0FPacketConfirmTransaction = new BoolValue("C0FPacketConfirmTransaction", false);
     private MultiBooleanValue container = new MultiBooleanValue("Container", Arrays.asList(new BoolValue("Chest", true),
             new BoolValue("Furnace", true)));
 
@@ -54,9 +58,11 @@ public class Stealer extends Module {
     @EventTarget
     public void onMotion(MotionEvent event) {
         setsuffix(String.valueOf(delay.get()));
+        if (INSTANCE.getModuleManager().getModule(Scaffold.class).getState() || INSTANCE.getModuleManager().getModule(KillAura.class).target != null) return;
         if (mc.thePlayer.openContainer instanceof ContainerFurnace && container.isEnabled("Furnace")) {
             ContainerFurnace furnace = (ContainerFurnace) mc.thePlayer.openContainer;
             hasItems = false;
+
             for (int i = 0; i < furnace.tileFurnace.getSizeInventory(); ++i) {
                 if (furnace.tileFurnace.getStackInSlot(i) != null) {
                     hasItems = true;
