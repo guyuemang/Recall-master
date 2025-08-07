@@ -23,7 +23,6 @@ import qwq.arcane.module.impl.player.Blink;
 import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
-import qwq.arcane.utils.rotation.RotationManager;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 
@@ -232,7 +231,7 @@ public class Speed extends Module {
         }
 
         if (KillAura.target != null && mc.gameSettings.keyBindJump.isKeyDown()) {
-            moveYaw = RotationManager.rotation.x;
+            moveYaw = Client.Instance.getRotationManager().lastRotation.x;
         }
 
         return moveYaw;

@@ -2,7 +2,7 @@ package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.network.LanServerDetector;
 
@@ -14,7 +14,7 @@ public class ServerSelectionList extends GuiListExtended
     private final GuiListExtended.IGuiListEntry lanScanEntry = new ServerListEntryLanScan();
     private int selectedSlotIndex = -1;
 
-    public ServerSelectionList(GuiMultiplayer ownerIn, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn)
+    public ServerSelectionList(GuiMultiplayer ownerIn, Mine mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn)
     {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
         this.owner = ownerIn;

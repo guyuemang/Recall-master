@@ -3,7 +3,8 @@ package net.minecraft.client.gui;
 import com.google.common.collect.Lists;
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
@@ -15,14 +16,14 @@ import org.apache.logging.log4j.Logger;
 public class GuiNewChat extends Gui
 {
     private static final Logger logger = LogManager.getLogger();
-    private final Minecraft mc;
+    private final Mine mc;
     private final List<String> sentMessages = Lists.<String>newArrayList();
     private final List<ChatLine> chatLines = Lists.<ChatLine>newArrayList();
     private final List<ChatLine> drawnChatLines = Lists.<ChatLine>newArrayList();
     private int scrollPos;
     private boolean isScrolled;
 
-    public GuiNewChat(Minecraft mcIn)
+    public GuiNewChat(Mine mcIn)
     {
         this.mc = mcIn;
     }

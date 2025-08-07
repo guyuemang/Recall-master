@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.realms.RealmsButton;
 
 public class GuiButtonRealmsProxy extends GuiButton
@@ -53,7 +53,7 @@ public class GuiButtonRealmsProxy extends GuiButton
      * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
      * e).
      */
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+    public boolean mousePressed(Mine mc, int mouseX, int mouseY)
     {
         if (super.mousePressed(mc, mouseX, mouseY))
         {
@@ -74,7 +74,7 @@ public class GuiButtonRealmsProxy extends GuiButton
     /**
      * Fired when the mouse button is dragged. Equivalent of MouseListener.mouseDragged(MouseEvent e).
      */
-    public void mouseDragged(Minecraft mc, int mouseX, int mouseY)
+    public void mouseDragged(Mine mc, int mouseX, int mouseY)
     {
         this.realmsButton.renderBg(mouseX, mouseY);
     }

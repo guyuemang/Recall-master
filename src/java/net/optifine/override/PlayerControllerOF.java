@@ -1,6 +1,6 @@
 package net.optifine.override;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -20,7 +20,7 @@ public class PlayerControllerOF extends PlayerControllerMP
     private BlockPos lastClickBlockPos = null;
     private Entity lastClickEntity = null;
 
-    public PlayerControllerOF(Minecraft mcIn, NetHandlerPlayClient netHandler)
+    public PlayerControllerOF(Mine mcIn, NetHandlerPlayClient netHandler)
     {
         super(mcIn, netHandler);
     }

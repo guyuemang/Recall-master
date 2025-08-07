@@ -14,7 +14,7 @@ import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -55,13 +55,12 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import qwq.arcane.Client;
-import qwq.arcane.event.EventManager;
 import qwq.arcane.event.impl.events.player.JumpEvent;
 import qwq.arcane.event.impl.events.player.MoveEvent;
 import qwq.arcane.event.impl.events.player.MoveMathEvent;
 import qwq.arcane.module.impl.combat.Gapple;
 import qwq.arcane.module.impl.visuals.Animations;
-import qwq.arcane.utils.player.MovementUtil;
+import qwq.arcane.utils.animations.impl.ContinualAnimation;
 
 import static net.minecraft.potion.Potion.digSlowdown;
 import static net.minecraft.potion.Potion.digSpeed;
@@ -81,6 +80,10 @@ public abstract class EntityLivingBase extends Entity
     public boolean isSwingInProgress;
     public int swingProgressInt;
     public int arrowHitTimer;
+    public double realPosX;
+    public double realPosY;
+    public double realPosZ;
+    public ContinualAnimation healthAnimation = new ContinualAnimation();
 
     /**
      * The amount of time remaining this entity should act 'hurt'. (Visual appearance of red tint)
@@ -1350,7 +1353,7 @@ public abstract class EntityLivingBase extends Entity
      * progress indicator. Takes dig speed enchantments into account.
      */
     public int getArmSwingAnimationEnd() {
-        if (Client.Instance.getModuleManager().getModule(Animations.class).getState() && this == Minecraft.getMinecraft().thePlayer) {
+        if (Client.Instance.getModuleManager().getModule(Animations.class).getState() && this == Mine.getMinecraft().thePlayer) {
             return (int) (6 + Client.Instance.getModuleManager().getModule(Animations.class).getSlowdown().get());
         } else {
             return this.isPotionActive(digSpeed) ? 6 - (1 + this.getActivePotionEffect(digSpeed).getAmplifier()) : this.isPotionActive(digSlowdown) ? 6 + (1 + this.getActivePotionEffect(digSlowdown).getAmplifier()) * 2 : 6;
@@ -1629,9 +1632,9 @@ public abstract class EntityLivingBase extends Entity
      */
     public void moveEntityWithHeading(float strafe, float forward)
     {
-        if (this == Minecraft.getMinecraft().thePlayer) {
+        if (this == Mine.getMinecraft().thePlayer) {
             if (Client.Instance.getModuleManager().getModule(Gapple.class).getState()) {
-                if (Minecraft.getMinecraft().thePlayer.positionUpdateTicks < 19 && !Gapple.isS12) {
+                if (Mine.getMinecraft().thePlayer.positionUpdateTicks < 19 && !Gapple.isS12) {
                     return;
                 } else if (Gapple.isS12) {
                     Gapple.isS12 = false;

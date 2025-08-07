@@ -5,7 +5,8 @@ import com.google.common.collect.Ordering;
 import com.mojang.authlib.GameProfile;
 import java.util.Comparator;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +24,7 @@ import net.minecraft.world.WorldSettings;
 public class GuiPlayerTabOverlay extends Gui
 {
     private static final Ordering<NetworkPlayerInfo> field_175252_a = Ordering.from(new GuiPlayerTabOverlay.PlayerComparator());
-    private final Minecraft mc;
+    private final Mine mc;
     private final GuiIngame guiIngame;
     private IChatComponent footer;
     private IChatComponent header;
@@ -36,7 +37,7 @@ public class GuiPlayerTabOverlay extends Gui
     /** Weither or not the playerlist is currently being rendered */
     private boolean isBeingRendered;
 
-    public GuiPlayerTabOverlay(Minecraft mcIn, GuiIngame guiIngameIn)
+    public GuiPlayerTabOverlay(Mine mcIn, GuiIngame guiIngameIn)
     {
         this.mc = mcIn;
         this.guiIngame = guiIngameIn;
@@ -58,7 +59,7 @@ public class GuiPlayerTabOverlay extends Gui
     {
         if (willBeRendered && !this.isBeingRendered)
         {
-            this.lastTimeOpened = Minecraft.getSystemTime();
+            this.lastTimeOpened = Mine.getSystemTime();
         }
 
         this.isBeingRendered = willBeRendered;
@@ -283,21 +284,21 @@ public class GuiPlayerTabOverlay extends Gui
             {
                 if (i < p_175247_6_.func_178835_l())
                 {
-                    p_175247_6_.func_178846_a(Minecraft.getSystemTime());
+                    p_175247_6_.func_178846_a(Mine.getSystemTime());
                     p_175247_6_.func_178844_b((long)(this.guiIngame.getUpdateCounter() + 20));
                 }
                 else if (i > p_175247_6_.func_178835_l())
                 {
-                    p_175247_6_.func_178846_a(Minecraft.getSystemTime());
+                    p_175247_6_.func_178846_a(Mine.getSystemTime());
                     p_175247_6_.func_178844_b((long)(this.guiIngame.getUpdateCounter() + 10));
                 }
             }
 
-            if (Minecraft.getSystemTime() - p_175247_6_.func_178847_n() > 1000L || this.lastTimeOpened != p_175247_6_.func_178855_p())
+            if (Mine.getSystemTime() - p_175247_6_.func_178847_n() > 1000L || this.lastTimeOpened != p_175247_6_.func_178855_p())
             {
                 p_175247_6_.func_178836_b(i);
                 p_175247_6_.func_178857_c(i);
-                p_175247_6_.func_178846_a(Minecraft.getSystemTime());
+                p_175247_6_.func_178846_a(Mine.getSystemTime());
             }
 
             p_175247_6_.func_178843_c(this.lastTimeOpened);

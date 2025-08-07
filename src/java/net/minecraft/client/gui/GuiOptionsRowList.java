@@ -2,14 +2,14 @@ package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.settings.GameSettings;
 
 public class GuiOptionsRowList extends GuiListExtended
 {
     private final List<GuiOptionsRowList.Row> field_148184_k = Lists.<GuiOptionsRowList.Row>newArrayList();
 
-    public GuiOptionsRowList(Minecraft mcIn, int p_i45015_2_, int p_i45015_3_, int p_i45015_4_, int p_i45015_5_, int p_i45015_6_, GameSettings.Options... p_i45015_7_)
+    public GuiOptionsRowList(Mine mcIn, int p_i45015_2_, int p_i45015_3_, int p_i45015_4_, int p_i45015_5_, int p_i45015_6_, GameSettings.Options... p_i45015_7_)
     {
         super(mcIn, p_i45015_2_, p_i45015_3_, p_i45015_4_, p_i45015_5_, p_i45015_6_);
         this.field_148163_i = false;
@@ -24,7 +24,7 @@ public class GuiOptionsRowList extends GuiListExtended
         }
     }
 
-    private GuiButton func_148182_a(Minecraft mcIn, int p_148182_2_, int p_148182_3_, GameSettings.Options p_148182_4_)
+    private GuiButton func_148182_a(Mine mcIn, int p_148182_2_, int p_148182_3_, GameSettings.Options p_148182_4_)
     {
         if (p_148182_4_ == null)
         {
@@ -65,7 +65,7 @@ public class GuiOptionsRowList extends GuiListExtended
 
     public static class Row implements GuiListExtended.IGuiListEntry
     {
-        private final Minecraft field_148325_a = Minecraft.getMinecraft();
+        private final Mine field_148325_a = Mine.getMinecraft();
         private final GuiButton field_148323_b;
         private final GuiButton field_148324_c;
 

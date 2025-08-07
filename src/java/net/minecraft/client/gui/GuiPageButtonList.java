@@ -5,7 +5,8 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.util.IntHashMap;
 
 public class GuiPageButtonList extends GuiListExtended
@@ -18,7 +19,7 @@ public class GuiPageButtonList extends GuiListExtended
     private GuiPageButtonList.GuiResponder field_178076_z;
     private Gui field_178075_A;
 
-    public GuiPageButtonList(Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, GuiPageButtonList.GuiResponder p_i45536_7_, GuiPageButtonList.GuiListEntry[]... p_i45536_8_)
+    public GuiPageButtonList(Mine mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, GuiPageButtonList.GuiResponder p_i45536_7_, GuiPageButtonList.GuiListEntry[]... p_i45536_8_)
     {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
         this.field_178076_z = p_i45536_7_;
@@ -388,7 +389,7 @@ public class GuiPageButtonList extends GuiListExtended
 
     public static class GuiEntry implements GuiListExtended.IGuiListEntry
     {
-        private final Minecraft field_178031_a = Minecraft.getMinecraft();
+        private final Mine field_178031_a = Mine.getMinecraft();
         private final Gui field_178029_b;
         private final Gui field_178030_c;
         private Gui field_178028_d;

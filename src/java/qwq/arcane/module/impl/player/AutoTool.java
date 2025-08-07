@@ -33,6 +33,7 @@ public class AutoTool extends Module {
 
     @EventTarget
     public void onTick(TickEvent event) {
+        setsuffix("Spoof");
         if (mc.thePlayer == null || mc.theWorld == null) return;
         if (mc.gameSettings.keyBindAttack.isKeyDown() && (ignoreUsingItem.get() && !mc.thePlayer.isUsingItem() || !ignoreUsingItem.get()) && mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && PlayerUtil.findTool(mc.objectMouseOver.getBlockPos()) != -1) {
             if (!this.wasDigging) {

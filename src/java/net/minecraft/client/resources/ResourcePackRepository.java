@@ -19,7 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -217,17 +218,17 @@ public class ResourcePackRepository
 
             this.deleteOldServerResourcesPacks();
             final GuiScreenWorking guiscreenworking = new GuiScreenWorking();
-            Map<String, String> map = Minecraft.getSessionInfo();
-            final Minecraft minecraft = Minecraft.getMinecraft();
-            Futures.getUnchecked(minecraft.addScheduledTask(new Runnable()
+            Map<String, String> map = Mine.getSessionInfo();
+            final Mine mine = Mine.getMinecraft();
+            Futures.getUnchecked(mine.addScheduledTask(new Runnable()
             {
                 public void run()
                 {
-                    minecraft.displayGuiScreen(guiscreenworking);
+                    mine.displayGuiScreen(guiscreenworking);
                 }
             }));
             final SettableFuture<Object> settablefuture = SettableFuture.<Object>create();
-            this.downloadingPacks = HttpUtil.downloadResourcePack(file1, url, map, 52428800, guiscreenworking, minecraft.getProxy());
+            this.downloadingPacks = HttpUtil.downloadResourcePack(file1, url, map, 52428800, guiscreenworking, mine.getProxy());
             Futures.addCallback(this.downloadingPacks, new FutureCallback<Object>()
             {
                 public void onSuccess(Object p_onSuccess_1_)
@@ -272,7 +273,7 @@ public class ResourcePackRepository
     public ListenableFuture<Object> setResourcePackInstance(File resourceFile)
     {
         this.resourcePackInstance = new FileResourcePack(resourceFile);
-        return Minecraft.getMinecraft().scheduleResourcesRefresh();
+        return Mine.getMinecraft().scheduleResourcesRefresh();
     }
 
     /**
@@ -299,7 +300,7 @@ public class ResourcePackRepository
             if (this.resourcePackInstance != null)
             {
                 this.resourcePackInstance = null;
-                Minecraft.getMinecraft().scheduleResourcesRefresh();
+                Mine.getMinecraft().scheduleResourcesRefresh();
             }
         }
         finally

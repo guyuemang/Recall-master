@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelEnderMite;
 import net.minecraft.client.model.ModelRenderer;
@@ -63,7 +63,7 @@ public class ModelAdapterEndermite extends ModelAdapter
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderEndermite renderendermite = new RenderEndermite(rendermanager);
         renderendermite.mainModel = modelBase;
         renderendermite.shadowSize = shadowSize;

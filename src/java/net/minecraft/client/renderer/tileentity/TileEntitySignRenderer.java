@@ -2,7 +2,7 @@ package net.minecraft.client.renderer.tileentity;
 
 import java.util.List;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiUtilRenderComponents;
 import net.minecraft.client.gui.inventory.GuiEditSign;
@@ -165,9 +165,9 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntity
 
     public static void updateTextRenderDistance()
     {
-        Minecraft minecraft = Config.getMinecraft();
-        double d0 = (double)Config.limit(minecraft.gameSettings.fovSetting, 1.0F, 120.0F);
-        double d1 = Math.max(1.5D * (double)minecraft.displayHeight / d0, 16.0D);
+        Mine mine = Config.getMinecraft();
+        double d0 = (double)Config.limit(mine.gameSettings.fovSetting, 1.0F, 120.0F);
+        double d1 = Math.max(1.5D * (double) mine.displayHeight / d0, 16.0D);
         textRenderDistanceSq = d1 * d1;
     }
 }

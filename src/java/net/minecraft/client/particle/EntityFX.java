@@ -1,6 +1,6 @@
 package net.minecraft.client.particle;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -100,11 +100,11 @@ public class EntityFX extends Entity
     {
         if (this.particleAlpha == 1.0F && alpha < 1.0F)
         {
-            Minecraft.getMinecraft().effectRenderer.moveToAlphaLayer(this);
+            Mine.getMinecraft().effectRenderer.moveToAlphaLayer(this);
         }
         else if (this.particleAlpha < 1.0F && alpha == 1.0F)
         {
-            Minecraft.getMinecraft().effectRenderer.moveToNoAlphaLayer(this);
+            Mine.getMinecraft().effectRenderer.moveToNoAlphaLayer(this);
         }
 
         this.particleAlpha = alpha;

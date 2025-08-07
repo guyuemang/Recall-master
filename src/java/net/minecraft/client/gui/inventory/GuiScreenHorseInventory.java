@@ -1,6 +1,6 @@
 package net.minecraft.client.gui.inventory;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.inventory.ContainerHorseInventory;
@@ -28,7 +28,7 @@ public class GuiScreenHorseInventory extends GuiContainer
 
     public GuiScreenHorseInventory(IInventory playerInv, IInventory horseInv, EntityHorse horse)
     {
-        super(new ContainerHorseInventory(playerInv, horseInv, horse, Minecraft.getMinecraft().thePlayer));
+        super(new ContainerHorseInventory(playerInv, horseInv, horse, Mine.getMinecraft().thePlayer));
         this.playerInventory = playerInv;
         this.horseInventory = horseInv;
         this.horseEntity = horse;

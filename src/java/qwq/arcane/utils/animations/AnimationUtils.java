@@ -12,7 +12,27 @@ public class AnimationUtils {
     public static float clamp(float number, float min, float max) {
         return number < min ? min : Math.min(number, max);
     }
-
+    public static float calculateCompensation(final float target, float current, long delta, final int speed) {
+        final float diff = current - target;
+        if (delta < 1L) {
+            delta = 1L;
+        }
+        double v = (speed * delta / 16L < 0.25) ? 0.5 : (speed * delta / 16L);
+        if (diff > speed) {
+            current -= (float) v;
+            if (current < target) {
+                current = target;
+            }
+        } else if (diff < -speed) {
+            current += (float) v;
+            if (current > target) {
+                current = target;
+            }
+        } else {
+            current = target;
+        }
+        return current;
+    }
     public static float animateIDK(double target, double current, double speed) {
         boolean larger = (target > current);
         if (speed < 0.0F) speed = 0.0F;

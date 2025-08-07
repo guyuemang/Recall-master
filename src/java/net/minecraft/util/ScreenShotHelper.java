@@ -7,7 +7,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.imageio.ImageIO;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -53,9 +54,9 @@ public class ScreenShotHelper
         {
             File file1 = new File(gameDirectory, "screenshots");
             file1.mkdir();
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Mine mine = Mine.getMinecraft();
             int i = Config.getGameSettings().guiScale;
-            ScaledResolution scaledresolution = new ScaledResolution(minecraft);
+            ScaledResolution scaledresolution = new ScaledResolution(mine);
             int j = scaledresolution.getScaleFactor();
             int k = Config.getScreenshotSize();
             boolean flag = OpenGlHelper.isFramebufferEnabled() && k > 1;
@@ -66,8 +67,8 @@ public class ScreenShotHelper
                 resize(width * k, height * k);
                 GlStateManager.pushMatrix();
                 GlStateManager.clear(16640);
-                minecraft.getFramebuffer().bindFramebuffer(true);
-                minecraft.entityRenderer.updateCameraAndRender(Config.renderPartialTicks, System.nanoTime());
+                mine.getFramebuffer().bindFramebuffer(true);
+                mine.entityRenderer.updateCameraAndRender(Config.renderPartialTicks, System.nanoTime());
             }
 
             if (OpenGlHelper.isFramebufferEnabled())
@@ -123,7 +124,7 @@ public class ScreenShotHelper
 
             if (flag)
             {
-                minecraft.getFramebuffer().unbindFramebuffer();
+                mine.getFramebuffer().unbindFramebuffer();
                 GlStateManager.popMatrix();
                 Config.getGameSettings().guiScale = i;
                 resize(width, height);
@@ -180,14 +181,14 @@ public class ScreenShotHelper
 
     private static void resize(int p_resize_0_, int p_resize_1_)
     {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        minecraft.displayWidth = Math.max(1, p_resize_0_);
-        minecraft.displayHeight = Math.max(1, p_resize_1_);
+        Mine mine = Mine.getMinecraft();
+        mine.displayWidth = Math.max(1, p_resize_0_);
+        mine.displayHeight = Math.max(1, p_resize_1_);
 
-        if (minecraft.currentScreen != null)
+        if (mine.currentScreen != null)
         {
-            ScaledResolution scaledresolution = new ScaledResolution(minecraft);
-            minecraft.currentScreen.onResize(minecraft, scaledresolution.getScaledWidth(), scaledresolution.getScaledHeight());
+            ScaledResolution scaledresolution = new ScaledResolution(mine);
+            mine.currentScreen.onResize(mine, scaledresolution.getScaledWidth(), scaledresolution.getScaledHeight());
         }
 
         updateFramebufferSize();
@@ -195,12 +196,12 @@ public class ScreenShotHelper
 
     private static void updateFramebufferSize()
     {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        minecraft.getFramebuffer().createBindFramebuffer(minecraft.displayWidth, minecraft.displayHeight);
+        Mine mine = Mine.getMinecraft();
+        mine.getFramebuffer().createBindFramebuffer(mine.displayWidth, mine.displayHeight);
 
-        if (minecraft.entityRenderer != null)
+        if (mine.entityRenderer != null)
         {
-            minecraft.entityRenderer.updateShaderGroupSize(minecraft.displayWidth, minecraft.displayHeight);
+            mine.entityRenderer.updateShaderGroupSize(mine.displayWidth, mine.displayHeight);
         }
     }
 }

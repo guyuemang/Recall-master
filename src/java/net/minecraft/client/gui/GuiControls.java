@@ -1,7 +1,7 @@
 package net.minecraft.client.gui;
 
 import java.io.IOException;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
@@ -142,7 +142,7 @@ public class GuiControls extends GuiScreen
             }
 
             this.buttonId = null;
-            this.time = Minecraft.getSystemTime();
+            this.time = Mine.getSystemTime();
             KeyBinding.resetKeyBindingArrayAndHash();
         }
         else

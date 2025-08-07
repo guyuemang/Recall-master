@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelZombie;
@@ -23,7 +23,7 @@ public class ModelAdapterZombie extends ModelAdapterBiped
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderZombie renderzombie = new RenderZombie(rendermanager);
         Render.setModelBipedMain(renderzombie, (ModelBiped)modelBase);
         renderzombie.mainModel = modelBase;

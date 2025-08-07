@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -43,7 +43,7 @@ public class ItemRenderer
     private static final ResourceLocation RES_UNDERWATER_OVERLAY = new ResourceLocation("textures/misc/underwater.png");
 
     /** A reference to the Minecraft object. */
-    private final Minecraft mc;
+    private final Mine mc;
     private ItemStack itemToRender;
 
     /**
@@ -57,7 +57,7 @@ public class ItemRenderer
     /** The index of the currently held item (0-8, or -1 if not yet updated) */
     private int equippedItemSlot = -1;
 
-    public ItemRenderer(Minecraft mcIn)
+    public ItemRenderer(Mine mcIn)
     {
         this.mc = mcIn;
         this.renderManager = mcIn.getRenderManager();

@@ -23,7 +23,7 @@ import de.florianmichael.viamcp.ViaMCP;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -33,7 +33,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class FixedSoundEngine {
-    private final static Minecraft mc = Minecraft.getMinecraft();
+    private final static Mine mc = Mine.getMinecraft();
 
     /**
      * Fix for block breaking sounds on protocols above 1.8.x

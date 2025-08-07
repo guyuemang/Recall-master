@@ -1,6 +1,6 @@
 package net.optifine.render;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 public class CloudRenderer
 {
-    private Minecraft mc;
+    private Mine mc;
     private boolean updated = false;
     private boolean renderFancy = false;
     int cloudTickCounter;
@@ -23,7 +23,7 @@ public class CloudRenderer
     private double updatePlayerZ = 0.0D;
     private int glListClouds = -1;
 
-    public CloudRenderer(Minecraft mc)
+    public CloudRenderer(Mine mc)
     {
         this.mc = mc;
         this.glListClouds = GLAllocation.generateDisplayLists(1);

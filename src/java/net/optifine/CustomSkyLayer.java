@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -393,7 +393,7 @@ public class CustomSkyLayer
 
     private float getPositionBrightnessRaw(World world)
     {
-        Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
+        Entity entity = Mine.getMinecraft().getRenderViewEntity();
 
         if (entity == null)
         {

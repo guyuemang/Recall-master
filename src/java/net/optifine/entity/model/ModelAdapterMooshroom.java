@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelCow;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -21,7 +21,7 @@ public class ModelAdapterMooshroom extends ModelAdapterQuadruped
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderMooshroom rendermooshroom = new RenderMooshroom(rendermanager, modelBase, shadowSize);
         return rendermooshroom;
     }

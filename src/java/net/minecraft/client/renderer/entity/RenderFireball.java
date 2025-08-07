@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -31,7 +31,7 @@ public class RenderFireball extends Render<EntityFireball>
         GlStateManager.translate((float)x, (float)y, (float)z);
         GlStateManager.enableRescaleNormal();
         GlStateManager.scale(this.scale, this.scale, this.scale);
-        TextureAtlasSprite textureatlassprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(Items.fire_charge);
+        TextureAtlasSprite textureatlassprite = Mine.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(Items.fire_charge);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         float f = textureatlassprite.getMinU();

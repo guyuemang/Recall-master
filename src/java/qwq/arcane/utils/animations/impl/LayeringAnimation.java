@@ -1,6 +1,6 @@
 package qwq.arcane.utils.animations.impl;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import qwq.arcane.utils.animations.AnimationUtils;
@@ -26,10 +26,10 @@ public class LayeringAnimation {
         if (!played) return;
         progress = (int) AnimationUtils.animateSmooth(progress, targetScreen == null ? 0 : 25500, 0.2f);
         if (progress > 25400) {
-            Minecraft.getMinecraft().displayGuiScreen(targetScreen);
+            Mine.getMinecraft().displayGuiScreen(targetScreen);
             targetScreen = null;
         }
-        ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+        ScaledResolution scaledResolution = new ScaledResolution(Mine.getMinecraft());
         RenderUtil.drawRect(0, 0, scaledResolution.getScaledWidth(), scaledResolution.getScaledHeight(), new Color(0, 0, 0, progress / 100).getRGB());
     }
 }

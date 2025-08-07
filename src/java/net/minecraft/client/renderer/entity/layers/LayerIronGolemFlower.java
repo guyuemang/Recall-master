@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity.layers;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelIronGolem;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +23,7 @@ public class LayerIronGolemFlower implements LayerRenderer<EntityIronGolem>
     {
         if (entitylivingbaseIn.getHoldRoseTick() != 0)
         {
-            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
             GlStateManager.enableRescaleNormal();
             GlStateManager.pushMatrix();
             GlStateManager.rotate(5.0F + 180.0F * ((ModelIronGolem)this.ironGolemRenderer.getMainModel()).ironGolemRightArm.rotateAngleX / (float)Math.PI, 1.0F, 0.0F, 0.0F);

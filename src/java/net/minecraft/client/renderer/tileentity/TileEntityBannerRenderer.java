@@ -5,7 +5,8 @@ import com.google.common.collect.Maps;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBanner;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.LayeredColorMaskTexture;
@@ -108,7 +109,7 @@ public class TileEntityBannerRenderer extends TileEntitySpecialRenderer<TileEnti
 
                         if (i - tileentitybannerrenderer$timedbannertexture1.systemTime > 60000L)
                         {
-                            Minecraft.getMinecraft().getTextureManager().deleteTexture(tileentitybannerrenderer$timedbannertexture1.bannerTexture);
+                            Mine.getMinecraft().getTextureManager().deleteTexture(tileentitybannerrenderer$timedbannertexture1.bannerTexture);
                             iterator.remove();
                         }
                     }
@@ -130,7 +131,7 @@ public class TileEntityBannerRenderer extends TileEntitySpecialRenderer<TileEnti
 
                 tileentitybannerrenderer$timedbannertexture = new TileEntityBannerRenderer.TimedBannerTexture();
                 tileentitybannerrenderer$timedbannertexture.bannerTexture = new ResourceLocation(s);
-                Minecraft.getMinecraft().getTextureManager().loadTexture(tileentitybannerrenderer$timedbannertexture.bannerTexture, new LayeredColorMaskTexture(BANNERTEXTURES, list2, list));
+                Mine.getMinecraft().getTextureManager().loadTexture(tileentitybannerrenderer$timedbannertexture.bannerTexture, new LayeredColorMaskTexture(BANNERTEXTURES, list2, list));
                 DESIGNS.put(s, tileentitybannerrenderer$timedbannertexture);
             }
 

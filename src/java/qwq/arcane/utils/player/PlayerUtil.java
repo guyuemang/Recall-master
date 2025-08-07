@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntityGhast;
@@ -167,7 +167,7 @@ public class PlayerUtil implements Instance {
         float friction;
         if (mc.thePlayer.onGround) {
             friction = mc.thePlayer.getAIMoveSpeed() * f3;
-            if (mc.thePlayer == Minecraft.getMinecraft().thePlayer
+            if (mc.thePlayer == Mine.getMinecraft().thePlayer
                     && mc.thePlayer.isSprinting()) {
                 friction = 0.12999998F;
             }

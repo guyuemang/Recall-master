@@ -21,7 +21,7 @@ package de.florianmichael.viamcp.gui;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.protocolinfo.ProtocolInfo;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlot;
@@ -88,7 +88,7 @@ public class GuiProtocolSelector extends GuiScreen {
 
     class SlotList extends GuiSlot {
 
-        public SlotList(Minecraft mc, int width, int height, int top, int bottom) {
+        public SlotList(Mine mc, int width, int height, int top, int bottom) {
             super(mc, width, height, top + 30, bottom, 18);
         }
 

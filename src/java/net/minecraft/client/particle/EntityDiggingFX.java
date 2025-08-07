@@ -2,7 +2,7 @@ package net.minecraft.client.particle;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -18,7 +18,7 @@ public class EntityDiggingFX extends EntityFX
     {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         this.sourceState = state;
-        this.setParticleIcon(Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state));
+        this.setParticleIcon(Mine.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state));
         this.particleGravity = state.getBlock().blockParticleGravity;
         this.particleRed = this.particleGreen = this.particleBlue = 0.6F;
         this.particleScale /= 2.0F;

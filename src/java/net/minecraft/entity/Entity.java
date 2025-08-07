@@ -12,7 +12,7 @@ import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
@@ -1242,7 +1242,7 @@ public abstract class Entity implements ICommandSender
      * Used in both water and by flying objects
      */
     public void moveFlying(float strafe, float forward, float friction) {
-        boolean player = this == Minecraft.getMinecraft().thePlayer;
+        boolean player = this == Mine.getMinecraft().thePlayer;
         float yaw = this.rotationYaw;
 
         if (player) {

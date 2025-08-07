@@ -1,9 +1,7 @@
 package qwq.arcane.command;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.config.ConfigManager;
@@ -18,12 +16,10 @@ import qwq.arcane.module.Module;
  * @Author: Guyuemang
  * 2025/4/21
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class CommandManager {
     private final ModuleManager moduleManager;
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Mine mc = Mine.getMinecraft();
     
     public CommandManager(ModuleManager moduleManager) {
         this.moduleManager = moduleManager;

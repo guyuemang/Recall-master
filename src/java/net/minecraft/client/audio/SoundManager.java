@@ -17,7 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
@@ -477,7 +478,7 @@ public class SoundManager
                     }
                     public InputStream getInputStream() throws IOException
                     {
-                        return Minecraft.getMinecraft().getResourceManager().getResource(p_148612_0_).getInputStream();
+                        return Mine.getMinecraft().getResourceManager().getResource(p_148612_0_).getInputStream();
                     }
                 };
             }

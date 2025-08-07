@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -646,7 +646,7 @@ public class GuiScreenBook extends GuiScreen
             this.field_146151_o = p_i46316_4_;
         }
 
-        public void drawButton(Minecraft mc, int mouseX, int mouseY)
+        public void drawButton(Mine mc, int mouseX, int mouseY)
         {
             if (this.visible)
             {

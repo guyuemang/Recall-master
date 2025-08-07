@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.block.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.src.Config;
 import net.minecraft.util.EnumFacing;
@@ -132,7 +132,7 @@ public class BakedQuad implements IVertexProducer
 
         float f6 = (f + f2) / 2.0F;
         float f7 = (f1 + f3) / 2.0F;
-        TextureAtlasSprite textureatlassprite = Minecraft.getMinecraft().getTextureMapBlocks().getIconByUV((double)f6, (double)f7);
+        TextureAtlasSprite textureatlassprite = Mine.getMinecraft().getTextureMapBlocks().getIconByUV((double)f6, (double)f7);
         return textureatlassprite;
     }
 

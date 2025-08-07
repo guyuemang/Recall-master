@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity.layers;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -43,7 +43,7 @@ public class LayerMooshroomMushroom implements LayerRenderer<EntityMooshroom>
     {
         if (!entitylivingbaseIn.isChild() && !entitylivingbaseIn.isInvisible())
         {
-            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
 
             if (hasTextureMushroom)
             {

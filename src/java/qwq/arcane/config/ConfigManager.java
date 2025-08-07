@@ -1,9 +1,7 @@
 package qwq.arcane.config;
 
 import com.google.gson.*;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import qwq.arcane.gui.alt.auth.Account;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.module.ModuleWidget;
@@ -27,9 +25,7 @@ import java.util.Optional;
  * @Author: Guyuemang
  * 2025/4/21
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class ConfigManager {
     private static final File CONFIG_DIR = new File("Arcane/configs");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

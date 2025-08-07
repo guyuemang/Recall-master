@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
 import net.optifine.http.HttpPipeline;
@@ -107,7 +107,7 @@ public class PlayerConfigurationParser
 
         try
         {
-            byte[] abyte = HttpPipeline.get(s, Minecraft.getMinecraft().getProxy());
+            byte[] abyte = HttpPipeline.get(s, Mine.getMinecraft().getProxy());
             BufferedImage bufferedimage = ImageIO.read((InputStream)(new ByteArrayInputStream(abyte)));
             return bufferedimage;
         }
@@ -124,7 +124,7 @@ public class PlayerConfigurationParser
 
         try
         {
-            byte[] abyte = HttpPipeline.get(s, Minecraft.getMinecraft().getProxy());
+            byte[] abyte = HttpPipeline.get(s, Mine.getMinecraft().getProxy());
             String s1 = new String(abyte, "ASCII");
             JsonParser jsonparser = new JsonParser();
             JsonObject jsonobject = (JsonObject)jsonparser.parse(s1);

@@ -1,9 +1,7 @@
 package qwq.arcane.module.impl.world;
 
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBrewingStand;
 import net.minecraft.block.BlockChest;
@@ -44,9 +42,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class ChestAura extends Module {
     private final NumberValue range = new NumberValue("Range", 4.0, 0.0, 15.0, 0.1);
     public TimerUtil waitBoxOpenTimer = new TimerUtil();
@@ -71,6 +67,7 @@ public class ChestAura extends Module {
 
     @EventTarget
     private void onPre(UpdateEvent event) {
+        setsuffix(String.valueOf(this.range.get()));
         GuiScreen guiScreen = mc.currentScreen;
 
         if (mc.thePlayer.isOnLadder()) {
@@ -82,7 +79,7 @@ public class ChestAura extends Module {
             if (Gapple.eating) {
                 return;
             }
-            if (KillAura.target != null || mc.thePlayer.isUsingItem() || getModule(Scaffold.class).getState() || getModule(Blink.class).getState() || Gapple.eating) {
+            if (KillAura.target != null || mc.thePlayer.isUsingItem() || getModule(Scaffold.class).getState() || getModule(BlockFly.class).getState() || getModule(Blink.class).getState() || Gapple.eating) {
                 return;
             }
 
@@ -106,13 +103,13 @@ public class ChestAura extends Module {
                                 && (block instanceof BlockChest || block instanceof BlockFurnace || block instanceof BlockBrewingStand)
                                 && !list.contains(pos)) {
                             float[] rotations = RotationUtil.getBlockRotations(pos.getX(), pos.getY(), pos.getZ());
-                            Client.Instance.rotationManager.setRotation(new Vector2f(rotations[0], rotations[1]), 360.0f, true);
+                            Client.Instance.getRotationManager().setRotation(new Vector2f(rotations[0], rotations[1]), 360.0f, true);
                             C08PacketPlayerBlockPlacement packet = new C08PacketPlayerBlockPlacement(pos, 1, mc.thePlayer.getCurrentEquippedItem(), 0.0f, 0.0f, 0.0f);
                             mc.thePlayer.sendQueue.addToSendQueue(packet);
 
                             PacketUtil.sendPacket(new C0APacketAnimation());
                             this.globalPos = pos;
-                            delayAfterOpenTimer.reset(); // 打开箱子后重置延迟计时器
+                            delayAfterOpenTimer.reset();
                             return;
                         }
                     }

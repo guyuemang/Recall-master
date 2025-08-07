@@ -1,6 +1,6 @@
 package qwq.arcane.utils.render;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -27,7 +27,7 @@ public class RoundedUtil implements Instance {
             ++scaleFactor;
         }
         GL11.glScissor((int) (x * scaleFactor),
-                (int) (Minecraft.getMinecraft().displayHeight - (y + height) * scaleFactor),
+                (int) (Mine.getMinecraft().displayHeight - (y + height) * scaleFactor),
                 (int) (width * scaleFactor), (int) (height * scaleFactor));
     }
     public static Color reAlpha(Color color, int alpha) {
@@ -181,7 +181,7 @@ public class RoundedUtil implements Instance {
         RenderUtil.setAlphaLimit(0);
         roundedOutlineShader.init();
 
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        ScaledResolution sr = new ScaledResolution(Mine.getMinecraft());
         setupRoundedRectUniforms(x, y, width, height, radius, roundedOutlineShader);
         roundedOutlineShader.setUniformf("outlineThickness", outlineThickness * sr.getScaleFactor());
         roundedOutlineShader.setUniformf("color", color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
@@ -208,9 +208,9 @@ public class RoundedUtil implements Instance {
     }
 
     private static void setupRoundedRectUniforms(float x, float y, float width, float height, float radius, ShaderUtils roundedTexturedShader) {
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        ScaledResolution sr = new ScaledResolution(Mine.getMinecraft());
         roundedTexturedShader.setUniformf("location", x * sr.getScaleFactor(),
-                (Minecraft.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
+                (Mine.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
         roundedTexturedShader.setUniformf("rectSize", width * sr.getScaleFactor(), height * sr.getScaleFactor());
         roundedTexturedShader.setUniformf("radius", radius * sr.getScaleFactor());
     }

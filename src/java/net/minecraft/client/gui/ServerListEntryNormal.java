@@ -11,7 +11,8 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -29,7 +30,7 @@ public class ServerListEntryNormal implements GuiListExtended.IGuiListEntry
     private static final ResourceLocation UNKNOWN_SERVER = new ResourceLocation("textures/misc/unknown_server.png");
     private static final ResourceLocation SERVER_SELECTION_BUTTONS = new ResourceLocation("textures/gui/server_selection.png");
     private final GuiMultiplayer owner;
-    private final Minecraft mc;
+    private final Mine mc;
     private final ServerData server;
     private final ResourceLocation serverIcon;
     private String field_148299_g;
@@ -40,7 +41,7 @@ public class ServerListEntryNormal implements GuiListExtended.IGuiListEntry
     {
         this.owner = p_i45048_1_;
         this.server = serverIn;
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Mine.getMinecraft();
         this.serverIcon = new ResourceLocation("servers/" + serverIn.serverIP + "/icon");
         this.field_148305_h = (DynamicTexture)this.mc.getTextureManager().getTexture(this.serverIcon);
     }
@@ -140,7 +141,7 @@ public class ServerListEntryNormal implements GuiListExtended.IGuiListEntry
         else
         {
             k = 1;
-            l = (int)(Minecraft.getSystemTime() / 100L + (long)(slotIndex * 2) & 7L);
+            l = (int)(Mine.getSystemTime() / 100L + (long)(slotIndex * 2) & 7L);
 
             if (l > 4)
             {
@@ -316,12 +317,12 @@ public class ServerListEntryNormal implements GuiListExtended.IGuiListEntry
 
         this.owner.selectServer(slotIndex);
 
-        if (Minecraft.getSystemTime() - this.field_148298_f < 250L)
+        if (Mine.getSystemTime() - this.field_148298_f < 250L)
         {
             this.owner.connectToSelected();
         }
 
-        this.field_148298_f = Minecraft.getSystemTime();
+        this.field_148298_f = Mine.getSystemTime();
         return false;
     }
 

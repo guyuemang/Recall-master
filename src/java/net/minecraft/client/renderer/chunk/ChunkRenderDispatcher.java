@@ -12,7 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RegionRenderCacheBuilder;
@@ -261,7 +261,7 @@ public class ChunkRenderDispatcher
 
     public ListenableFuture<Object> uploadChunk(final EnumWorldBlockLayer player, final WorldRenderer p_178503_2_, final RenderChunk chunkRenderer, final CompiledChunk compiledChunkIn)
     {
-        if (Minecraft.getMinecraft().isCallingFromMinecraftThread())
+        if (Mine.getMinecraft().isCallingFromMinecraftThread())
         {
             if (OpenGlHelper.useVbo())
             {

@@ -1,9 +1,7 @@
 package qwq.arcane.module.impl.combat;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.event.impl.events.player.UpdateEvent;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
@@ -26,9 +24,7 @@ import java.util.List;
  * @Author：Guyuemang
  * @Date：2025/6/2 15:55
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class AntiBot extends Module {
     static List<Integer> bots = new ArrayList<>();
     static ModeValue mode = new ModeValue("Mode","Hypixel",new String[]{"Hypixel","Mineland"});
@@ -92,8 +88,12 @@ public class AntiBot extends Module {
 
         }
     }
+    @EventTarget
+    public void onSuffix(UpdateEvent event){
+        setsuffix(mode.get());
+    }
     public static void tellPlayer(String message) {
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\247a[Distance] \247r" + message));
+        Mine.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\247a[Distance] \247r" + message));
     }
 
     @Override

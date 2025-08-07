@@ -1,10 +1,10 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 
 public abstract class GuiListExtended extends GuiSlot
 {
-    public GuiListExtended(Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn)
+    public GuiListExtended(Mine mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn)
     {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
     }

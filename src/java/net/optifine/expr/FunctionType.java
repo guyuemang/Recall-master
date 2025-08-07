@@ -3,7 +3,7 @@ package net.optifine.expr;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.src.Config;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -204,8 +204,8 @@ public enum FunctionType {
 			return f2 - f3 * (float) MathHelper.floor_float(f2 / f3);
 
 		case TIME:
-			Minecraft minecraft = Minecraft.getMinecraft();
-			World world = minecraft.theWorld;
+			Mine mine = Mine.getMinecraft();
+			World world = mine.theWorld;
 
 			if (world == null) {
 				return 0.0F;

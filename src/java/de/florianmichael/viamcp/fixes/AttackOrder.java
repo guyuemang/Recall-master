@@ -20,14 +20,14 @@ package de.florianmichael.viamcp.fixes;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.util.MovingObjectPosition;
 
 public class AttackOrder {
-    private final static Minecraft mc = Minecraft.getMinecraft();
+    private final static Mine mc = Mine.getMinecraft();
 
     public static void sendConditionalSwing(MovingObjectPosition mop) {
         if (mop != null && mop.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) mc.thePlayer.swingItem();

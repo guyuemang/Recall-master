@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.display;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
@@ -26,9 +24,7 @@ import java.text.DecimalFormat;
  * @Author：Guyuemang
  * @Date：2025/6/2 11:22
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class Session extends ModuleWidget {
     public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
 
@@ -77,13 +73,13 @@ public class Session extends ModuleWidget {
         int y = (int) renderY;
         switch (modeValue.getValue()) {
             case "Solitude":
-                RenderUtil.drawRect(x, y, 52 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, new Color(255, 255, 255 ,255));
+                RenderUtil.drawRect(x, y, 52 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, new Color(255, 255, 255 ,255));
                 break;
             case "Normal":
-                RoundedUtil.drawRound(x, y, 48 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 255));
+                RoundedUtil.drawRound(x, y, 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 255));
                 break;
             case "Custom":
-                RenderUtil.drawRect(x, y, 130, 62, new Color(0, 0, 0, 255));
+                RoundedUtil.drawRound(x, y, 130, 56,6, new Color(255, 255, 255, 255));
                 break;
         }
     }
@@ -95,40 +91,43 @@ public class Session extends ModuleWidget {
         int y = (int) renderY;
         switch (modeValue.getValue()) {
             case "Solitude":
-                RenderUtil.drawRect(x, y, 52 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, new Color(255, 255, 255 ,100));
-                RenderUtil.drawRect(x, y, 52 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 15, new Color(255, 255, 255 ,100));
+                RenderUtil.drawRect(x, y, 52 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, new Color(255, 255, 255 ,100));
+                RenderUtil.drawRect(x, y, 52 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 15, new Color(255, 255, 255 ,100));
                 RenderUtil.renderPlayer2D(mc.thePlayer, x + 5, y + 19, 35,0, -1);
-                FontManager.Semibold.get(18).drawCenteredString("Session", x + (48 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime())) / 2, y + 5, -1);
-                FontManager.Semibold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 44, y + 21, -1);
-                FontManager.Semibold.get(18).drawString("kill:" + killed, x + 44, y + 33, -1);
-                FontManager.Semibold.get(18).drawString("win:" + won, x + 44, y + 45, -1);
-                FontManager.Semibold.get(18).drawString("FPS:" + mc.getDebugFPS(), x + 82, y + 33, -1);
-                FontManager.Semibold.get(18).drawString("BPS:" + bpsFormat.format(INTERFACE.getBPS()), x + 82, y + 45, -1);
-                RenderUtil.drawRect(x + 5, y + 57, 40 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 5, new Color(100, 100, 100,190));
-                RenderUtil.drawRect(x + 5, y + 57, 40 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()) * MathHelper.clamp_float(mc.thePlayer.getHealth() / mc.thePlayer.getMaxHealth(), 0, 1), 5, new Color(255, 255, 255 ,100));
+                FontManager.Bold.get(18).drawCenteredString("Session", x + (48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime())) / 2, y + 5, -1);
+                FontManager.Bold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 44, y + 21, -1);
+                FontManager.Bold.get(18).drawString("kill:" + killed, x + 44, y + 33, -1);
+                FontManager.Bold.get(18).drawString("win:" + won, x + 44, y + 45, -1);
+                FontManager.Bold.get(18).drawString("FPS:" + mc.getDebugFPS(), x + 82, y + 33, -1);
+                FontManager.Bold.get(18).drawString("BPS:" + bpsFormat.format(INTERFACE.getBPS()), x + 82, y + 45, -1);
+                RenderUtil.drawRect(x + 5, y + 57, 40 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 5, new Color(100, 100, 100,190));
+                RenderUtil.drawRect(x + 5, y + 57, 40 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()) * MathHelper.clamp_float(mc.thePlayer.getHealth() / mc.thePlayer.getMaxHealth(), 0, 1), 5, new Color(255, 255, 255 ,100));
                 break;
             case "Custom":
-                RenderUtil.drawRect(x, y, 130, 62, new Color(0, 0, 0, 100));
-                mc.fontRendererObj.drawString("Session", x + 5, y + 5, -1);
-                mc.fontRendererObj.drawString("Played Time:" + RenderUtil.sessionTime(), x + 4, y + 27, -1);
-                mc.fontRendererObj.drawString("kill:" + killed, x + 4, y + 39, -1);
-                mc.fontRendererObj.drawString("FPS:" + mc.getDebugFPS(), x + 62, y + 39, -1);
-                mc.fontRendererObj.drawString("BPS:" + bpsFormat.format(INTERFACE.getBPS()), x + 62, y + 51, -1);
-                mc.fontRendererObj.drawString("win:" + won, x + 4, y + 51, -1);
+                RoundedUtil.drawRound(x, y, 130, 56,6, new Color(255, 255, 255, 80));
+                RenderUtil.startGlScissor(x - 2, y + 42, 134, 20);
+                RoundedUtil.drawRound(x, y + 34, 130, 22,6, new Color(255, 255, 255, 100));
+                RenderUtil.stopGlScissor();
+                Bold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 4, y + 62 - 16, -1);
+                RenderUtil.renderPlayer2D(mc.thePlayer, x + 5, y + 4, 35, 8   , -1);
+                Bold.get(18).drawString("kill:" + killed, x + 44, y + 10, -1);
+                Bold.get(18).drawString("FPS:" + mc.getDebugFPS(), x + 79, y + 10, -1);
+                Bold.get(18).drawString("BPS:" + bpsFormat.format(INTERFACE.getBPS()), x + 44, y + 25, -1);
+                Bold.get(18).drawString("win:" + won, x + 44 + Bold.get(18).getStringWidth("BPS:10.0.0") + 4, y + 25, -1);
                 break;
             case "Normal":
-                RoundedUtil.drawRound(x, y, 48 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 89));
+                RoundedUtil.drawRound(x, y, 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 89));
                 RenderUtil.startGlScissor(x - 2, y - 1, 190, 20);
-                RoundedUtil.drawRound(x, y, 48 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 30, INTERFACE.radius.get().intValue(), ColorUtil.applyOpacity(new Color(setting.colors(1)), (float) 0.3f));
+                RoundedUtil.drawRound(x, y, 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 30, INTERFACE.radius.get().intValue(), ColorUtil.applyOpacity(new Color(setting.colors(1)), (float) 0.3f));
                 RenderUtil.stopGlScissor();
-                RenderUtil.renderPlayer2D(mc.thePlayer, x + 5, y + 25, 35, 12, -1);
+                RenderUtil.renderPlayer2D(mc.thePlayer, x + 5, y + 25, 35, 14   , -1);
                 FontManager.Bold.get(20).drawString("Session", x + 5, y + 5, -1);
-                FontManager.Semibold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 44, y + 27, -1);
-                FontManager.Semibold.get(18).drawString("kill:" + killed, x + 44, y + 39, -1);
-                FontManager.Semibold.get(18).drawString("win:" + won, x + 44, y + 51, -1);
+                FontManager.Bold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 44, y + 27, -1);
+                FontManager.Bold.get(18).drawString("kill:" + killed, x + 44, y + 39, -1);
+                FontManager.Bold.get(18).drawString("win:" + won, x + 44, y + 51, -1);
                 break;
         }
-        this.width = 48 + Semibold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime());
+        this.width = 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime());
         this.height = 65;
     }
 

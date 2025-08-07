@@ -1,9 +1,7 @@
 package qwq.arcane.module.impl.combat;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -42,9 +40,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class ThrowableAura extends Module {
     private final NumberValue dealy = new NumberValue("Delay", 8, 0, 1000, 1);
     private final NumberValue range = new NumberValue("Range", 5, 1, 8, 1);
@@ -86,6 +82,7 @@ public class ThrowableAura extends Module {
 
     @EventTarget
     public void onUpdateEvent(MotionEvent e) {
+        setsuffix(dealy.get().toString());
         if (e.isPost()) {
             if (Objects.requireNonNull(Client.Instance.getModuleManager().getModule(Scaffold.class).getState() ||
                     isGapple()
@@ -119,9 +116,9 @@ public class ThrowableAura extends Module {
 
             float[] rotation = RotationUtil.getRotationsNeededBall(target);
 
-            Client.Instance.rotationManager.setRotation(new Vector2f(rotation[0], rotation[1]), 360f, true, false);
+            Client.Instance.getRotationManager().setRotation(new Vector2f(rotation[0], rotation[1]), 360f, true);
 
-            if (RayCastUtil.rayCast(Client.Instance.rotationManager.rotation, range.getValue()).entityHit == null || !attackTimer.hasTimeElapsed(100, true))
+            if (RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation, range.getValue()).entityHit == null || !attackTimer.hasTimeElapsed(100, true))
                 return;
             final int prevSlot = mc.thePlayer.inventory.currentItem;
             if (timer.delay((long) (dealy.getValue() * 10L))) {
@@ -184,7 +181,7 @@ public class ThrowableAura extends Module {
         if (fov != 360.0f && !(entityFov <= fov)) {
             return false;
         }
-        if (target == Minecraft.getMinecraft().thePlayer || target.isDead || Minecraft.getMinecraft().thePlayer.getHealth() == 0.0f) {
+        if (target == Mine.getMinecraft().thePlayer || target.isDead || Mine.getMinecraft().thePlayer.getHealth() == 0.0f) {
             return false;
         }
         if ((target instanceof EntityMob || target instanceof EntityGhast || target instanceof EntityGolem || target instanceof EntityDragon || target instanceof EntitySlime) && this.mobsValue.getValue().booleanValue()) {

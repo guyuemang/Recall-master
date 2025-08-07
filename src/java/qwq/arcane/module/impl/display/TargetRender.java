@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.display;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.Category;
@@ -39,9 +37,7 @@ import static net.minecraft.client.gui.inventory.GuiInventory.drawEntityOnScreen
  * @Author: Guyuemang
  * 2025/5/10
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class TargetRender extends ModuleWidget {
     public final ModeValue targetHudMode = new ModeValue("TargetRender Mode", "Astolfo", new String[]{"Astolfo", "Type 1", "Type 2","Felix","Exhi","Adjust","Moon","Augustus","New","Novo 1","Novo 2","Novo 3","Novo 5","Akrien","Innominate"});
     public final BoolValue targetHudParticle = new BoolValue("TargetParticle",true);
@@ -154,9 +150,7 @@ public class TargetRender extends ModuleWidget {
         };
     }
 }
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 @Getter
 @Setter
 class TargetHUD implements Instance {

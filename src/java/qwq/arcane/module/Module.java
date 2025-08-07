@@ -1,8 +1,6 @@
 package qwq.arcane.module;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.input.Keyboard;
@@ -26,9 +24,7 @@ import java.util.Optional;
  */
 @Getter
 @Setter
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class Module implements Instance {
     public String name;
     public Category category;
@@ -114,14 +110,14 @@ public class Module implements Instance {
                 Client.Instance.getEventManager().register(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Toggle", "Module " + this.name + " Enabled", Notification.Type.SUCCESS);
+                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Enabled", Notification.Type.SUCCESS);
                 }
                 onEnable();
             } else {
                 Client.Instance.getEventManager().unregister(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Toggle", "Module " + this.name + " Disabled", Notification.Type.ERROR);
+                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Disabled", Notification.Type.ERROR);
                 }
                 onDisable();
             }

@@ -1,6 +1,6 @@
 package net.optifine.shaders;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.SimpleTexture;
@@ -28,7 +28,7 @@ public class CustomTextureLocation implements ICustomTexture
     {
         if (this.texture == null)
         {
-            TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+            TextureManager texturemanager = Mine.getMinecraft().getTextureManager();
             this.texture = texturemanager.getTexture(this.location);
 
             if (this.texture == null)

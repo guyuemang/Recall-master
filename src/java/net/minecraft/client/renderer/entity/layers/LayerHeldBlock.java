@@ -2,7 +2,7 @@ package net.minecraft.client.renderer.entity.layers;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -25,7 +25,7 @@ public class LayerHeldBlock implements LayerRenderer<EntityEnderman>
 
         if (iblockstate.getBlock().getMaterial() != Material.air)
         {
-            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
             GlStateManager.enableRescaleNormal();
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.0F, 0.6875F, -0.75F);

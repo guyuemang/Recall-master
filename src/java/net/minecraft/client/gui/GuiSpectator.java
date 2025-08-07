@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.spectator.ISpectatorMenuObject;
 import net.minecraft.client.gui.spectator.ISpectatorMenuRecipient;
 import net.minecraft.client.gui.spectator.SpectatorMenu;
@@ -15,18 +15,18 @@ public class GuiSpectator extends Gui implements ISpectatorMenuRecipient
 {
     private static final ResourceLocation field_175267_f = new ResourceLocation("textures/gui/widgets.png");
     public static final ResourceLocation field_175269_a = new ResourceLocation("textures/gui/spectator_widgets.png");
-    private final Minecraft field_175268_g;
+    private final Mine field_175268_g;
     private long field_175270_h;
     private SpectatorMenu field_175271_i;
 
-    public GuiSpectator(Minecraft mcIn)
+    public GuiSpectator(Mine mcIn)
     {
         this.field_175268_g = mcIn;
     }
 
     public void func_175260_a(int p_175260_1_)
     {
-        this.field_175270_h = Minecraft.getSystemTime();
+        this.field_175270_h = Mine.getSystemTime();
 
         if (this.field_175271_i != null)
         {
@@ -40,7 +40,7 @@ public class GuiSpectator extends Gui implements ISpectatorMenuRecipient
 
     private float func_175265_c()
     {
-        long i = this.field_175270_h - Minecraft.getSystemTime() + 5000L;
+        long i = this.field_175270_h - Mine.getSystemTime() + 5000L;
         return MathHelper.clamp_float((float)i / 2000.0F, 0.0F, 1.0F);
     }
 
@@ -161,13 +161,13 @@ public class GuiSpectator extends Gui implements ISpectatorMenuRecipient
         if (i >= 0 && i <= 8)
         {
             this.field_175271_i.func_178644_b(i);
-            this.field_175270_h = Minecraft.getSystemTime();
+            this.field_175270_h = Mine.getSystemTime();
         }
     }
 
     public void func_175261_b()
     {
-        this.field_175270_h = Minecraft.getSystemTime();
+        this.field_175270_h = Mine.getSystemTime();
 
         if (this.func_175262_a())
         {

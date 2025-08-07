@@ -2,7 +2,8 @@ package net.optifine.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 
 public class FrameEvent
 {
@@ -12,7 +13,7 @@ public class FrameEvent
     {
         synchronized (mapEventFrames)
         {
-            int i = Minecraft.getMinecraft().entityRenderer.frameCount;
+            int i = Mine.getMinecraft().entityRenderer.frameCount;
             Integer integer = (Integer)mapEventFrames.get(name);
 
             if (integer == null)

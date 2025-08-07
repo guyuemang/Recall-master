@@ -1,13 +1,14 @@
 package qwq.arcane.module.impl.combat;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSoulSand;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.world.World;
+import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -46,15 +47,13 @@ import java.util.Random;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:05 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class AntiKB extends Module {
     public AntiKB() {
         super("AntiKB",Category.Combat);
     }
 
-    private final ModeValue mode = new ModeValue("Mode","Predicted", new String[]{"Watchdog","Grim","Predicted","Jump Reset"});
+    private final ModeValue mode = new ModeValue("Mode","Prediction", new String[]{"Watchdog","Grim","Prediction","Jump Reset"});
     private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset"), "Packet", new String[]{"Hurt Time", "Packet", "Advanced"});
     private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
     private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 100, 0, 100, 1);
@@ -63,6 +62,7 @@ public class AntiKB extends Module {
     private final BoolValue flagCheckValue = new BoolValue("Flag Check", false);
     public NumberValue flagTicksValue = new NumberValue("Flag Ticks", 6.0, 0.0, 30.0, 1.0);
     public NumberValue attackCountValue = new NumberValue("Attack Counts", 12.0, 1.0, 16.0, 1.0);
+    public final NumberValue chance = new NumberValue("Prediction Chance", 1D, 0D, 1D, 0.01D);
 
     private final BoolValue fireCheckValue = new BoolValue("FireCheck", false);
     private final BoolValue waterCheckValue = new BoolValue("WaterCheck", false);
@@ -83,6 +83,7 @@ public class AntiKB extends Module {
     private boolean attacked;
     private double reduceXZ;
     private int flags;
+    private boolean reducing;
     @Override
     public void onEnable() {
         velocityInput = false;
@@ -172,6 +173,7 @@ public class AntiKB extends Module {
                         s12.motionX = (int) (mc.thePlayer.motionX * 8000);
                         s12.motionZ = (int) (mc.thePlayer.motionZ * 8000);
                         break;
+
                 }
             }
         }
@@ -251,7 +253,7 @@ public class AntiKB extends Module {
         }
     }
     public static boolean soulSandCheck() {
-        final AxisAlignedBB par1AxisAlignedBB = Minecraft.getMinecraft().thePlayer.getEntityBoundingBox().contract(0.001, 0.001,
+        final AxisAlignedBB par1AxisAlignedBB = Mine.getMinecraft().thePlayer.getEntityBoundingBox().contract(0.001, 0.001,
                 0.001);
         final int var4 = MathHelper.floor_double(par1AxisAlignedBB.minX);
         final int var5 = MathHelper.floor_double(par1AxisAlignedBB.maxX + 1.0);
@@ -263,7 +265,7 @@ public class AntiKB extends Module {
             for (int var12 = var6; var12 < var7; ++var12) {
                 for (int var13 = var8; var13 < var9; ++var13) {
                     final BlockPos pos = new BlockPos(var11, var12, var13);
-                    final Block var14 = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
+                    final Block var14 = Mine.getMinecraft().theWorld.getBlockState(pos).getBlock();
                     if (var14 instanceof BlockSoulSand) {
                         return true;
                     }
@@ -300,27 +302,38 @@ public class AntiKB extends Module {
             }
         }
     }
+    boolean enable;
     @EventTarget
-    public void onMoveInput(MoveInputEvent event) {
-        if (mode.is("Predicted") && getModule(KillAura.class).target != null && mc.thePlayer.hurtTime > 0) {
-            ArrayList<Vec3> vec3s = new ArrayList<>();
-            HashMap<Vec3, Integer> map = new HashMap<>();
-            Vec3 playerPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
-            Vec3 onlyForward = PlayerUtil.getPredictedPos(1.0F, 0.0F).add(playerPos);
-            Vec3 strafeLeft = PlayerUtil.getPredictedPos(1.0F, 1.0F).add(playerPos);
-            Vec3 strafeRight = PlayerUtil.getPredictedPos(1.0F, -1.0F).add(playerPos);
-            map.put(onlyForward, 0);
-            map.put(strafeLeft, 1);
-            map.put(strafeRight, -1);
-            vec3s.add(onlyForward);
-            vec3s.add(strafeLeft);
-            vec3s.add(strafeRight);
-            Vec3 targetVec = new Vec3(getModule(KillAura.class).target.posX, getModule(KillAura.class).target.posY, getModule(KillAura.class).target.posZ);
-            vec3s.sort(Comparator.comparingDouble(targetVec::distanceXZTo));
-            if (!mc.thePlayer.movementInput.sneak) {
-                System.out.println(map.get(vec3s.get(0)));
-                mc.thePlayer.movementInput.moveStrafe = map.get(vec3s.get(0));
+    public void onUpdates(UpdateEvent event) {
+        if (mode.is("Prediction")) {
+            if (mc.getCurrentScreen() != null) return;
+            if (KillAura.target == null){
+                return;
             }
+            if (mc.thePlayer.hurtTime == 10) {
+                enable = MathHelper.getRandomDoubleInRange(new Random(), 0, 1) <= chance.getValue();
+            }
+            if (!enable) return;
+            if (mc.thePlayer.hurtTime >= 8) {
+                mc.gameSettings.keyBindJump.pressed = true;
+            } else if (mc.thePlayer.hurtTime > 6) {
+                mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
+                mc.gameSettings.keyBindJump.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindJump);
+            }
+        }
+    }
+    @Override
+    public void onDisable() {
+        if (mode.is("Prediction")) {
+            mc.gameSettings.keyBindJump.pressed = false;
+            mc.gameSettings.keyBindForward.pressed = false;
+        }
+    }
+    @EventTarget
+    public void onWorldEvent(WorldLoadEvent event) {
+        if (mode.is("Prediction")) {
+            mc.gameSettings.keyBindJump.pressed = false;
+            mc.gameSettings.keyBindForward.pressed = false;
         }
     }
 

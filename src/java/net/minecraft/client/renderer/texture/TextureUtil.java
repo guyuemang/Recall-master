@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResourceManager;
@@ -250,7 +251,7 @@ public class TextureUtil
     {
         int[] aint = p_110994_0_;
 
-        if (Minecraft.getMinecraft().gameSettings.anaglyph)
+        if (Mine.getMinecraft().gameSettings.anaglyph)
         {
             aint = updateAnaglyph(p_110994_0_);
         }

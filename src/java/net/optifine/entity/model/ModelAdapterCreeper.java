@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelCreeper;
 import net.minecraft.client.model.ModelRenderer;
@@ -40,7 +40,7 @@ public class ModelAdapterCreeper extends ModelAdapter
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderCreeper rendercreeper = new RenderCreeper(rendermanager);
         rendercreeper.mainModel = modelBase;
         rendercreeper.shadowSize = shadowSize;

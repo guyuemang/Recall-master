@@ -1,6 +1,6 @@
 package net.minecraft.client.gui.inventory;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -20,7 +20,7 @@ public class GuiChest extends GuiContainer
 
     public GuiChest(IInventory upperInv, IInventory lowerInv)
     {
-        super(new ContainerChest(upperInv, lowerInv, Minecraft.getMinecraft().thePlayer));
+        super(new ContainerChest(upperInv, lowerInv, Mine.getMinecraft().thePlayer));
         this.upperChestInventory = upperInv;
         this.lowerChestInventory = lowerInv;
         this.allowUserInput = false;

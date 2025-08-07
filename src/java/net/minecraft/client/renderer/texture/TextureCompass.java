@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.texture;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -22,11 +22,11 @@ public class TextureCompass extends TextureAtlasSprite
 
     public void updateAnimation()
     {
-        Minecraft minecraft = Minecraft.getMinecraft();
+        Mine mine = Mine.getMinecraft();
 
-        if (minecraft.theWorld != null && minecraft.thePlayer != null)
+        if (mine.theWorld != null && mine.thePlayer != null)
         {
-            this.updateCompass(minecraft.theWorld, minecraft.thePlayer.posX, minecraft.thePlayer.posZ, (double)minecraft.thePlayer.rotationYaw, false, false);
+            this.updateCompass(mine.theWorld, mine.thePlayer.posX, mine.thePlayer.posZ, (double) mine.thePlayer.rotationYaw, false, false);
         }
         else
         {

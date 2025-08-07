@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,7 +21,7 @@ public class GuiHopper extends GuiContainer
 
     public GuiHopper(InventoryPlayer playerInv, IInventory hopperInv)
     {
-        super(new ContainerHopper(playerInv, hopperInv, Minecraft.getMinecraft().thePlayer));
+        super(new ContainerHopper(playerInv, hopperInv, Mine.getMinecraft().thePlayer));
         this.playerInventory = playerInv;
         this.hopperInventory = hopperInv;
         this.allowUserInput = false;

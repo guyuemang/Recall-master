@@ -5,7 +5,7 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.BlockPistonExtension;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 public class TileEntityPistonRenderer extends TileEntitySpecialRenderer<TileEntityPiston>
 {
-    private final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+    private final BlockRendererDispatcher blockRenderer = Mine.getMinecraft().getBlockRendererDispatcher();
 
     public void renderTileEntityAt(TileEntityPiston te, double x, double y, double z, float partialTicks, int destroyStage)
     {
@@ -38,7 +38,7 @@ public class TileEntityPistonRenderer extends TileEntitySpecialRenderer<TileEnti
             GlStateManager.enableBlend();
             GlStateManager.disableCull();
 
-            if (Minecraft.isAmbientOcclusionEnabled())
+            if (Mine.isAmbientOcclusionEnabled())
             {
                 GlStateManager.shadeModel(7425);
             }

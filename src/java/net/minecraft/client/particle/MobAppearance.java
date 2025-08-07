@@ -1,6 +1,6 @@
 package net.minecraft.client.particle;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -51,7 +51,7 @@ public class MobAppearance extends EntityFX
     {
         if (this.entity != null)
         {
-            RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+            RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
             rendermanager.setRenderPosition(EntityFX.interpPosX, EntityFX.interpPosY, EntityFX.interpPosZ);
             float f = 0.42553192F;
             float f1 = ((float)this.particleAge + partialTicks) / (float)this.particleMaxAge;

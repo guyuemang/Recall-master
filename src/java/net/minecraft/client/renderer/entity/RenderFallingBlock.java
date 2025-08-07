@@ -2,7 +2,7 @@ package net.minecraft.client.renderer.entity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -50,7 +50,7 @@ public class RenderFallingBlock extends Render<EntityFallingBlock>
                     int j = blockpos.getY();
                     int k = blockpos.getZ();
                     worldrenderer.setTranslation((double)((float)(-i) - 0.5F), (double)(-j), (double)((float)(-k) - 0.5F));
-                    BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+                    BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
                     IBakedModel ibakedmodel = blockrendererdispatcher.getModelFromBlockState(iblockstate, world, (BlockPos)null);
                     blockrendererdispatcher.getBlockModelRenderer().renderModel(world, ibakedmodel, iblockstate, blockpos, worldrenderer, false);
                     worldrenderer.setTranslation(0.0D, 0.0D, 0.0D);

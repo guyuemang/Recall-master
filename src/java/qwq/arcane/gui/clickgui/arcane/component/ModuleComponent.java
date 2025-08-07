@@ -1,8 +1,6 @@
 package qwq.arcane.gui.clickgui.arcane.component;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,9 +22,7 @@ import qwq.arcane.value.impl.*;
  * @Author：Guyuemang
  * @Date：2025/7/3 22:47
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 @Getter
 public class ModuleComponent extends Component {
     private final Module module;

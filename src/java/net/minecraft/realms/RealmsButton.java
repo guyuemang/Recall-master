@@ -1,6 +1,6 @@
 package net.minecraft.realms;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonRealmsProxy;
 import net.minecraft.util.ResourceLocation;
@@ -62,7 +62,7 @@ public class RealmsButton
 
     public void render(int p_render_1_, int p_render_2_)
     {
-        this.proxy.drawButton(Minecraft.getMinecraft(), p_render_1_, p_render_2_);
+        this.proxy.drawButton(Mine.getMinecraft(), p_render_1_, p_render_2_);
     }
 
     public void clicked(int p_clicked_1_, int p_clicked_2_)

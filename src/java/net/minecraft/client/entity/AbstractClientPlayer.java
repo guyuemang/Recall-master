@@ -2,7 +2,8 @@ package net.minecraft.client.entity;
 
 import com.mojang.authlib.GameProfile;
 import java.io.File;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -21,7 +22,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import net.optifine.player.CapeUtils;
 import net.optifine.player.PlayerConfigurations;
-import net.optifine.reflect.Reflector;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.player.LookEvent;
 import qwq.arcane.module.impl.visuals.Camera;
@@ -55,7 +55,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
      */
     public boolean isSpectator()
     {
-        NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getNetHandler().getPlayerInfo(this.getGameProfile().getId());
+        NetworkPlayerInfo networkplayerinfo = Mine.getMinecraft().getNetHandler().getPlayerInfo(this.getGameProfile().getId());
         return networkplayerinfo != null && networkplayerinfo.getGameType() == WorldSettings.GameType.SPECTATOR;
     }
 
@@ -71,7 +71,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
     {
         if (this.playerInfo == null)
         {
-            this.playerInfo = Minecraft.getMinecraft().getNetHandler().getPlayerInfo(this.getUniqueID());
+            this.playerInfo = Mine.getMinecraft().getNetHandler().getPlayerInfo(this.getUniqueID());
         }
 
         return this.playerInfo;
@@ -123,7 +123,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
 
     public static ThreadDownloadImageData getDownloadImageSkin(ResourceLocation resourceLocationIn, String username)
     {
-        TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+        TextureManager texturemanager = Mine.getMinecraft().getTextureManager();
         ITextureObject itextureobject = texturemanager.getTexture(resourceLocationIn);
 
         if (itextureobject == null)

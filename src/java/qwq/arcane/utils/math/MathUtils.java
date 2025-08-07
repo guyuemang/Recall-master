@@ -1,6 +1,6 @@
 package qwq.arcane.utils.math;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
@@ -95,7 +95,7 @@ public class MathUtils {
         return (int) (min + ((max - min) * Math.random()));
     }
     public static double[] yawPos(double value) {
-        return yawPos(Minecraft.getMinecraft().thePlayer.rotationYaw * MathHelper.deg2Rad, value);
+        return yawPos(Mine.getMinecraft().thePlayer.rotationYaw * MathHelper.deg2Rad, value);
     }
     public static double incValue(double val, double inc) {
         double one = 1.0 / inc;

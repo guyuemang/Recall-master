@@ -16,7 +16,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -895,7 +895,7 @@ public class ShadersTex
 
     public static void updateTextureMinMagFilter()
     {
-        TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+        TextureManager texturemanager = Mine.getMinecraft().getTextureManager();
         ITextureObject itextureobject = texturemanager.getTexture(TextureMap.locationBlocksTexture);
 
         if (itextureobject != null)

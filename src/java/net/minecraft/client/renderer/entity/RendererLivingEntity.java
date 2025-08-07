@@ -3,7 +3,8 @@ package net.minecraft.client.renderer.entity;
 import com.google.common.collect.Lists;
 import java.nio.FloatBuffer;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -164,7 +165,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 }
 
                 float f7;
-                if(entity == Minecraft.getMinecraft().thePlayer) {
+                if(entity == Mine.getMinecraft().thePlayer) {
                     f7 = entity.prevRotationPitchHead + (entity.rotationPitchHead - entity.prevRotationPitchHead) * partialTicks;
                 }else {
                     f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
@@ -343,7 +344,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
     protected void renderModel(T entitylivingbaseIn, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float scaleFactor)
     {
         boolean flag = !entitylivingbaseIn.isInvisible();
-        boolean flag1 = !flag && !entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
+        boolean flag1 = !flag && !entitylivingbaseIn.isInvisibleToPlayer(Mine.getMinecraft().thePlayer);
 
         if (flag || flag1)
         {
@@ -733,7 +734,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
     protected boolean canRenderName(T entity)
     {
-        EntityPlayerSP entityplayersp = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP entityplayersp = Mine.getMinecraft().thePlayer;
 
         if (entity instanceof EntityPlayer && entity != entityplayersp)
         {
@@ -764,7 +765,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             }
         }
 
-        return Minecraft.isGuiEnabled() && entity != this.renderManager.livingPlayer && !entity.isInvisibleToPlayer(entityplayersp) && entity.riddenByEntity == null;
+        return Mine.isGuiEnabled() && entity != this.renderManager.livingPlayer && !entity.isInvisibleToPlayer(entityplayersp) && entity.riddenByEntity == null;
     }
 
     public void setRenderOutlines(boolean renderOutlinesIn)

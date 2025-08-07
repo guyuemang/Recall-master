@@ -13,7 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GLAllocation;
@@ -196,7 +196,7 @@ public class RenderChunk
             ChunkCacheOF chunkcacheof = this.makeChunkCacheOF(blockpos);
             chunkcacheof.renderStart();
             boolean[] aboolean = new boolean[ENUM_WORLD_BLOCK_LAYERS.length];
-            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
             boolean flag = Reflector.ForgeBlock_canRenderInLayer.exists();
             boolean flag1 = Reflector.ForgeHooksClient_setRenderLayer.exists();
 

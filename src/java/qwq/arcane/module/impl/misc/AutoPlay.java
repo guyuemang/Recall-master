@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.misc;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
@@ -29,9 +27,7 @@ import java.util.regex.Pattern;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:03 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class AutoPlay extends Module {
     public AutoPlay() {
         super("AutoPlay", Category.Misc);

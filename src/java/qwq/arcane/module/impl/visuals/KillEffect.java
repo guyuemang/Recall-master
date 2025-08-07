@@ -1,7 +1,7 @@
 package qwq.arcane.module.impl.visuals;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -118,7 +118,7 @@ public class KillEffect extends Module {
         new Thread(() -> {
             AudioInputStream as;
             try {
-                as = AudioSystem.getAudioInputStream(new BufferedInputStream(Objects.requireNonNull(Minecraft.getMinecraft().getResourceManager()
+                as = AudioSystem.getAudioInputStream(new BufferedInputStream(Objects.requireNonNull(Mine.getMinecraft().getResourceManager()
                         .getResource(new ResourceLocation("solitude/sound/sb.wav"))
                         .getInputStream())));
                 Clip clip = AudioSystem.getClip();

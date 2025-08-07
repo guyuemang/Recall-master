@@ -1,15 +1,9 @@
 package qwq.arcane.module.impl.movement;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiIngameMenu;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
@@ -26,8 +20,6 @@ import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.player.InvManager;
-import qwq.arcane.utils.pack.BlinkComponent;
-import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 
@@ -38,9 +30,7 @@ import java.util.List;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:03 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class GuiMove extends Module {
     public GuiMove() {
         super("GuiMove",Category.Movement);
@@ -120,7 +110,7 @@ public class GuiMove extends Module {
     }
     public static boolean isHypixelLobby() {
         String[] strings = new String[]{"CLICK TO PLAY"};
-        for (Entity entity : Minecraft.getMinecraft().theWorld.playerEntities) {
+        for (Entity entity : Mine.getMinecraft().theWorld.playerEntities) {
             if (entity.getName().startsWith("§e§l")) {
                 for (String string : strings) {
                     if (entity.getName().equals("§e§l" + string)) {
@@ -217,6 +207,9 @@ public class GuiMove extends Module {
 
     @EventTarget
     public final void onUpdate(UpdateEvent event) {
+        if (mc.currentScreen == null){
+            return;
+        }
         if (mc.currentScreen.GuiInvMove()) return;
 
         KeyBinding[] moveKeys = new KeyBinding[]{
@@ -234,6 +227,9 @@ public class GuiMove extends Module {
 
     @EventTarget
     public final void onMoveInput(MoveInputEvent event) {
+        if (mc.currentScreen == null){
+            return;
+        }
         if (mc.currentScreen.GuiInvMove()) return;
 
         float moveStrafe = 0.0F;

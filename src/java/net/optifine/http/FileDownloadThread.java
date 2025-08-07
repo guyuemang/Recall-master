@@ -1,6 +1,6 @@
 package net.optifine.http;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 
 public class FileDownloadThread extends Thread
 {
@@ -17,7 +17,7 @@ public class FileDownloadThread extends Thread
     {
         try
         {
-            byte[] abyte = HttpPipeline.get(this.urlString, Minecraft.getMinecraft().getProxy());
+            byte[] abyte = HttpPipeline.get(this.urlString, Mine.getMinecraft().getProxy());
             this.listener.fileDownloadFinished(this.urlString, abyte, (Throwable)null);
         }
         catch (Exception exception)

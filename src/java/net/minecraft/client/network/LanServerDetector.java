@@ -9,7 +9,8 @@ import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.ThreadLanServerPing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,7 @@ public class LanServerDetector
         {
             this.lanServerMotd = motd;
             this.lanServerIpPort = address;
-            this.timeLastSeen = Minecraft.getSystemTime();
+            this.timeLastSeen = Mine.getSystemTime();
         }
 
         public String getServerMotd()
@@ -44,7 +45,7 @@ public class LanServerDetector
 
         public void updateLastSeen()
         {
-            this.timeLastSeen = Minecraft.getSystemTime();
+            this.timeLastSeen = Mine.getSystemTime();
         }
     }
 

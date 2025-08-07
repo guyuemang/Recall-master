@@ -1,18 +1,16 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.MathHelper;
-import org.bytedeco.javacv.FrameGrabber;
 import org.lwjgl.input.Mouse;
-import qwq.arcane.gui.VideoPlayer;
 
 public abstract class GuiSlot
 {
-    protected final Minecraft mc;
+    protected final Mine mc;
     protected int width;
     protected int height;
 
@@ -63,7 +61,7 @@ public abstract class GuiSlot
     protected int headerPadding;
     private boolean enabled = true;
 
-    public GuiSlot(Minecraft mcIn, int width, int height, int topIn, int bottomIn, int slotHeightIn)
+    public GuiSlot(Mine mcIn, int width, int height, int topIn, int bottomIn, int slotHeightIn)
     {
         this.mc = mcIn;
         this.width = width;
@@ -348,10 +346,10 @@ public abstract class GuiSlot
 
                         if (i1 < this.getSize() && this.mouseX >= j2 && this.mouseX <= k2 && i1 >= 0 && l2 >= 0)
                         {
-                            boolean flag = i1 == this.selectedElement && Minecraft.getSystemTime() - this.lastClicked < 250L;
+                            boolean flag = i1 == this.selectedElement && Mine.getSystemTime() - this.lastClicked < 250L;
                             this.elementClicked(i1, flag, this.mouseX, this.mouseY);
                             this.selectedElement = i1;
-                            this.lastClicked = Minecraft.getSystemTime();
+                            this.lastClicked = Mine.getSystemTime();
                         }
                         else if (this.mouseX >= j2 && this.mouseX <= k2 && l2 < 0)
                         {

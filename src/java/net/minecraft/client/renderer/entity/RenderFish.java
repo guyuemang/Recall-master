@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -65,7 +65,7 @@ public class RenderFish extends Render<EntityFishHook>
             double d2 = entity.angler.prevPosZ + (entity.angler.posZ - entity.angler.prevPosZ) * (double)partialTicks + vec3.zCoord;
             double d3 = (double)entity.angler.getEyeHeight();
 
-            if (this.renderManager.options != null && this.renderManager.options.thirdPersonView > 0 || entity.angler != Minecraft.getMinecraft().thePlayer)
+            if (this.renderManager.options != null && this.renderManager.options.thirdPersonView > 0 || entity.angler != Mine.getMinecraft().thePlayer)
             {
                 float f9 = (entity.angler.prevRenderYawOffset + (entity.angler.renderYawOffset - entity.angler.prevRenderYawOffset) * partialTicks) * (float)Math.PI / 180.0F;
                 double d4 = (double)MathHelper.sin(f9);

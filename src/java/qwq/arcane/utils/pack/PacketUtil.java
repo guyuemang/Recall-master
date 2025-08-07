@@ -3,9 +3,7 @@ package qwq.arcane.utils.pack;
 import com.viaversion.viaversion.api.protocol.Protocol;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.exception.CancelException;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.network.Packet;
 import qwq.arcane.utils.Instance;
 
@@ -15,9 +13,7 @@ import java.util.Arrays;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:44 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class PacketUtil implements Instance {
     public static void sendPacket(Packet<?> packet) {
         mc.getNetHandler().addToSendQueue(packet);

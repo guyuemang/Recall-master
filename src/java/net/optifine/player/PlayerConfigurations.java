@@ -2,7 +2,7 @@ package net.optifine.player;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.optifine.http.FileDownloadThread;
@@ -28,7 +28,7 @@ public class PlayerConfigurations
     {
         if (reloadPlayerItems && System.currentTimeMillis() > timeReloadPlayerItemsMs + 5000L)
         {
-            AbstractClientPlayer abstractclientplayer = Minecraft.getMinecraft().thePlayer;
+            AbstractClientPlayer abstractclientplayer = Mine.getMinecraft().thePlayer;
 
             if (abstractclientplayer != null)
             {

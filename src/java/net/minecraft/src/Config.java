@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import qwq.arcane.module.Mine;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +43,6 @@ import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.PixelFormat;
 
 import net.minecraft.client.LoadingScreenRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -97,7 +97,7 @@ public class Config
     public static boolean fancyFogAvailable = false;
     public static boolean occlusionAvailable = false;
     private static GameSettings gameSettings = null;
-    private static Minecraft minecraft = Minecraft.getMinecraft();
+    private static Mine mine = Mine.getMinecraft();
     private static boolean initialized = false;
     private static Thread minecraftThread = null;
     private static DisplayMode desktopDisplayMode = null;
@@ -165,7 +165,7 @@ public class Config
         checkDisplayMode();
         minecraftThread = Thread.currentThread();
         updateThreadPriorities();
-        Shaders.startup(Minecraft.getMinecraft());
+        Shaders.startup(Mine.getMinecraft());
     }
 
     public static void checkInitialized()
@@ -671,7 +671,7 @@ public class Config
 
     public static ModelManager getModelManager()
     {
-        return minecraft.getRenderItem().modelManager;
+        return mine.getRenderItem().modelManager;
     }
 
     public static boolean isTreesFancy()
@@ -923,24 +923,24 @@ public class Config
         }
     }
 
-    public static Minecraft getMinecraft()
+    public static Mine getMinecraft()
     {
-        return minecraft;
+        return mine;
     }
 
     public static TextureManager getTextureManager()
     {
-        return minecraft.getTextureManager();
+        return mine.getTextureManager();
     }
 
     public static IResourceManager getResourceManager()
     {
-        return minecraft.getResourceManager();
+        return mine.getResourceManager();
     }
 
     public static InputStream getResourceStream(ResourceLocation p_getResourceStream_0_) throws IOException
     {
-        return getResourceStream(minecraft.getResourceManager(), p_getResourceStream_0_);
+        return getResourceStream(mine.getResourceManager(), p_getResourceStream_0_);
     }
 
     public static InputStream getResourceStream(IResourceManager p_getResourceStream_0_, ResourceLocation p_getResourceStream_1_) throws IOException
@@ -951,7 +951,7 @@ public class Config
 
     public static IResource getResource(ResourceLocation p_getResource_0_) throws IOException
     {
-        return minecraft.getResourceManager().getResource(p_getResource_0_);
+        return mine.getResourceManager().getResource(p_getResource_0_);
     }
 
     public static boolean hasResource(ResourceLocation p_hasResource_0_)
@@ -982,7 +982,7 @@ public class Config
 
     public static IResourcePack[] getResourcePacks()
     {
-        ResourcePackRepository resourcepackrepository = minecraft.getResourcePackRepository();
+        ResourcePackRepository resourcepackrepository = mine.getResourcePackRepository();
         List<ResourcePackRepository.Entry> list = resourcepackrepository.getRepositoryEntries();
         List list1 = new ArrayList();
 
@@ -1002,7 +1002,7 @@ public class Config
 
     public static String getResourcePackNames()
     {
-        if (minecraft.getResourcePackRepository() == null)
+        if (mine.getResourcePackRepository() == null)
         {
             return "";
         }
@@ -1033,12 +1033,12 @@ public class Config
     {
         if (defaultResourcePackLazy == null)
         {
-            Minecraft minecraft = Minecraft.getMinecraft();
-            defaultResourcePackLazy = (DefaultResourcePack)Reflector.getFieldValue(minecraft, Reflector.Minecraft_defaultResourcePack);
+            Mine mine = Mine.getMinecraft();
+            defaultResourcePackLazy = (DefaultResourcePack)Reflector.getFieldValue(mine, Reflector.Minecraft_defaultResourcePack);
 
             if (defaultResourcePackLazy == null)
             {
-                ResourcePackRepository resourcepackrepository = minecraft.getResourcePackRepository();
+                ResourcePackRepository resourcepackrepository = mine.getResourcePackRepository();
 
                 if (resourcepackrepository != null)
                 {
@@ -1058,7 +1058,7 @@ public class Config
 
     public static IResourcePack getDefiningResourcePack(ResourceLocation p_getDefiningResourcePack_0_)
     {
-        ResourcePackRepository resourcepackrepository = minecraft.getResourcePackRepository();
+        ResourcePackRepository resourcepackrepository = mine.getResourcePackRepository();
         IResourcePack iresourcepack = resourcepackrepository.getResourcePackInstance();
 
         if (iresourcepack != null && iresourcepack.resourceExists(p_getDefiningResourcePack_0_))
@@ -1093,7 +1093,7 @@ public class Config
 
     public static RenderGlobal getRenderGlobal()
     {
-        return minecraft.renderGlobal;
+        return mine.renderGlobal;
     }
 
     public static boolean isBetterGrass()
@@ -1522,7 +1522,7 @@ public class Config
             if (isShowGlErrors() && TimedEvent.isActive("ShowGlError", 10000L))
             {
                 String s2 = I18n.format("of.message.openglError", new Object[] {Integer.valueOf(i), s});
-                minecraft.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(s2));
+                mine.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(s2));
             }
         }
     }
@@ -1928,7 +1928,7 @@ public class Config
                 }
             }
 
-            if (!Minecraft.isRunningOnMac && getDefaultResourcePack() != null)
+            if (!Mine.isRunningOnMac && getDefaultResourcePack() != null)
             {
                 InputStream inputstream = null;
                 InputStream inputstream1 = null;
@@ -1975,7 +1975,7 @@ public class Config
     {
         try
         {
-            if (minecraft.isFullScreen())
+            if (mine.isFullScreen())
             {
                 if (fullscreenModeChecked)
                 {
@@ -2005,30 +2005,30 @@ public class Config
                 }
 
                 Display.setDisplayMode(displaymode1);
-                minecraft.displayWidth = Display.getDisplayMode().getWidth();
-                minecraft.displayHeight = Display.getDisplayMode().getHeight();
+                mine.displayWidth = Display.getDisplayMode().getWidth();
+                mine.displayHeight = Display.getDisplayMode().getHeight();
 
-                if (minecraft.displayWidth <= 0)
+                if (mine.displayWidth <= 0)
                 {
-                    minecraft.displayWidth = 1;
+                    mine.displayWidth = 1;
                 }
 
-                if (minecraft.displayHeight <= 0)
+                if (mine.displayHeight <= 0)
                 {
-                    minecraft.displayHeight = 1;
+                    mine.displayHeight = 1;
                 }
 
-                if (minecraft.currentScreen != null)
+                if (mine.currentScreen != null)
                 {
-                    ScaledResolution scaledresolution = new ScaledResolution(minecraft);
+                    ScaledResolution scaledresolution = new ScaledResolution(mine);
                     int i = scaledresolution.getScaledWidth();
                     int j = scaledresolution.getScaledHeight();
-                    minecraft.currentScreen.setWorldAndResolution(minecraft, i, j);
+                    mine.currentScreen.setWorldAndResolution(mine, i, j);
                 }
 
                 updateFramebufferSize();
                 Display.setFullscreen(true);
-                minecraft.gameSettings.updateVSync();
+                mine.gameSettings.updateVSync();
                 GlStateManager.enableTexture2D();
             }
             else
@@ -2040,7 +2040,7 @@ public class Config
 
                 desktopModeChecked = true;
                 fullscreenModeChecked = false;
-                minecraft.gameSettings.updateVSync();
+                mine.gameSettings.updateVSync();
                 Display.update();
                 GlStateManager.enableTexture2D();
                 Display.setResizable(false);
@@ -2057,14 +2057,14 @@ public class Config
 
     public static void updateFramebufferSize()
     {
-        minecraft.getFramebuffer().createBindFramebuffer(minecraft.displayWidth, minecraft.displayHeight);
+        mine.getFramebuffer().createBindFramebuffer(mine.displayWidth, mine.displayHeight);
 
-        if (minecraft.entityRenderer != null)
+        if (mine.entityRenderer != null)
         {
-            minecraft.entityRenderer.updateShaderGroupSize(minecraft.displayWidth, minecraft.displayHeight);
+            mine.entityRenderer.updateShaderGroupSize(mine.displayWidth, mine.displayHeight);
         }
 
-        minecraft.loadingScreen = new LoadingScreenRenderer(minecraft);
+        mine.loadingScreen = new LoadingScreenRenderer(mine);
     }
 
     public static Object[] addObjectToArray(Object[] p_addObjectToArray_0_, Object p_addObjectToArray_1_)
@@ -2149,25 +2149,25 @@ public class Config
 
     public static void drawFps()
     {
-        int i = Minecraft.getDebugFPS();
-        String s = getUpdates(minecraft.debug);
-        int j = minecraft.renderGlobal.getCountActiveRenderers();
-        int k = minecraft.renderGlobal.getCountEntitiesRendered();
-        int l = minecraft.renderGlobal.getCountTileEntitiesRendered();
+        int i = Mine.getDebugFPS();
+        String s = getUpdates(mine.debug);
+        int j = mine.renderGlobal.getCountActiveRenderers();
+        int k = mine.renderGlobal.getCountEntitiesRendered();
+        int l = mine.renderGlobal.getCountTileEntitiesRendered();
         String s1 = "" + i + "/" + getFpsMin() + " fps, C: " + j + ", E: " + k + "+" + l + ", U: " + s;
-        minecraft.fontRendererObj.drawString(s1, 2, 2, -2039584);
+        mine.fontRendererObj.drawString(s1, 2, 2, -2039584);
     }
 
     public static int getFpsMin()
     {
-        if (minecraft.debug == mcDebugLast)
+        if (mine.debug == mcDebugLast)
         {
             return fpsMinLast;
         }
         else
         {
-            mcDebugLast = minecraft.debug;
-            FrameTimer frametimer = minecraft.getFrameTimer();
+            mcDebugLast = mine.debug;
+            FrameTimer frametimer = mine.getFrameTimer();
             long[] along = frametimer.getFrames();
             int i = frametimer.getIndex();
             int j = frametimer.getLastIndex();
@@ -2178,7 +2178,7 @@ public class Config
             }
             else
             {
-                int k = Minecraft.getDebugFPS();
+                int k = Mine.getDebugFPS();
 
                 if (k <= 0)
                 {
@@ -2264,8 +2264,8 @@ public class Config
 
     public static void showGuiMessage(String p_showGuiMessage_0_, String p_showGuiMessage_1_)
     {
-        GuiMessage guimessage = new GuiMessage(minecraft.currentScreen, p_showGuiMessage_0_, p_showGuiMessage_1_);
-        minecraft.displayGuiScreen(guimessage);
+        GuiMessage guimessage = new GuiMessage(mine.currentScreen, p_showGuiMessage_0_, p_showGuiMessage_1_);
+        mine.displayGuiScreen(guimessage);
     }
 
     public static int[] addIntToArray(int[] p_addIntToArray_0_, int p_addIntToArray_1_)
@@ -2457,7 +2457,7 @@ public class Config
 
     public static boolean isIntegratedServerRunning()
     {
-        return minecraft.getIntegratedServer() == null ? false : minecraft.isIntegratedServerRunning();
+        return mine.getIntegratedServer() == null ? false : mine.isIntegratedServerRunning();
     }
 
     public static IntBuffer createDirectIntBuffer(int p_createDirectIntBuffer_0_)

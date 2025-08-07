@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer.entity.layers;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelWitch;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -41,9 +41,9 @@ public class LayerHeldItemWitch implements LayerRenderer<EntityWitch>
             ((ModelWitch)this.witchRenderer.getMainModel()).villagerNose.postRender(0.0625F);
             GlStateManager.translate(-0.0625F, 0.53125F, 0.21875F);
             Item item = itemstack.getItem();
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Mine mine = Mine.getMinecraft();
 
-            if (item instanceof ItemBlock && minecraft.getBlockRendererDispatcher().isRenderTypeChest(Block.getBlockFromItem(item), itemstack.getMetadata()))
+            if (item instanceof ItemBlock && mine.getBlockRendererDispatcher().isRenderTypeChest(Block.getBlockFromItem(item), itemstack.getMetadata()))
             {
                 GlStateManager.translate(0.0F, 0.0625F, -0.25F);
                 GlStateManager.rotate(30.0F, 1.0F, 0.0F, 0.0F);
@@ -87,7 +87,7 @@ public class LayerHeldItemWitch implements LayerRenderer<EntityWitch>
 
             GlStateManager.rotate(-15.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(40.0F, 0.0F, 0.0F, 1.0F);
-            minecraft.getItemRenderer().renderItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
+            mine.getItemRenderer().renderItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
             GlStateManager.popMatrix();
         }
     }

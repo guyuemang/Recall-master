@@ -10,7 +10,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import javax.crypto.SecretKey;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.network.EnumConnectionState;
@@ -30,12 +31,12 @@ import org.apache.logging.log4j.Logger;
 public class NetHandlerLoginClient implements INetHandlerLoginClient
 {
     private static final Logger logger = LogManager.getLogger();
-    private final Minecraft mc;
+    private final Mine mc;
     private final GuiScreen previousGuiScreen;
     private final NetworkManager networkManager;
     private GameProfile gameProfile;
 
-    public NetHandlerLoginClient(NetworkManager networkManagerIn, Minecraft mcIn, GuiScreen p_i45059_3_)
+    public NetHandlerLoginClient(NetworkManager networkManagerIn, Mine mcIn, GuiScreen p_i45059_3_)
     {
         this.networkManager = networkManagerIn;
         this.mc = mcIn;

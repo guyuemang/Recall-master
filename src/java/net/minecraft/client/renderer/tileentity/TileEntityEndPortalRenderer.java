@@ -2,7 +2,8 @@ package net.minecraft.client.renderer.tileentity;
 
 import java.nio.FloatBuffer;
 import java.util.Random;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -83,7 +84,7 @@ public class TileEntityEndPortalRenderer extends TileEntitySpecialRenderer<TileE
                 GlStateManager.matrixMode(5890);
                 GlStateManager.pushMatrix();
                 GlStateManager.loadIdentity();
-                GlStateManager.translate(0.0F, (float)(Minecraft.getSystemTime() % 700000L) / 700000.0F, 0.0F);
+                GlStateManager.translate(0.0F, (float)(Mine.getSystemTime() % 700000L) / 700000.0F, 0.0F);
                 GlStateManager.scale(f5, f5, f5);
                 GlStateManager.translate(0.5F, 0.5F, 0.0F);
                 GlStateManager.rotate((float)(i * i * 4321 + i * 9) * 2.0F, 0.0F, 0.0F, 1.0F);

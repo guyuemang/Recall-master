@@ -1,9 +1,7 @@
 package qwq.arcane.utils.player;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -11,11 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class HYTUtils {
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final Mine mc = Mine.getMinecraft();
 
     public static boolean isInLobby() {
         if (HYTUtils.mc.theWorld == null) {

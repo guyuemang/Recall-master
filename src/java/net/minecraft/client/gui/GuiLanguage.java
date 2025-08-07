@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.Language;
 import net.minecraft.client.resources.LanguageManager;
@@ -111,7 +111,7 @@ public class GuiLanguage extends GuiScreen
         private final java.util.List<String> langCodeList = Lists.<String>newArrayList();
         private final Map<String, Language> languageMap = Maps.<String, Language>newHashMap();
 
-        public List(Minecraft mcIn)
+        public List(Mine mcIn)
         {
             super(mcIn, GuiLanguage.this.width, GuiLanguage.this.height, 32, GuiLanguage.this.height - 65 + 4, 18);
 

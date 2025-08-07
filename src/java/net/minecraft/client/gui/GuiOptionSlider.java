@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MathHelper;
@@ -25,9 +25,9 @@ public class GuiOptionSlider extends GuiButton
         this.options = p_i45017_4_;
         this.field_146132_r = p_i45017_5_;
         this.field_146131_s = p_i45017_6_;
-        Minecraft minecraft = Minecraft.getMinecraft();
-        this.sliderValue = p_i45017_4_.normalizeValue(minecraft.gameSettings.getOptionFloatValue(p_i45017_4_));
-        this.displayString = minecraft.gameSettings.getKeyBinding(p_i45017_4_);
+        Mine mine = Mine.getMinecraft();
+        this.sliderValue = p_i45017_4_.normalizeValue(mine.gameSettings.getOptionFloatValue(p_i45017_4_));
+        this.displayString = mine.gameSettings.getKeyBinding(p_i45017_4_);
     }
 
     /**
@@ -42,7 +42,7 @@ public class GuiOptionSlider extends GuiButton
     /**
      * Fired when the mouse button is dragged. Equivalent of MouseListener.mouseDragged(MouseEvent e).
      */
-    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY)
+    protected void mouseDragged(Mine mc, int mouseX, int mouseY)
     {
         if (this.visible)
         {
@@ -67,7 +67,7 @@ public class GuiOptionSlider extends GuiButton
      * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
      * e).
      */
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+    public boolean mousePressed(Mine mc, int mouseX, int mouseY)
     {
         if (super.mousePressed(mc, mouseX, mouseY))
         {

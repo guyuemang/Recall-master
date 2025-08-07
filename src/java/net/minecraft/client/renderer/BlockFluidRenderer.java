@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -28,7 +28,7 @@ public class BlockFluidRenderer
 
     protected void initAtlasSprites()
     {
-        TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
+        TextureMap texturemap = Mine.getMinecraft().getTextureMapBlocks();
         this.atlasSpritesLava[0] = texturemap.getAtlasSprite("minecraft:blocks/lava_still");
         this.atlasSpritesLava[1] = texturemap.getAtlasSprite("minecraft:blocks/lava_flow");
         this.atlasSpritesWater[0] = texturemap.getAtlasSprite("minecraft:blocks/water_still");

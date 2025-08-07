@@ -1,7 +1,7 @@
 package net.minecraft.client.gui;
 
 import java.util.Arrays;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
@@ -11,11 +11,11 @@ import org.apache.commons.lang3.ArrayUtils;
 public class GuiKeyBindingList extends GuiListExtended
 {
     private final GuiControls field_148191_k;
-    private final Minecraft mc;
+    private final Mine mc;
     private final GuiListExtended.IGuiListEntry[] listEntries;
     private int maxListLabelWidth = 0;
 
-    public GuiKeyBindingList(GuiControls controls, Minecraft mcIn)
+    public GuiKeyBindingList(GuiControls controls, Mine mcIn)
     {
         super(mcIn, controls.width, controls.height, 63, controls.height - 32, 20);
         this.field_148191_k = controls;

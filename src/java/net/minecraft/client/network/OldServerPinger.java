@@ -23,7 +23,8 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.EnumConnectionState;
@@ -147,7 +148,7 @@ public class OldServerPinger
                         server.setBase64EncodedIconData((String)null);
                     }
 
-                    this.field_175092_e = Minecraft.getSystemTime();
+                    this.field_175092_e = Mine.getSystemTime();
                     networkmanager.sendPacket(new C01PacketPing(this.field_175092_e));
                     this.field_147403_d = true;
                 }
@@ -155,7 +156,7 @@ public class OldServerPinger
             public void handlePong(S01PacketPong packetIn)
             {
                 long i = this.field_175092_e;
-                long j = Minecraft.getSystemTime();
+                long j = Mine.getSystemTime();
                 server.pingToServer = j - i;
                 networkmanager.closeChannel(new ChatComponentText("Finished"));
             }

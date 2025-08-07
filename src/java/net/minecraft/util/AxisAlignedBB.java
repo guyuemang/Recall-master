@@ -375,7 +375,11 @@ public class AxisAlignedBB
             return new MovingObjectPosition(vec36, enumfacing);
         }
     }
-
+    public AxisAlignedBB expands(double v, boolean modifyYDown, boolean modifyYUp) {
+        double minY = this.minY - (modifyYDown ? v : 0.0);
+        double maxY = this.maxY + (modifyYUp ? v : 0.0);
+        return new AxisAlignedBB(this.minX - v, minY, this.minZ - v, this.maxX + v, maxY, this.maxZ + v);
+    }
     /**
      * Checks if the specified vector is within the YZ dimensions of the bounding box. Args: Vec3D
      */

@@ -1,17 +1,15 @@
 package qwq.arcane.module.impl.world;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
+import org.apache.commons.lang3.RandomUtils;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
-import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.StrafeEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
@@ -25,27 +23,24 @@ import qwq.arcane.utils.player.*;
 import qwq.arcane.utils.render.BlockUtil;
 import qwq.arcane.utils.render.PlaceInfo;
 import qwq.arcane.utils.render.RenderUtil;
-import qwq.arcane.utils.rotation.RayCastUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
 
-import java.awt.*;
-
 /**
  * @Author：Guyuemang
  * @Date：7/6/2025 11:54 PM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold",Category.World);
     }
     public ModeValue mode = new ModeValue("Mode","Normal",new String[]{"Normal","Telly"});
+    private final NumberValue minTellyTicks = new NumberValue("Min Telly Ticks", () -> mode.is("Telly"), 2, 1, 5,1);
+    private final NumberValue maxTellyTicks = new NumberValue("Max Telly Ticks", () -> mode.is("Telly"), 4, 1, 5,1);
     public final BoolValue swing = new BoolValue("Swing", true);
     public final BoolValue sprint = new BoolValue("sprint", true);
     public BoolValue rotation = new BoolValue("Rotation",true);
@@ -54,37 +49,53 @@ public class Scaffold extends Module {
     public static BoolValue rayCastValue = new BoolValue("RayCast", true);
     public BoolValue movefix = new BoolValue("MoveFix",true);
     public final BoolValue esp = new BoolValue("ESP", true);
-    private PlaceData data;
+    public PlaceData data;
     public BlockPos previousBlock;
     public int slot;
     private int prevItem = 0;
     private TimerUtil timerUtil = new TimerUtil();
     private double onGroundY;
+    private float[] smoothRotation = new float[]{0, 85F};
+    private boolean canPlace = true;
+    private int tellyTicks;
+    private float[] previousRotation;
+    private boolean tellyStage;
+    private float[] rotations;
     @Override
     public void onEnable() {
         timerUtil.reset();
         if (mc.thePlayer != null) {
             prevItem = mc.thePlayer.inventory.currentItem;
+            onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
+            previousRotation = new float[]{mc.thePlayer.rotationYaw + 180, 82};
         }
-        onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
         this.slot = -1;
+        if (mode.is("Telly")) {
+            smoothRotation = new float[]{mc.thePlayer.rotationYaw, 85F};
+        }
+        canPlace = true;
     }
     @Override
     public void onDisable() {
         timerUtil.reset();
+        tellyTicks = 0;
+        previousRotation = rotations = null;
         mc.thePlayer.inventory.currentItem = prevItem;
         SlotSpoofComponent.stopSpoofing();
     }
     @EventTarget
-    public void Tickevent(TickEvent event){
+    public void Tickevent(UpdateEvent event){
         this.slot = getBlockSlot();
     }
+
     @EventTarget
-    public void onMotion(MotionEvent event) {
+    public void onStrafe(StrafeEvent event){
         if (mc.thePlayer.onGround && mode.is("Telly") && !mc.thePlayer.isJumping && MovementUtil.isMoving()) {
-            mc.thePlayer.jump();
+           tellyStage = !tellyStage;
+           mc.thePlayer.jump();
         }
     }
+    private static final float NORMAL_PITCH = 82.5f;
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.slot = getBlockSlot();
@@ -99,7 +110,9 @@ public class Scaffold extends Module {
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), false);
             mc.thePlayer.setSprinting(false);
         }
-
+        if (mode.is("Telly") && mc.thePlayer.onGround) {
+            tellyTicks = MathUtils.randomizeInt(minTellyTicks.getValue().intValue(), maxTellyTicks.getValue().intValue());
+        }
         data = null;
         if (mc.thePlayer.onGround) {
             onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
@@ -114,53 +127,46 @@ public class Scaffold extends Module {
         previousBlock = new BlockPos(posX, posY, posZ).offset(EnumFacing.DOWN);
         data = ScaffoldUtil.getPlaceData(previousBlock);
 
+        canPlace = mode.is("Telly") && mc.thePlayer.offGroundTicks >= tellyTicks && data != null || mode.is("Normal") && data != null;
+        if (!canPlace){
+            rotations = new float[]{mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch};
+        }
         place();
+        if (mode.is("Telly") && mc.thePlayer.onGround) {
+            tellyTicks = MathUtils.randomizeInt(minTellyTicks.getValue().intValue(), maxTellyTicks.getValue().intValue());
+        }
 
-        if (data != null && rotation.get()) {
-            float[] rotation;
-            float[] rotations = new float[2];
+    }
+    @EventTarget
+    public void onMotion(MotionEvent event){
+        setsuffix(String.valueOf(this.mode.get()));
+        if (data != null && rotation.get() && mode.is("Normal") || mode.is("Telly") && canPlace && rotation.get()) {
             switch (modeValue.get()){
                 case "Normal":
-                    rotation = RotationUtil.getRotations(getVec3(data));
-                    Client.Instance.rotationManager.setRotation(new Vector2f(rotation[0],rotation[1]),rotationspeed.get().intValue(),movefix.get(),false);
+                    rotations = RotationUtil.getRotations(getVec3(data));
                     break;
                 case "Telly":
-                    if (mc.thePlayer.offGroundTicks >= 7) {
-                        rotations[0] = MovementUtil.getDirection();
-                        rotations[1] = 60;
-                    } else {
-                        rotations[0] = MovementUtil.getDirection() - 180;
-                        rotations[1] = 82.5f;
-                        if (data.getBlockPos() != null && rayCastValue.getValue()) {
-                            for (float possiblePitch = 90; possiblePitch > 30; possiblePitch -= possiblePitch > (mc.thePlayer
-                                    .isPotionActive(Potion.moveSpeed) ? 60 : 80) ? 1 : 10) {
-                                if (RayCastUtil.isOnBlock(data.getFacing(), data.getBlockPos(), true, mc.playerController.getBlockReachDistance(),
-                                        rotations[0], possiblePitch)) {
-                                    rotations[1] = possiblePitch;
-                                }
-                            }
-                        }
+                    float yaw = MovementUtil.getRawDirection();
+                    float pitch = RotationUtil.getRotations(getVec3(data))[1];
+                    boolean shouldTurn = mode.is("Telly") ? tellyStage : mc.thePlayer.offGroundTicks % 8 < 4;
+                    if (shouldTurn){
+                        yaw += mc.thePlayer.rotationYaw + 180 + RandomUtils.nextInt(0, 5);
+                    }else {
+                        yaw -= mc.thePlayer.rotationYaw + 180 + RandomUtils.nextInt(0, 5);
                     }
-                    Client.Instance.rotationManager.setRotation(new Vector2f(rotations[0],rotations[1]),rotationspeed.get().intValue(),movefix.get(),false);
-                    break;
-                case "Hypixel":
-                    if (mc.thePlayer.offGroundTicks >= 9) {
-                        rotations[0] = MovementUtil.getDirection();
-                        rotations[1] = 60;
-                    } else {
-                        rotations[0] = Client.Instance.rotationManager.snapToHypYaw(MovementUtil.getDirection(), false);
-                        rotations[1] = 82.5f;
-                    }
-                    Client.Instance.rotationManager.setRotation(new Vector2f(rotations[0],rotations[1]),rotationspeed.get().intValue(),movefix.get(),false);
+                    rotations = new float[]{yaw, pitch};
                     break;
             }
+        }
+        if (canPlace){
+            Client.Instance.getRotationManager().setRotation(new Vector2f(rotations[0],rotations[1]),rotationspeed.get().intValue(),movefix.get());
         }
     }
     private void place(){
         if (this.slot < 0) return;
         if (data != null) {
             if (rayCastValue.get()) {
-                MovingObjectPosition ray = Client.Instance.rotationManager.rayTrace(mc.playerController.getBlockReachDistance(), 1);
+                MovingObjectPosition ray = Client.Instance.getRotationManager().rayTrace(mc.playerController.getBlockReachDistance(), 1);
                 if (ray != null) {
                     if (ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), data.getBlockPos(), data.getFacing(), getVec3(data))) {
                         if (swing.getValue()) {

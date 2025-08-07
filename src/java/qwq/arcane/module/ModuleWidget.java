@@ -2,12 +2,9 @@ package qwq.arcane.module;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
 import qwq.arcane.Client;
@@ -22,13 +19,11 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/6/1 14:41
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 @Getter
 @Setter
 public abstract class ModuleWidget extends Module {
-    protected static Minecraft mc = Minecraft.getMinecraft();
+    protected static Mine mc = Mine.getMinecraft();
     
     @Expose
     @SerializedName("x")
@@ -74,6 +69,7 @@ public abstract class ModuleWidget extends Module {
     public final void onChatGUI(int mouseX, int mouseY, boolean drag) {
         boolean hovering = RenderUtil.isHovering(renderX, renderY, width, height, mouseX, mouseY);
 
+        Bold.get(16).drawString(name, renderX, renderY - 10, Color.WHITE.getRGB());
         if (dragging) {
             RoundedUtil.drawRoundOutline(renderX, renderY, width, height, 5f, 0.5f, new Color(0, 0, 0, 0), Color.WHITE);
         }

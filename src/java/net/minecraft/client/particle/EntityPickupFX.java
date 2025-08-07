@@ -1,6 +1,6 @@
 package net.minecraft.client.particle;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -18,7 +18,7 @@ public class EntityPickupFX extends EntityFX
     private int age;
     private int maxAge;
     private float field_174841_aA;
-    private RenderManager field_174842_aB = Minecraft.getMinecraft().getRenderManager();
+    private RenderManager field_174842_aB = Mine.getMinecraft().getRenderManager();
 
     public EntityPickupFX(World worldIn, Entity p_i1233_2_, Entity p_i1233_3_, float p_i1233_4_)
     {

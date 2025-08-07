@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.util.regex.Pattern;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -26,7 +26,7 @@ public class CapeUtils
         {
             String s1 = "http://s.optifine.net/capes/" + s + ".png";
             ResourceLocation resourcelocation = new ResourceLocation("capeof/" + s);
-            TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+            TextureManager texturemanager = Mine.getMinecraft().getTextureManager();
             ITextureObject itextureobject = texturemanager.getTexture(resourcelocation);
 
             if (itextureobject != null && itextureobject instanceof ThreadDownloadImageData)

@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.world;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -36,9 +34,7 @@ import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:00 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class Disabler extends Module {
     public static final BoolValue invmove = new BoolValue("Dog Invmove", true);
     public static final BoolValue postValue = new BoolValue("Post", true);
@@ -65,6 +61,7 @@ public class Disabler extends Module {
     @EventTarget
     @EventPriority(value=9)
     public void onupdate(UpdateEvent event) {
+        setsuffix(String.valueOf(this.invmove.getName()));
         if (invmove.get()) {
             c16 = false;
             c0d = false;

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -53,7 +53,7 @@ public class GuiIngame extends Gui
     private static final ResourceLocation widgetsTexPath = new ResourceLocation("textures/gui/widgets.png");
     private static final ResourceLocation pumpkinBlurTexPath = new ResourceLocation("textures/misc/pumpkinblur.png");
     private final Random rand = new Random();
-    private final Minecraft mc;
+    private final Mine mc;
     private final RenderItem itemRenderer;
 
     /** ChatGUI instance that retains all previous chat data */
@@ -108,7 +108,7 @@ public class GuiIngame extends Gui
     /** Used with updateCounter to make the heart bar flash */
     public long healthUpdateCounter = 0L;
 
-    public GuiIngame(Minecraft mcIn)
+    public GuiIngame(Mine mcIn)
     {
         this.mc = mcIn;
         this.itemRenderer = mcIn.getRenderItem();
@@ -633,20 +633,20 @@ public class GuiIngame extends Gui
 
             if (i < this.playerHealth && entityplayer.hurtResistantTime > 0)
             {
-                this.lastSystemTime = Minecraft.getSystemTime();
+                this.lastSystemTime = Mine.getSystemTime();
                 this.healthUpdateCounter = (long)(this.updateCounter + 20);
             }
             else if (i > this.playerHealth && entityplayer.hurtResistantTime > 0)
             {
-                this.lastSystemTime = Minecraft.getSystemTime();
+                this.lastSystemTime = Mine.getSystemTime();
                 this.healthUpdateCounter = (long)(this.updateCounter + 10);
             }
 
-            if (Minecraft.getSystemTime() - this.lastSystemTime > 1000L)
+            if (Mine.getSystemTime() - this.lastSystemTime > 1000L)
             {
                 this.playerHealth = i;
                 this.lastPlayerHealth = i;
-                this.lastSystemTime = Minecraft.getSystemTime();
+                this.lastSystemTime = Mine.getSystemTime();
             }
 
             this.playerHealth = i;

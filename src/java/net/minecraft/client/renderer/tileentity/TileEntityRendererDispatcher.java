@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -225,7 +225,7 @@ public class TileEntityRendererDispatcher
         GlStateManager.enableBlend();
         GlStateManager.disableCull();
 
-        if (Minecraft.isAmbientOcclusionEnabled())
+        if (Mine.isAmbientOcclusionEnabled())
         {
             GlStateManager.shadeModel(7425);
         }

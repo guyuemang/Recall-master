@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.texture;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.MathHelper;
 
 public class TextureClock extends TextureAtlasSprite
@@ -17,14 +17,14 @@ public class TextureClock extends TextureAtlasSprite
     {
         if (!this.framesTextureData.isEmpty())
         {
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Mine mine = Mine.getMinecraft();
             double d0 = 0.0D;
 
-            if (minecraft.theWorld != null && minecraft.thePlayer != null)
+            if (mine.theWorld != null && mine.thePlayer != null)
             {
-                d0 = (double)minecraft.theWorld.getCelestialAngle(1.0F);
+                d0 = (double) mine.theWorld.getCelestialAngle(1.0F);
 
-                if (!minecraft.theWorld.provider.isSurfaceWorld())
+                if (!mine.theWorld.provider.isSurfaceWorld())
                 {
                     d0 = Math.random();
                 }

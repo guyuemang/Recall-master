@@ -1,6 +1,6 @@
 package qwq.arcane.utils.player;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
@@ -17,7 +17,7 @@ public final class Rotation {
         if (!Float.isNaN(var2)) {
             var2 = this.pitch;
             if (!Float.isNaN(var2)) {
-                this.fixedSensitivity(Minecraft.getMinecraft().gameSettings.mouseSensitivity);
+                this.fixedSensitivity(Mine.getMinecraft().gameSettings.mouseSensitivity);
                 player.rotationYaw = this.yaw;
                 player.rotationPitch = this.pitch;
             }
@@ -60,7 +60,7 @@ public final class Rotation {
 
 
     public void applyStrafeToPlayer(StrafeEvent event) {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = Mine.getMinecraft().thePlayer;
         int dif = (int) ((MathHelper.wrapAngleTo180_float(player.rotationYaw - this.yaw
                 - 23.5f - 135)
                 + 180) / 45);

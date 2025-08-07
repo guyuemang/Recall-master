@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiScreen;
@@ -27,7 +28,7 @@ public class GuiConnecting extends GuiScreen
     private boolean cancel;
     private final GuiScreen previousGuiScreen;
 
-    public GuiConnecting(GuiScreen p_i1181_1_, Minecraft mcIn, ServerData p_i1181_3_)
+    public GuiConnecting(GuiScreen p_i1181_1_, Mine mcIn, ServerData p_i1181_3_)
     {
         this.mc = mcIn;
         this.previousGuiScreen = p_i1181_1_;
@@ -37,7 +38,7 @@ public class GuiConnecting extends GuiScreen
         this.connect(serveraddress.getIP(), serveraddress.getPort());
     }
 
-    public GuiConnecting(GuiScreen p_i1182_1_, Minecraft mcIn, String hostName, int port)
+    public GuiConnecting(GuiScreen p_i1182_1_, Mine mcIn, String hostName, int port)
     {
         this.mc = mcIn;
         this.previousGuiScreen = p_i1182_1_;

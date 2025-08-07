@@ -1,9 +1,7 @@
 package qwq.arcane.utils.color;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.awt.*;
@@ -11,9 +9,7 @@ import java.awt.image.BufferedImage;
 
 import static qwq.arcane.utils.math.MathUtils.interpolateFloat;
 import static qwq.arcane.utils.math.MathUtils.interpolateInt;
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class ColorUtil {
     public static Color reAlpha(Color color, int alpha) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
@@ -52,7 +48,7 @@ public class ColorUtil {
     }
 
     public static Color getRainbow() {
-        return new Color(Color.HSBtoRGB((float) ((double) Minecraft.getMinecraft().thePlayer.ticksExisted / 50.0 + Math.sin((double) 1 / 50.0 * 1.6)) % 1.0f, 0.5f, 1.0f));
+        return new Color(Color.HSBtoRGB((float) ((double) Mine.getMinecraft().thePlayer.ticksExisted / 50.0 + Math.sin((double) 1 / 50.0 * 1.6)) % 1.0f, 0.5f, 1.0f));
     }
 
     public static int astolfoRainbow(final int offset, final float saturation, final float brightness) {

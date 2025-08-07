@@ -25,7 +25,9 @@ public class TimerUtil {
     public static long randomDelay(final int minDelay, final int maxDelay) {
         return nextInt(minDelay, maxDelay);
     }
-
+    public boolean reached(long currentTime) {
+        return Math.max(0L, System.currentTimeMillis() - this.lastMS) >= currentTime;
+    }
     public boolean hasTimeElapsed(long time, boolean reset) {
         if (System.currentTimeMillis() - lastMS > time) {
             if (reset) reset();

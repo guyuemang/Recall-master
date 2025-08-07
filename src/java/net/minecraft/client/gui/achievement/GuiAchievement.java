@@ -1,6 +1,6 @@
 package net.minecraft.client.gui.achievement;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiAchievement extends Gui
 {
     private static final ResourceLocation achievementBg = new ResourceLocation("textures/gui/achievement/achievement_background.png");
-    private Minecraft mc;
+    private Mine mc;
     private int width;
     private int height;
     private String achievementTitle;
@@ -23,7 +23,7 @@ public class GuiAchievement extends Gui
     private RenderItem renderItem;
     private boolean permanentNotification;
 
-    public GuiAchievement(Minecraft mc)
+    public GuiAchievement(Mine mc)
     {
         this.mc = mc;
         this.renderItem = mc.getRenderItem();
@@ -33,7 +33,7 @@ public class GuiAchievement extends Gui
     {
         this.achievementTitle = I18n.format("achievement.get", new Object[0]);
         this.achievementDescription = ach.getStatName().getUnformattedText();
-        this.notificationTime = Minecraft.getSystemTime();
+        this.notificationTime = Mine.getSystemTime();
         this.theAchievement = ach;
         this.permanentNotification = false;
     }
@@ -42,7 +42,7 @@ public class GuiAchievement extends Gui
     {
         this.achievementTitle = achievementIn.getStatName().getUnformattedText();
         this.achievementDescription = achievementIn.getDescription();
-        this.notificationTime = Minecraft.getSystemTime() + 2500L;
+        this.notificationTime = Mine.getSystemTime() + 2500L;
         this.theAchievement = achievementIn;
         this.permanentNotification = true;
     }
@@ -70,9 +70,9 @@ public class GuiAchievement extends Gui
 
     public void updateAchievementWindow()
     {
-        if (this.theAchievement != null && this.notificationTime != 0L && Minecraft.getMinecraft().thePlayer != null)
+        if (this.theAchievement != null && this.notificationTime != 0L && Mine.getMinecraft().thePlayer != null)
         {
-            double d0 = (double)(Minecraft.getSystemTime() - this.notificationTime) / 3000.0D;
+            double d0 = (double)(Mine.getSystemTime() - this.notificationTime) / 3000.0D;
 
             if (!this.permanentNotification)
             {

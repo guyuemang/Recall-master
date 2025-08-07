@@ -3,7 +3,7 @@ package net.minecraft.client.multiplayer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -34,7 +34,7 @@ import qwq.arcane.event.impl.events.player.AttackEvent;
 public class PlayerControllerMP
 {
     /** The Minecraft instance. */
-    private final Minecraft mc;
+    private final Mine mc;
     private final NetHandlerPlayClient netClientHandler;
     private BlockPos currentBlock = new BlockPos(-1, -1, -1);
 
@@ -63,13 +63,13 @@ public class PlayerControllerMP
     /** Index of the current item held by the player in the inventory hotbar */
     private int currentPlayerItem;
 
-    public PlayerControllerMP(Minecraft mcIn, NetHandlerPlayClient netHandler)
+    public PlayerControllerMP(Mine mcIn, NetHandlerPlayClient netHandler)
     {
         this.mc = mcIn;
         this.netClientHandler = netHandler;
     }
 
-    public static void clickBlockCreative(Minecraft mcIn, PlayerControllerMP playerController, BlockPos pos, EnumFacing facing)
+    public static void clickBlockCreative(Mine mcIn, PlayerControllerMP playerController, BlockPos pos, EnumFacing facing)
     {
         if (!mcIn.theWorld.extinguishFire(mcIn.thePlayer, pos, facing))
         {

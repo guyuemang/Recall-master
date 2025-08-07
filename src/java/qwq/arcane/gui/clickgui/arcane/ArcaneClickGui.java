@@ -1,8 +1,6 @@
 package qwq.arcane.gui.clickgui.arcane;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import lombok.Getter;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -30,9 +28,7 @@ import java.util.Locale;
  * @Author：Guyuemang
  * @Date：2025/7/3 18:57
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 @Getter
 public class ArcaneClickGui extends GuiScreen {
     private final List<CategoryPanel> categoryPanels = new ArrayList<>();
@@ -94,7 +90,7 @@ public class ArcaneClickGui extends GuiScreen {
         FontManager.Bold.get(30).drawString("ARC", x + 10, y + 10, fontcolor.getRGB());
         FontManager.Bold.get(30).drawStringDynamic("ANE", x + 10 + FontManager.Bold.get(30).getStringWidth("ARC"), y + 10,1, 6);
 
-        FontManager.Bold.get(18).drawString("NextGen", x + w - 46, y + 16, versionColor.getRGB());
+        FontManager.Bold.get(18).drawString("Release", x + w - 46, y + 16, versionColor.getRGB());
         RoundedUtil.drawRound(x + w - 68, y + 44, 60, 25, 5, smallbackgroundColor);
 
         RoundedUtil.drawRound(x + 10, y + 44, 96, 25, 5, smallbackgroundColor);

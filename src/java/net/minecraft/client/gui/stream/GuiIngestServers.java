@@ -1,7 +1,8 @@
 package net.minecraft.client.gui.stream;
 
 import java.io.IOException;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlot;
@@ -91,7 +92,7 @@ public class GuiIngestServers extends GuiScreen
 
     class ServerList extends GuiSlot
     {
-        public ServerList(Minecraft mcIn)
+        public ServerList(Mine mcIn)
         {
             super(mcIn, GuiIngestServers.this.width, GuiIngestServers.this.height, 32, GuiIngestServers.this.height - 35, (int)((double)mcIn.fontRendererObj.FONT_HEIGHT * 3.5D));
             this.setShowSelectionBox(false);

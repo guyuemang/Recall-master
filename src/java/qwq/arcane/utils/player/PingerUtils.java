@@ -1,12 +1,11 @@
 package qwq.arcane.utils.player;
 
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.network.OldServerPinger;
 import qwq.arcane.Client;
-import qwq.arcane.event.EventManager;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.utils.Instance;
@@ -30,7 +29,7 @@ public class PingerUtils implements Instance {
 
     @EventTarget
     public void onTickEvent(TickEvent event) {
-        updateManually(Minecraft.getMinecraft().getCurrentServerData());
+        updateManually(Mine.getMinecraft().getCurrentServerData());
     }
 
     public PingerUtils() {

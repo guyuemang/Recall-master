@@ -1,7 +1,8 @@
 package net.minecraft.client.gui;
 
 import java.io.IOException;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.audio.SoundHandler;
@@ -102,7 +103,7 @@ public class GuiScreenOptionsSounds extends GuiScreen
             return 0;
         }
 
-        protected void mouseDragged(Minecraft mc, int mouseX, int mouseY)
+        protected void mouseDragged(Mine mc, int mouseX, int mouseY)
         {
             if (this.visible)
             {
@@ -121,7 +122,7 @@ public class GuiScreenOptionsSounds extends GuiScreen
             }
         }
 
-        public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+        public boolean mousePressed(Mine mc, int mouseX, int mouseY)
         {
             if (super.mousePressed(mc, mouseX, mouseY))
             {

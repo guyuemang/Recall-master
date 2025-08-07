@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer.entity;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -117,7 +117,7 @@ public abstract class Render<T extends Entity> implements IEntityRenderer
     private void renderEntityOnFire(Entity entity, double x, double y, double z, float partialTicks)
     {
         GlStateManager.disableLighting();
-        TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
+        TextureMap texturemap = Mine.getMinecraft().getTextureMapBlocks();
         TextureAtlasSprite textureatlassprite = texturemap.getAtlasSprite("minecraft:blocks/fire_layer_0");
         TextureAtlasSprite textureatlassprite1 = texturemap.getAtlasSprite("minecraft:blocks/fire_layer_1");
         GlStateManager.pushMatrix();

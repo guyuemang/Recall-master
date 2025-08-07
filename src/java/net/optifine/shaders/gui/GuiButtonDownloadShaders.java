@@ -1,6 +1,6 @@
 package net.optifine.shaders.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +15,7 @@ public class GuiButtonDownloadShaders extends GuiButton
     /**
      * Draws this button to the screen.
      */
-    public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Mine mc, int mouseX, int mouseY)
     {
         if (this.visible)
         {

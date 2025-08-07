@@ -1,6 +1,6 @@
 package net.optifine.entity.model.anim;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
@@ -36,7 +36,7 @@ public enum RenderEntityParameterFloat implements IExpressionFloat
     private RenderEntityParameterFloat(String name)
     {
         this.name = name;
-        this.renderManager = Minecraft.getMinecraft().getRenderManager();
+        this.renderManager = Mine.getMinecraft().getRenderManager();
     }
 
     public String getName()

@@ -2,13 +2,13 @@ package qwq.arcane.utils.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 
 public final class PlaceInfo {
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final Mine mc = Mine.getMinecraft();
     private final BlockPos blockPos;
     private EnumFacing enumFacing;
     private Vec3 vec3;

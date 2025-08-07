@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer.entity.layers;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -47,7 +47,7 @@ public class LayerHeldItem implements LayerRenderer<EntityLivingBase>
             }
 
             Item item = itemstack.getItem();
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Mine mine = Mine.getMinecraft();
 
             if (item instanceof ItemBlock && Block.getBlockFromItem(item).getRenderType() == 2)
             {
@@ -63,7 +63,7 @@ public class LayerHeldItem implements LayerRenderer<EntityLivingBase>
                 GlStateManager.translate(0.0F, 0.203125F, 0.0F);
             }
 
-            minecraft.getItemRenderer().renderItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
+            mine.getItemRenderer().renderItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
             GlStateManager.popMatrix();
         }
     }

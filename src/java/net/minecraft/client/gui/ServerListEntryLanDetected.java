@@ -1,13 +1,13 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.network.LanServerDetector;
 import net.minecraft.client.resources.I18n;
 
 public class ServerListEntryLanDetected implements GuiListExtended.IGuiListEntry
 {
     private final GuiMultiplayer field_148292_c;
-    protected final Minecraft mc;
+    protected final Mine mc;
     protected final LanServerDetector.LanServer field_148291_b;
     private long field_148290_d = 0L;
 
@@ -15,7 +15,7 @@ public class ServerListEntryLanDetected implements GuiListExtended.IGuiListEntry
     {
         this.field_148292_c = p_i45046_1_;
         this.field_148291_b = p_i45046_2_;
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Mine.getMinecraft();
     }
 
     public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected)
@@ -40,12 +40,12 @@ public class ServerListEntryLanDetected implements GuiListExtended.IGuiListEntry
     {
         this.field_148292_c.selectServer(slotIndex);
 
-        if (Minecraft.getSystemTime() - this.field_148290_d < 250L)
+        if (Mine.getSystemTime() - this.field_148290_d < 250L)
         {
             this.field_148292_c.connectToSelected();
         }
 
-        this.field_148290_d = Minecraft.getSystemTime();
+        this.field_148290_d = Mine.getSystemTime();
         return false;
     }
 

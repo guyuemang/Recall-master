@@ -7,7 +7,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.RegionRenderCacheBuilder;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
@@ -48,7 +49,7 @@ public class ChunkRenderWorker implements Runnable
             catch (Throwable throwable)
             {
                 CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Batching chunks");
-                Minecraft.getMinecraft().crashed(Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(crashreport));
+                Mine.getMinecraft().crashed(Mine.getMinecraft().addGraphicsAndWorldToCrashReport(crashreport));
                 return;
             }
         }
@@ -77,7 +78,7 @@ public class ChunkRenderWorker implements Runnable
             generator.getLock().unlock();
         }
 
-        Entity lvt_2_1_ = Minecraft.getMinecraft().getRenderViewEntity();
+        Entity lvt_2_1_ = Mine.getMinecraft().getRenderViewEntity();
 
         if (lvt_2_1_ == null)
         {
@@ -184,7 +185,7 @@ public class ChunkRenderWorker implements Runnable
 
                     if (!(p_onFailure_1_ instanceof CancellationException) && !(p_onFailure_1_ instanceof InterruptedException))
                     {
-                        Minecraft.getMinecraft().crashed(CrashReport.makeCrashReport(p_onFailure_1_, "Rendering chunk"));
+                        Mine.getMinecraft().crashed(CrashReport.makeCrashReport(p_onFailure_1_, "Rendering chunk"));
                     }
                 }
             });

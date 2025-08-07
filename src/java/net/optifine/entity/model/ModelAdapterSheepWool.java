@@ -2,7 +2,8 @@ package net.optifine.entity.model;
 
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.model.ModelSheep2;
@@ -28,7 +29,7 @@ public class ModelAdapterSheepWool extends ModelAdapterQuadruped
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         Render render = (Render)rendermanager.getEntityRenderMap().get(EntitySheep.class);
 
         if (!(render instanceof RenderSheep))

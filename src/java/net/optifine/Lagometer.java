@@ -1,6 +1,6 @@
 package net.optifine;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 public class Lagometer
 {
-    private static Minecraft mc;
+    private static Mine mc;
     private static GameSettings gameSettings;
     private static Profiler profiler;
     public static boolean active = false;
@@ -43,7 +43,7 @@ public class Lagometer
     {
         if (mc == null)
         {
-            mc = Minecraft.getMinecraft();
+            mc = Mine.getMinecraft();
             gameSettings = mc.gameSettings;
             profiler = mc.mcProfiler;
         }

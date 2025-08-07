@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiLockIconButton extends GuiButton
@@ -25,7 +25,7 @@ public class GuiLockIconButton extends GuiButton
     /**
      * Draws this button to the screen.
      */
-    public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Mine mc, int mouseX, int mouseY)
     {
         if (this.visible)
         {

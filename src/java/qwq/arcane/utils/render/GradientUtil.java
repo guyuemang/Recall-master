@@ -1,6 +1,6 @@
 package qwq.arcane.utils.render;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.ScaledResolution;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.color.ColorUtil;
@@ -20,7 +20,7 @@ public class GradientUtil implements Instance {
         RenderUtil.resetColor();
         GLUtil.startBlend();
         gradientShader.init();
-        gradientShader.setUniformf("location", x * sr.getScaleFactor(), (Minecraft.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
+        gradientShader.setUniformf("location", x * sr.getScaleFactor(), (Mine.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
         gradientShader.setUniformf("rectSize", width * sr.getScaleFactor(), height * sr.getScaleFactor());
         // Bottom Left
         gradientShader.setUniformf("color1", bottomLeft.getRed() / 255f, bottomLeft.getGreen() / 255f, bottomLeft.getBlue() / 255f, alpha);
@@ -44,7 +44,7 @@ public class GradientUtil implements Instance {
         RenderUtil.resetColor();
         GLUtil.startBlend();
         gradientShader.init();
-        gradientShader.setUniformf("location", x * sr.getScaleFactor(), (Minecraft.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
+        gradientShader.setUniformf("location", x * sr.getScaleFactor(), (Mine.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
         gradientShader.setUniformf("rectSize", width * sr.getScaleFactor(), height * sr.getScaleFactor());
         // Bottom Left
         gradientShader.setUniformf("color1", bottomLeft.getRed() / 255f, bottomLeft.getGreen() / 255f, bottomLeft.getBlue() / 255f, bottomLeft.getAlpha() / 255f);
@@ -97,7 +97,7 @@ public class GradientUtil implements Instance {
 
         ScaledResolution sr = new ScaledResolution(mc);
 
-        gradientMaskShader.setUniformf("location", x * sr.getScaleFactor(), (Minecraft.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
+        gradientMaskShader.setUniformf("location", x * sr.getScaleFactor(), (Mine.getMinecraft().displayHeight - (height * sr.getScaleFactor())) - (y * sr.getScaleFactor()));
         gradientMaskShader.setUniformf("rectSize", width * sr.getScaleFactor(), height * sr.getScaleFactor());
         gradientMaskShader.setUniformf("alpha", alpha);
         gradientMaskShader.setUniformi("tex", 0);

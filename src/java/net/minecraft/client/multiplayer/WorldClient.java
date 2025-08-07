@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.MovingSoundMinecart;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -49,7 +49,7 @@ public class WorldClient extends World
     private ChunkProviderClient clientChunkProvider;
     private final Set<Entity> entityList = Sets.<Entity>newHashSet();
     private final Set<Entity> entitySpawnQueue = Sets.<Entity>newHashSet();
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Mine mc = Mine.getMinecraft();
     private final Set<ChunkCoordIntPair> previousActiveChunkSet = Sets.<ChunkCoordIntPair>newHashSet();
     private boolean playerUpdate = false;
 

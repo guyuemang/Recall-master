@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -770,7 +770,7 @@ public class ConnectedProperties
 
     private static TextureAtlasSprite getIcon(String iconName)
     {
-        TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
+        TextureMap texturemap = Mine.getMinecraft().getTextureMapBlocks();
         TextureAtlasSprite textureatlassprite = texturemap.getSpriteSafe(iconName);
 
         if (textureatlassprite != null)

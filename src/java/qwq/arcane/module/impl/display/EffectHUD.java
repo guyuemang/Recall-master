@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.display;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.Category;
@@ -15,6 +13,7 @@ import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
+import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
@@ -38,9 +37,7 @@ import java.util.stream.Collectors;
  * @Author：Guyuemang
  * @Date：2025/6/2 13:38
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class EffectHUD extends ModuleWidget {
     public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
 
@@ -95,9 +92,15 @@ public class EffectHUD extends ModuleWidget {
                 RenderUtil.drawRect(x, y, 120, 15 + 20 * effects.size(), new Color(255, 255, 255, 100).getRGB());
                 break;
             case "Custom":
-                int l = 36;
+                int l = 32;
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.disableLighting();
                 for (PotionEffect potioneffect : effects) {
-                    RenderUtil.drawRect(x + 15, y + i2 - 18, 120, 32, new Color(1, 1, 1, 255));
+                    RoundedUtil.drawRound(x, y + i2 - 18, 100, 28,6, ColorUtil.applyOpacity3(Potion.potionTypes[potioneffect.getPotionID()].getLiquidColor(),1));
+                    RoundedUtil.drawRound(x, (y + i2) - 18, (float) ((potioneffect.getDuration() / (1.0f * this.potionMaxDurations.get(potioneffect.getPotionID()))) * 100), 28,6, ColorUtil.applyOpacity3(Potion.potionTypes[potioneffect.getPotionID()].getLiquidColor(),1));
+                    Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
+                    String s1 = get(potioneffect);
+
                     i2 += l;
                 }
                 setWidth(100);
@@ -183,21 +186,21 @@ public class EffectHUD extends ModuleWidget {
                             GL11.glEnable(2929);
                         GL11.glPopMatrix();
                     }
-                    FontManager.Semibold.get(18).drawString(s1, x + offsetX + 8, (y + i2) - offsetY + 18, -1);
+                    FontManager.Bold.get(18).drawString(s1, x + offsetX + 8, (y + i2) - offsetY + 18, -1);
 
                     i2 += l1;
                 }
-                Semibold.get(18).drawCenteredString("Effects", x + 60, y + 6, -1);
+                Bold.get(18).drawCenteredString("Effects", x + 60, y + 6, -1);
                 setWidth(100);
                 setHeight(22 + i2);
                 break;
             case "Custom":
-                int l = 36;
+                int l = 32;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.disableLighting();
                 for (PotionEffect potioneffect : effects) {
-                    RenderUtil.drawRect(x + 15, y + i2 - 18, 120, 32, new Color(1, 1, 1, 60));
-                    RenderUtil.drawRect(x + 15, (y + i2) - 18, (float) ((potioneffect.getDuration() / (1.0f * this.potionMaxDurations.get(potioneffect.getPotionID()))) * 120), 32, new Color(1, 1, 1, 50));
+                    RoundedUtil.drawRound(x, y + i2 - 18, 100, 28,6, ColorUtil.applyOpacity3(Potion.potionTypes[potioneffect.getPotionID()].getLiquidColor(),0.4f));
+                    RoundedUtil.drawRound(x, (y + i2) - 18, (float) ((potioneffect.getDuration() / (1.0f * this.potionMaxDurations.get(potioneffect.getPotionID()))) * 100), 28,6, ColorUtil.applyOpacity3(Potion.potionTypes[potioneffect.getPotionID()].getLiquidColor(),0.4f));
                     Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
                     String s1 = get(potioneffect);
                     if (potion.hasStatusIcon()) {
@@ -213,7 +216,7 @@ public class EffectHUD extends ModuleWidget {
                         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                         final int statusIconIndex = potion.getStatusIconIndex();
                         mc.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
-                        Gui.drawTexturedModalRect3(x + 20, y + i2 - 10, statusIconIndex % 8 * 18, 198 + statusIconIndex / 8 * 18, 18, 18);
+                        Gui.drawTexturedModalRect3(x + 5, y + i2 - 14   , statusIconIndex % 8 * 18, 198 + statusIconIndex / 8 * 18, 18, 18);
                         GL11.glDepthMask(true);
                         if (!is3042)
                             GL11.glDisable(3042);
@@ -221,7 +224,8 @@ public class EffectHUD extends ModuleWidget {
                             GL11.glEnable(2929);
                         GL11.glPopMatrix();
                     }
-                    mc.fontRendererObj.drawString(s1, x + offsetX + 22, (y + i2) - offsetY + 10, -1);
+                    Bold.get(18).drawString(s1, x + offsetX + 8, (y + i2) - offsetY + 3, -1);
+                    Bold.get(18).drawString(potioneffect.getDuration() + "", x + offsetX + 8, (y + i2) - offsetY + 12, -1);
 
                     i2 += l;
                 }
@@ -233,9 +237,9 @@ public class EffectHUD extends ModuleWidget {
                 RenderUtil.startGlScissor(x - 2, y - 1, 190, 20);
                 RoundedUtil.drawRound(x, y, 120, 30, INTERFACE.radius.get().intValue(), ColorUtil.applyOpacity(new Color(Client.Instance.getModuleManager().getModule(InterFace.class).color(1).getRGB()), (float) 0.3f));
                 RenderUtil.stopGlScissor();
-                Semibold.get(18).drawString("Effects", x + 5, y + 6, -1);
+                Bold.get(18).drawString("Effects", x + 5, y + 6, -1);
                 if (effects.isEmpty()){
-                    Semibold.get(16).drawCenteredString("IsEmpty", x + 60, y + 25, -1);
+                    Bold.get(16).drawCenteredString("IsEmpty", x + 60, y + 25, -1);
                 }
                 for (PotionEffect potioneffect : effects) {
                     Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
@@ -260,10 +264,12 @@ public class EffectHUD extends ModuleWidget {
                             GL11.glEnable(2929);
                         GL11.glPopMatrix();
                     }
-                    Semibold.get(16).drawString(get(potioneffect), x + 30, y + 30 + effects.indexOf(potioneffect) * 25, -1);
+                    Bold.get(16).drawString(get(potioneffect), x + 30, y + 30 + effects.indexOf(potioneffect) * 25, -1);
                     RoundedUtil.drawRound(x + 6, y + i2 + 9 + 19 + effects.indexOf(potioneffect) * 25, 106, 3, 1.5f, new Color(1, 1, 1, 100));
                     RoundedUtil.drawRound(x + 6, y + i2 + 9 + 19 + effects.indexOf(potioneffect) * 25, (float) ((potioneffect.getDuration() / (1.0f * this.potionMaxDurations.get(potioneffect.getPotionID()))) * 106), 3, 1.5f, new Color(Potion.potionTypes[potioneffect.getPotionID()].getLiquidColor()).brighter());
                 }
+                setWidth(100);
+                setHeight(22 + i2);
                 break;
         }
     }

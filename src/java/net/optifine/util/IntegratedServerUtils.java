@@ -1,7 +1,8 @@
 package net.optifine.util;
 
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.src.Config;
@@ -16,20 +17,20 @@ public class IntegratedServerUtils
 {
     public static WorldServer getWorldServer()
     {
-        Minecraft minecraft = Config.getMinecraft();
-        World world = minecraft.theWorld;
+        Mine mine = Config.getMinecraft();
+        World world = mine.theWorld;
 
         if (world == null)
         {
             return null;
         }
-        else if (!minecraft.isIntegratedServerRunning())
+        else if (!mine.isIntegratedServerRunning())
         {
             return null;
         }
         else
         {
-            IntegratedServer integratedserver = minecraft.getIntegratedServer();
+            IntegratedServer integratedserver = mine.getIntegratedServer();
 
             if (integratedserver == null)
             {

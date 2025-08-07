@@ -4,7 +4,6 @@ import qwq.arcane.Client;
 import qwq.arcane.gui.clickgui.IComponent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
-import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.EaseInOutQuad;
@@ -14,9 +13,6 @@ import qwq.arcane.utils.render.RoundedUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import qwq.arcane.utils.render.shader.KawaseBlur;
 
 import java.awt.*;
 
@@ -32,11 +28,9 @@ public class CategoryPanel implements IComponent, Instance {
     private final Category category;
     private boolean dragging, opened;
     private final ObjectArrayList<ModuleComponent> moduleComponents = new ObjectArrayList<>();
-    private final EaseInOutQuad openAnimation = new EaseInOutQuad(250, 1);
     public static int i;
     public CategoryPanel(Category category) {
         this.category = category;
-        this.openAnimation.setDirection(Direction.BACKWARDS);
         for (i = 0; i < (Client.Instance.getModuleManager().getModsByCategory(category).size()); ++i){
             Module module = Client.Instance.getModuleManager().getModsByCategory(category).get(i);
             moduleComponents.add(new ModuleComponent(module));
@@ -46,7 +40,7 @@ public class CategoryPanel implements IComponent, Instance {
     public void drawScreen(int mouseX, int mouseY) {
         update(mouseX, mouseY);
 
-        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19) * openAnimation.getOutput())), 8,new Color(1,1,1,120));
+        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19))), 6,new Color(1,1,1,120));
 
         FontManager.Bold.get(20).drawCenteredString(category.name(), x + width / 2, y + 4.5, -1);
 
@@ -56,10 +50,8 @@ public class CategoryPanel implements IComponent, Instance {
             component.setX(x);
             component.setY(y + componentOffsetY);
             component.setWidth(width);
-            if (openAnimation.getOutput() > 0.7f) {
                 component.drawScreen(mouseX, mouseY);
-            }
-            componentOffsetY += (float) (component.getHeight() * openAnimation.getOutput());
+            componentOffsetY += (float) (component.getHeight());
         }
         height = componentOffsetY + 8;
 
@@ -77,9 +69,7 @@ public class CategoryPanel implements IComponent, Instance {
                 case 1 -> opened = !opened;
             }
         }
-        if (opened && !RenderUtil.isHovering(x, y - 2, width, 19, mouseX, mouseY)) {
-            moduleComponents.forEach(component -> component.mouseClicked(mouseX, mouseY, mouseButton));
-        }
+        moduleComponents.forEach(component -> component.mouseClicked(mouseX, mouseY, mouseButton));
         IComponent.super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -97,8 +87,6 @@ public class CategoryPanel implements IComponent, Instance {
     }
 
     public void update(int mouseX, int mouseY) {
-        this.openAnimation.setDirection(opened ? Direction.FORWARDS : Direction.BACKWARDS);
-
         if (dragging) {
             x = (mouseX + dragX);
             y = (mouseY + dragY);

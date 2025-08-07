@@ -1,9 +1,7 @@
 package qwq.arcane.module.impl.visuals;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
@@ -27,9 +25,7 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/7/3 12:31
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public final class Hitmarkers extends Module {
     public Hitmarkers() {
         super("Hitmarkers",Category.Visuals);
@@ -46,7 +42,7 @@ public final class Hitmarkers extends Module {
 
     private final BoolValue soundsProperty = new BoolValue("Sounds", true);
     public final NumberValue volumeProperty = new NumberValue("Volume",()-> soundsProperty.get(), 100, 0, 100, 1);
-    private final ModeValue soundTypeProperty = new ModeValue("Sound Type",()-> soundsProperty.get(),"Custom", new String[]{"BASIC", "RIFK", "SKEET"});
+    private final ModeValue soundTypeProperty = new ModeValue("Sound Type",()-> soundsProperty.get(),"SKEET", new String[]{"BASIC", "RIFK", "SKEET"});
 
     private final TimerUtil attackTimeOut = new TimerUtil();
     private final TimerUtil killTimeOut = new TimerUtil();
@@ -154,16 +150,16 @@ public final class Hitmarkers extends Module {
     private void playSound() {
         switch(soundTypeProperty.getValue()) {
             case "SKEET":
-                Minecraft.getMinecraft().getSoundHandler().playSoundFromFile("skeet.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+                Mine.getMinecraft().getSoundHandler().playSoundFromFile("skeet.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
                 break;
             case "NEKO":
-                Minecraft.getMinecraft().getSoundHandler().playSoundFromFile("neko.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+                Mine.getMinecraft().getSoundHandler().playSoundFromFile("neko.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
                 break;
             case "RIFK":
-                Minecraft.getMinecraft().getSoundHandler().playSoundFromFile("rifk.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+                Mine.getMinecraft().getSoundHandler().playSoundFromFile("rifk.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
                 break;
             case "BASIC":
-                Minecraft.getMinecraft().getSoundHandler().playSoundFromFile("basic.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+                Mine.getMinecraft().getSoundHandler().playSoundFromFile("basic.ogg", mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
                 break;
         }
     }

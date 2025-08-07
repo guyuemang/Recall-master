@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.visuals;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.entity.Entity;
@@ -41,9 +39,7 @@ import static org.lwjgl.opengl.GL11.glVertex2f;
  * @Author：Guyuemang
  * @Date：2025/7/3 12:31
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public final class ESP extends Module {
     public ESP() {
         super("ESP",Category.Visuals);

@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -22,7 +22,7 @@ public class RenderTNTPrimed extends Render<EntityTNTPrimed>
      */
     public void doRender(EntityTNTPrimed entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 

@@ -1,6 +1,6 @@
 package net.optifine.shaders.uniform;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,7 +29,7 @@ public enum ShaderParameterBool implements IExpressionBool
     private ShaderParameterBool(String name)
     {
         this.name = name;
-        this.renderManager = Minecraft.getMinecraft().getRenderManager();
+        this.renderManager = Mine.getMinecraft().getRenderManager();
     }
 
     public String getName()
@@ -39,7 +39,7 @@ public enum ShaderParameterBool implements IExpressionBool
 
     public boolean eval()
     {
-        Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
+        Entity entity = Mine.getMinecraft().getRenderViewEntity();
 
         if (entity instanceof EntityLivingBase)
         {

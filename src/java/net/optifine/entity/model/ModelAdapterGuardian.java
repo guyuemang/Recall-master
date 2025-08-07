@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelGuardian;
 import net.minecraft.client.model.ModelRenderer;
@@ -96,7 +96,7 @@ public class ModelAdapterGuardian extends ModelAdapter
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderGuardian renderguardian = new RenderGuardian(rendermanager);
         renderguardian.mainModel = modelBase;
         renderguardian.shadowSize = shadowSize;

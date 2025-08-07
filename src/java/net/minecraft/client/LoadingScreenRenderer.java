@@ -13,13 +13,17 @@ import net.minecraft.util.MinecraftError;
 import net.optifine.CustomLoadingScreen;
 import net.optifine.CustomLoadingScreens;
 import net.optifine.reflect.Reflector;
+import qwq.arcane.module.ClientApplication;
+import qwq.arcane.module.Mine;
+
+import javax.swing.*;
 
 public class LoadingScreenRenderer implements IProgressUpdate
 {
     private String message = "";
 
     /** A reference to the Minecraft object. */
-    private Minecraft mc;
+    private Mine mc;
 
     /**
      * The text currently displayed (i.e. the argument to the last call to printText or displayString)
@@ -27,14 +31,14 @@ public class LoadingScreenRenderer implements IProgressUpdate
     private String currentlyDisplayedText = "";
 
     /** The system's time represented in milliseconds. */
-    private long systemTime = Minecraft.getSystemTime();
+    private long systemTime = Mine.getSystemTime();
 
     /** True if the loading ended with a success */
     private boolean loadingSuccess;
     private ScaledResolution scaledResolution;
     private Framebuffer framebuffer;
 
-    public LoadingScreenRenderer(Minecraft mcIn)
+    public LoadingScreenRenderer(Mine mcIn)
     {
         this.mc = mcIn;
         this.scaledResolution = new ScaledResolution(mcIn);
@@ -130,7 +134,7 @@ public class LoadingScreenRenderer implements IProgressUpdate
         }
         else
         {
-            long i = Minecraft.getSystemTime();
+            long i = Mine.getSystemTime();
 
             if (i - this.systemTime >= 100L)
             {

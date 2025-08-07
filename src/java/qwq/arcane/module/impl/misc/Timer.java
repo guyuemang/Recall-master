@@ -10,6 +10,7 @@ import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
@@ -41,7 +42,10 @@ public class Timer extends Module {
     public Timer() {
         super("Timer", Category.Misc);
     }
-
+    @EventTarget
+    public void onSuffix(UpdateEvent event){
+        setsuffix(amount.get().toString());
+    }
     @EventTarget
     public void onMotion(MotionEvent eventMotion) {
         PacketUtil.sendPacketNoEvent(new C0FPacketConfirmTransaction(MathUtils.getRandom(114514, 191981000), (short)MathUtils.getRandomInRange(114514, 191981000), true));

@@ -2,7 +2,7 @@ package net.minecraft.client.gui.inventory;
 
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -223,7 +223,7 @@ public class GuiBeacon extends GuiContainer
             this.field_146143_q = p_i1077_6_;
         }
 
-        public void drawButton(Minecraft mc, int mouseX, int mouseY)
+        public void drawButton(Mine mc, int mouseX, int mouseY)
         {
             if (this.visible)
             {

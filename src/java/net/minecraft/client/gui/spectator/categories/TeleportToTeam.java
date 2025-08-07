@@ -3,7 +3,8 @@ package net.minecraft.client.gui.spectator.categories;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Random;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -26,9 +27,9 @@ public class TeleportToTeam implements ISpectatorMenuView, ISpectatorMenuObject
 
     public TeleportToTeam()
     {
-        Minecraft minecraft = Minecraft.getMinecraft();
+        Mine mine = Mine.getMinecraft();
 
-        for (ScorePlayerTeam scoreplayerteam : minecraft.theWorld.getScoreboard().getTeams())
+        for (ScorePlayerTeam scoreplayerteam : mine.theWorld.getScoreboard().getTeams())
         {
             this.field_178672_a.add(new TeleportToTeam.TeamSelectionObject(scoreplayerteam));
         }
@@ -56,7 +57,7 @@ public class TeleportToTeam implements ISpectatorMenuView, ISpectatorMenuObject
 
     public void func_178663_a(float p_178663_1_, int alpha)
     {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(GuiSpectator.field_175269_a);
+        Mine.getMinecraft().getTextureManager().bindTexture(GuiSpectator.field_175269_a);
         Gui.drawModalRectWithCustomSizedTexture(0, 0, 16.0F, 0.0F, 16, 16, 256.0F, 256.0F);
     }
 
@@ -86,7 +87,7 @@ public class TeleportToTeam implements ISpectatorMenuView, ISpectatorMenuObject
 
             for (String s : p_i45492_2_.getMembershipCollection())
             {
-                NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getNetHandler().getPlayerInfo(s);
+                NetworkPlayerInfo networkplayerinfo = Mine.getMinecraft().getNetHandler().getPlayerInfo(s);
 
                 if (networkplayerinfo != null)
                 {
@@ -123,7 +124,7 @@ public class TeleportToTeam implements ISpectatorMenuView, ISpectatorMenuObject
 
             if (s.length() >= 2)
             {
-                i = Minecraft.getMinecraft().fontRendererObj.getColorCode(s.charAt(1));
+                i = Mine.getMinecraft().fontRendererObj.getColorCode(s.charAt(1));
             }
 
             if (i >= 0)
@@ -134,7 +135,7 @@ public class TeleportToTeam implements ISpectatorMenuView, ISpectatorMenuObject
                 Gui.drawRect(1, 1, 15, 15, MathHelper.func_180183_b(f * p_178663_1_, f1 * p_178663_1_, f2 * p_178663_1_) | alpha << 24);
             }
 
-            Minecraft.getMinecraft().getTextureManager().bindTexture(this.field_178677_c);
+            Mine.getMinecraft().getTextureManager().bindTexture(this.field_178677_c);
             GlStateManager.color(p_178663_1_, p_178663_1_, p_178663_1_, (float)alpha / 255.0F);
             Gui.drawScaledCustomSizeModalRect(2, 2, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             Gui.drawScaledCustomSizeModalRect(2, 2, 40.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);

@@ -3,7 +3,7 @@ package net.minecraft.client.gui;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -29,7 +29,7 @@ public class GuiRepair extends GuiContainer implements ICrafting
 
     public GuiRepair(InventoryPlayer inventoryIn, World worldIn)
     {
-        super(new ContainerRepair(inventoryIn, worldIn, Minecraft.getMinecraft().thePlayer));
+        super(new ContainerRepair(inventoryIn, worldIn, Mine.getMinecraft().thePlayer));
         this.playerInventory = inventoryIn;
         this.anvil = (ContainerRepair)this.inventorySlots;
     }

@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.tileentity;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,7 +38,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderItemFrame extends Render<EntityItemFrame>
 {
     private static final ResourceLocation mapBackgroundTextures = new ResourceLocation("textures/map/map_background.png");
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Mine mc = Mine.getMinecraft();
     private final ModelResourceLocation itemFrameModel = new ModelResourceLocation("item_frame", "normal");
     private final ModelResourceLocation mapModel = new ModelResourceLocation("item_frame", "map");
     private RenderItem itemRenderer;
@@ -200,7 +200,7 @@ public class RenderItemFrame extends Render<EntityItemFrame>
 
     protected void renderName(EntityItemFrame entity, double x, double y, double z)
     {
-        if (Minecraft.isGuiEnabled() && entity.getDisplayedItem() != null && entity.getDisplayedItem().hasDisplayName() && this.renderManager.pointedEntity == entity)
+        if (Mine.isGuiEnabled() && entity.getDisplayedItem() != null && entity.getDisplayedItem().hasDisplayName() && this.renderManager.pointedEntity == entity)
         {
             float f = 1.6F;
             float f1 = 0.016666668F * f;
@@ -276,9 +276,9 @@ public class RenderItemFrame extends Render<EntityItemFrame>
 
     public static void updateItemRenderDistance()
     {
-        Minecraft minecraft = Config.getMinecraft();
-        double d0 = (double)Config.limit(minecraft.gameSettings.fovSetting, 1.0F, 120.0F);
-        double d1 = Math.max(6.0D * (double)minecraft.displayHeight / d0, 16.0D);
+        Mine mine = Config.getMinecraft();
+        double d0 = (double)Config.limit(mine.gameSettings.fovSetting, 1.0F, 120.0F);
+        double d1 = Math.max(6.0D * (double) mine.displayHeight / d0, 16.0D);
         itemRenderDistanceSq = d1 * d1;
     }
 }

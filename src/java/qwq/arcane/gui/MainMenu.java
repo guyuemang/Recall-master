@@ -1,18 +1,23 @@
 package qwq.arcane.gui;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import com.yumegod.obfuscation.StringObfuscate;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import org.bytedeco.javacv.FrameGrabber;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import qwq.arcane.Client;
 import qwq.arcane.gui.alt.GuiAccountManager;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
+import qwq.arcane.utils.animations.AnimationUtils;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.animations.impl.LayeringAnimation;
+import qwq.arcane.utils.animations.impl.RippleAnimation;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
@@ -31,17 +36,14 @@ import java.util.List;
  * @Author：Guyuemang
  * @Date：2025/6/28 23:22
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
-@StringObfuscate
+
 public class MainMenu extends GuiScreen {
     List<Button> buttons = Arrays.asList(
             new Button("Single Player","B"),
             new Button("Multi Player","E"),
             new Button("Alt Manager","D"),
             new Button("Options","O"),
-            new Button("Shut down","I")
+            new Button("Shut down","R")
     );
     List<Button2> buttons2 = Arrays.asList(
             new Button2("Discord","V"),
@@ -50,9 +52,8 @@ public class MainMenu extends GuiScreen {
             new Button2("YouTube","Y"),
             new Button2("Shop","Z")
     );
-    private Animation fadeInAnimation = new DecelerateAnimation(4000, 1).setDirection(Direction.FORWARDS);
+    private Animation fadeInAnimation = new DecelerateAnimation(1000, 1).setDirection(Direction.FORWARDS);
     private static Animation progress4Anim;
-    private Animation Animation = new DecelerateAnimation(1000, 1).setDirection(Direction.FORWARDS);
     int alpha = 0;
     @Override
     public void initGui() {
@@ -65,35 +66,53 @@ public class MainMenu extends GuiScreen {
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
         ScaledResolution sr = new ScaledResolution(mc);
-        try {
-            VideoPlayer.render(0, 0, sr.getScaledWidth(), sr.getScaledHeight());
-        } catch (FrameGrabber.Exception e) {
-            throw new RuntimeException(e);
-        }
-        float aWidth = FontManager.Bold.get(80).getStringWidth("A");
-        if (fadeInAnimation.getOutput() >= 0.35f) {
-            progress4Anim.setDirection(Direction.FORWARDS);
-            Animation.setDirection(Direction.BACKWARDS);
-            FontManager.Bold.get(80).drawString("A", 5 + (width / 2 - aWidth / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2)) * Animation.getOutput(), 7 + (height / 2 - 50) * Animation.getOutput(), ColorUtil.applyOpacity(InterFace.color(1),1).getRGB());
-            FontManager.Bold.get(80).drawString("rcane", 5 + aWidth + (width / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) + aWidth / 2) * Animation.getOutput(), 7 + (height / 2 - 50) * Animation.getOutput(), ColorUtil.applyOpacity(-1,1));
-        }else {
-            FontManager.Bold.get(80).drawString("A", (width / 2 - aWidth / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2)), (height / 2 - 50), ColorUtil.applyOpacity(InterFace.color(1),1).getRGB());
-            FontManager.Bold.get(80).drawString("rcane", (width / 2 - (FontManager.Bold.get(80).getStringWidth("rcane") / 2) + aWidth / 2), (height / 2 - 50), ColorUtil.applyOpacity(-1,1));
-        }
+        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
         RoundedUtil.drawRound(width - 200, height - 50 , 180, 30, 5, new Color(35, 37, 43, 150));
-        LocalTime currentTime1 = LocalTime.now();
-        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String formattedTime1 = currentTime1.format(formatter1);
-        FontManager.Bold.get(50).drawCenteredString(formattedTime1, width - 85, 10, -1);
-        RoundedUtil.drawGradientHorizontal(width - 160, 40 , 160, 1, 3,  InterFace.color(1).brighter(),InterFace.color(7).brighter());
+        RoundedUtil.drawRound(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0, new Color(0, 0, 0,50));
+        FontManager.Icon.get(100).drawString("I", sr.getScaledWidth() / 2 - FontManager.Icon.get(100).getStringWidth("I") / 2 + 8, sr.getScaledHeight() / 2 - 130, new Color(109, 213, 250).getRGB());
+        FontManager.Bold.get(50).drawCenteredString(Client.name, sr.getScaledWidth() / 2, sr.getScaledHeight() / 2 - 90, new Color(109, 213, 250).getRGB());
 
-        FontManager.Bold.get(18).drawString("Arcane-Client", 10, height - 70, -1);
-        FontManager.Bold.get(18).drawString("Made by Guyuemang", 10, height - 60, -1);
-        FontManager.Bold.get(18).drawString("Love Nothing Team", 10, height - 50, -1);
-        FontManager.Bold.get(18).drawString("Version:" + Client.version, 10, height - 40, -1);
-
+        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 130, sr.getScaledHeight() - 45, 260, 40, 6, new Color(0, 0, 0, 120));
+        FontManager.Bold.get(18).drawCenteredString(Client.name + " " + Client.version, sr.getScaledWidth() / 2, sr.getScaledHeight() - 38, new Color(255, 255, 255).getRGB());
+        FontManager.Bold.get(18).drawCenteredString("OptiFine_1.8.9_HD_U_M6_pre2", sr.getScaledWidth() / 2, sr.getScaledHeight() - 28, new Color(255, 255, 255).getRGB());
+        FontManager.Bold.get(18).drawCenteredString("Made by Guyuemang", sr.getScaledWidth() / 2, sr.getScaledHeight() - 18, new Color(255, 255, 255).getRGB());
+        //按钮专属背景
+        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 80, sr.getScaledHeight() / 2 - 55, 160, 175, 14, new Color(0, 0, 0, 120));
         float count = 0;
+        for (Button button : buttons) {
+            button.x = sr.getScaledWidth() / 2;
+            button.y = sr.getScaledHeight() / 2 - 40 + count;
+            button.width = 160;
+            button.height = 35;
+            button.clickAction = () -> {
+                switch (button.name) {
+                    case "Single Player": {
+                        LayeringAnimation.play(new GuiSelectWorld(this));
+                    }
+                    break;
+                    case "Multi Player": {
+                        LayeringAnimation.play(new GuiMultiplayer(this));
+                    }
+                    break;
+                    case "Alt Manager": {
+                        LayeringAnimation.play(new GuiAccountManager(this));
+                    }
+                    break;
+                    case "Options": {
+                        LayeringAnimation.play(new GuiOptions(this, mc.gameSettings));
+                    }
+                    break;
+                    case "Shut down": {
+                        mc.shutdown();
+                    }
+                    break;
+                }
+            };
+            count += 35;
+            button.drawScreen(mouseX, mouseY);
+        }
         float count2 = 0;
         for (Button2 buttons2 : buttons2) {
             buttons2.x = width - 200 + count2;
@@ -162,7 +181,7 @@ public class MainMenu extends GuiScreen {
                     case "Shop":{
                         URI uri = null;
                         try {
-                            uri = new URI("https://kw.atrishop.top/item?id=156");
+                            uri = new URI("https://kw.atrishop.top/item?id=210");
                         } catch (URISyntaxException e) {
                             throw new RuntimeException(e);
                         }
@@ -177,43 +196,13 @@ public class MainMenu extends GuiScreen {
             count2 += FontManager.Icon.get(40).getStringWidth(buttons2.icon) + 15;
             buttons2.drawScreen(mouseX, mouseY);
         }
-        for (Button button : buttons) {
-            button.x = 5;
-            button.y = 70 + count;
-            button.width = 180;
-            button.height = 35;
-            button.clickAction = () -> {
-                switch (button.name) {
-                    case "Single Player": {
-                        LayeringAnimation.play(new GuiSelectWorld(this));
-                    }
-                    break;
-                    case "Multi Player": {
-                        LayeringAnimation.play(new GuiMultiplayer(this));
-                    }
-                    break;
-                    case "Alt Manager": {
-                        LayeringAnimation.play(new GuiAccountManager(this));
-                    }
-                    break;
-                    case "Options": {
-                        LayeringAnimation.play(new GuiOptions(this, mc.gameSettings));
-                    }
-                    break;
-                    case "Shut down": {
-                        mc.shutdown();
-                    }
-                    break;
-                }
-            };
-            count += 45;
-            button.drawScreen(mouseX, mouseY);
-        }
+
         float progress = fadeInAnimation.getOutput().floatValue();
         alpha = (int)(255 * (1 - progress)); // 从完全不透明到完全透明
 
         RenderUtil.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(0, 0, 0, alpha).getRGB());
     }
+
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         buttons.forEach(button -> {button.mouseClicked(mouseX, mouseY, mouseButton);});
@@ -233,20 +222,19 @@ public class MainMenu extends GuiScreen {
         }
 
         public void drawScreen(int mouseX, int mouseY) {
-            boolean hovered = RenderUtil.isHovering(x,y - 15,width,height, mouseX, mouseY);
-            Color rectColor = new Color(35, 37, 43, 150);
+            boolean hovered = RenderUtil.isHovering(x - 80,y - 15,width,35, mouseX, mouseY);
+            Color rectColor = new Color(35, 37, 43, 100);
             rectColor = ColorUtil.interpolateColorC(rectColor, ColorUtil.brighter(rectColor, 0.4f),this.hoverAnimation.getOutput().floatValue());
             hoverAnimation.setDirection(hovered ? Direction.BACKWARDS : Direction.FORWARDS);
-            RoundedUtil.drawRound(x, y - 15, width, height, 3, rectColor);
-            RenderUtil.startGlScissor((int) x - 2, (int) (y - 20), 10, 45);
-            RoundedUtil.drawGradientVertical(x, y - 15, 10, height, 3, InterFace.color(1),InterFace.color(7));
-            RenderUtil.stopGlScissor();
-            FontManager.Semibold.get(20).drawString(name,x + 32,y + 1,new Color(-1).getRGB());
-            FontManager.Icon.get(30).drawString(icon,x + 13  ,y,new Color(-1).getRGB());
+            if (hovered) {
+                RoundedUtil.drawRound(x - 80, y - 15, width, 35, 14, rectColor);
+            }
+            FontManager.Bold.get(20).drawCenteredString(name,x + 5,y,new Color(89, 139, 184).getRGB());
+            FontManager.Icon.get(30).drawCenteredString(icon,x - 5 - FontManager.Bold.get(20).getStringWidth(name) / 2  ,y,new Color(89, 139, 184).getRGB());
         }
 
         public void mouseClicked(int mouseX, int mouseY, int button) {
-            boolean hovered = RenderUtil.isHovering(x,y - 15,width,height, mouseX, mouseY);
+            boolean hovered = RenderUtil.isHovering(x - 80,y - 15,width,35, mouseX, mouseY);
             if (hovered) clickAction.run();
         }
     }

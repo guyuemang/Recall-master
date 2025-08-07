@@ -35,7 +35,7 @@ import net.minecraft.block.BlockSign;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -129,7 +129,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private static final ResourceLocation locationForcefieldPng = new ResourceLocation("textures/misc/forcefield.png");
 
     /** A reference to the Minecraft object. */
-    public final Minecraft mc;
+    public final Mine mc;
 
     /** The RenderEngine instance used by RenderGlobal */
     private final TextureManager renderEngine;
@@ -226,7 +226,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private boolean firstWorldLoad = false;
     private static int renderEntitiesCounter = 0;
 
-    public RenderGlobal(Minecraft mcIn)
+    public RenderGlobal(Mine mcIn)
     {
         this.cloudRenderer = new CloudRenderer(mcIn);
         this.mc = mcIn;
@@ -1413,7 +1413,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
         float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
 
-        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
+        if (Mine.getMinecraft().gameSettings.thirdPersonView == 2)
         {
             f += 180.0F;
         }
@@ -2403,7 +2403,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             GlStateManager.alphaFunc(516, 0.1F);
             GlStateManager.enableAlpha();
             GlStateManager.disableCull();
-            float f3 = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F;
+            float f3 = (float)(Mine.getSystemTime() % 3000L) / 3000.0F;
             float f4 = 0.0F;
             float f5 = 0.0F;
             float f6 = 128.0F;

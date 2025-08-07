@@ -1,9 +1,8 @@
 package qwq.arcane.module.impl.visuals;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.gui.clickgui.dropdown.DropDownClickGui;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -17,8 +16,6 @@ import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
-import qwq.arcane.gui.clickgui.arcane.ArcaneClickGui;
-import qwq.arcane.gui.clickgui.dropdown.DropDownClickGui;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.combat.KillAura;
@@ -28,6 +25,7 @@ import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.player.PingerUtils;
 import qwq.arcane.utils.render.GradientUtil;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.utils.render.shader.impl.Bloom;
 import qwq.arcane.utils.render.shader.impl.Blur;
 import qwq.arcane.utils.render.shader.impl.Shadow;
@@ -35,8 +33,6 @@ import qwq.arcane.value.impl.*;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,9 +41,7 @@ import java.util.Map;
  * @Author：Guyuemang
  * @Date：2025/6/29 01:06
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class InterFace extends Module {
     public InterFace() {
         super("InterFace", Category.Visuals);
@@ -55,8 +49,8 @@ public class InterFace extends Module {
     }
     public static ModeValue colorMode = new ModeValue("Color Mode", "Fade", new String[]{"Fade", "Rainbow", "Astolfo", "Dynamic","Tenacity", "Static", "Double"});
     public static final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> colorMode.is("Tenacity"), 4, 1, 10, 1);
-    public static ColorValue mainColor = new ColorValue("MainColor", new Color(213, 63, 119));
-    public static ColorValue secondColor = new ColorValue("SecondColor", new Color(157, 68, 110));
+    public static ColorValue mainColor = new ColorValue("MainColor", new Color(41, 128, 185));
+    public static ColorValue secondColor = new ColorValue("SecondColor", new Color(109, 213, 250));
     public static BoolValue waterMark = new BoolValue("WaterMark",true);
     public static ModeValue waterMarkmode = new ModeValue("WaterMarkMode",()-> waterMark.get(),"Exhi",new String[]{"Exhi","Arcane","Exhibition","Sigma"});
     public static BoolValue info = new BoolValue("Info",true);
@@ -82,7 +76,7 @@ public class InterFace extends Module {
         if (waterMark.get()) {
             boolean shouldChange = RenderUtil.COLOR_PATTERN.matcher(Client.name).find();
             String text = shouldChange ? "§r" + Client.name : Client.name.charAt(0) + "§r§f" + Client.name.substring(1) +
-                    "§7[§f" + Minecraft.getDebugFPS() + " FPS§7]§r ";
+                    "§7[§f" + Mine.getDebugFPS() + " FPS§7]§r ";
             String text3 = shouldChange ? "§r" + Client.name : Client.name.charAt(0) + "§r§f" + Client.name.substring(1);
             switch (waterMarkmode.get()) {
                 case "Exhi":
@@ -92,14 +86,14 @@ public class InterFace extends Module {
                     Bold.get(60).drawString(text3, 5, 5,color(1).getRGB());
                     break;
                 case "Sigma":
-                    Light.get(60).drawString(text3, 5, 5,new Color(255, 255, 255,190).getRGB());
-                    Light.get(20).drawString("Beta1.0", 5, 35,new Color(255, 255, 255,190).getRGB());
+                    Semibold.get(60).drawString(text3, 5, 5,new Color(255, 255, 255,190).getRGB());
+                    Semibold.get(20).drawString(Client.version, 0, 37,new Color(255, 255, 255,190).getRGB());
                     break;
                 case "Exhibition":
                     String text2 = "§fArc§rance§f" + " - " + mc.thePlayer.getName() + " - " + " - " + PingerUtils.getPing() + "ms ";
 
                     float x = 4.5f, y = 4.5f;
-
+                    RenderUtil.resetColor();
                     int lineColor = new Color(59, 57, 57).darker().getRGB();
                     Gui.drawRect2(x, y, Semibold.get(16).getStringWidth(text2) + 7, 18.5, new Color(59, 57, 57).getRGB());
 
@@ -118,12 +112,12 @@ public class InterFace extends Module {
                     Gui.drawRect2((x + 1.5) + Semibold.get(16).getStringWidth(text2) + 4, y + 1.5, .5, 16, lineColor);
 
                     // Lowly saturated rainbow bar
-
-                    GradientUtil.drawGradientLR(x + 2.5f, y + 14.5f, Semibold.get(16).getStringWidth(text2) + 2, 1, 1,mainColor.get(), secondColor.get());
+                    RoundedUtil.drawGradientHorizontal(x + 2.5f, y + 14.5f, Semibold.get(16).getStringWidth(text2) + 2, 0.1f, 0,mainColor.get(), secondColor.get());
 
                     // Bottom of the rainbow bar
                     Gui.drawRect2(x + 2.5, y + 16, Semibold.get(16).getStringWidth(text2) + 2, .5, lineColor);
                     Semibold.get(16).drawString(text2, x + 4.5f, y + 5.5f, secondColor.get().getRGB());
+                    RenderUtil.resetColor();
                     break;
             }
         }
@@ -215,7 +209,11 @@ public class InterFace extends Module {
                 }
             }
         }
-        if (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiChat DropDownClickGui || mc.currentScreen instanceof GuiChat ArcaneClickGui) {
+        if (mc.currentScreen instanceof GuiChat) {
+            animationEntityPlayerMap.putIfAbsent(mc.thePlayer, new DecelerateAnimation(175, 1));
+            animationEntityPlayerMap.get(mc.thePlayer).setDirection(Direction.FORWARDS);
+        }
+        if (mc.currentScreen instanceof DropDownClickGui) {
             animationEntityPlayerMap.putIfAbsent(mc.thePlayer, new DecelerateAnimation(175, 1));
             animationEntityPlayerMap.get(mc.thePlayer).setDirection(Direction.FORWARDS);
         }

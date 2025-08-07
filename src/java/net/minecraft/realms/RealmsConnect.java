@@ -2,7 +2,8 @@ package net.minecraft.realms;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.network.NetHandlerLoginClient;
 import net.minecraft.network.EnumConnectionState;
 import net.minecraft.network.NetworkManager;
@@ -42,14 +43,14 @@ public class RealmsConnect
                         return;
                     }
 
-                    RealmsConnect.this.connection = NetworkManager.createNetworkManagerAndConnect(inetaddress, p_connect_2_, Minecraft.getMinecraft().gameSettings.isUsingNativeTransport());
+                    RealmsConnect.this.connection = NetworkManager.createNetworkManagerAndConnect(inetaddress, p_connect_2_, Mine.getMinecraft().gameSettings.isUsingNativeTransport());
 
                     if (RealmsConnect.this.aborted)
                     {
                         return;
                     }
 
-                    RealmsConnect.this.connection.setNetHandler(new NetHandlerLoginClient(RealmsConnect.this.connection, Minecraft.getMinecraft(), RealmsConnect.this.onlineScreen.getProxy()));
+                    RealmsConnect.this.connection.setNetHandler(new NetHandlerLoginClient(RealmsConnect.this.connection, Mine.getMinecraft(), RealmsConnect.this.onlineScreen.getProxy()));
 
                     if (RealmsConnect.this.aborted)
                     {
@@ -63,7 +64,7 @@ public class RealmsConnect
                         return;
                     }
 
-                    RealmsConnect.this.connection.sendPacket(new C00PacketLoginStart(Minecraft.getMinecraft().getSession().getProfile()));
+                    RealmsConnect.this.connection.sendPacket(new C00PacketLoginStart(Mine.getMinecraft().getSession().getProfile()));
                 }
                 catch (UnknownHostException unknownhostexception)
                 {
@@ -75,7 +76,7 @@ public class RealmsConnect
                     }
 
                     RealmsConnect.LOGGER.error((String)"Couldn\'t connect to world", (Throwable)unknownhostexception);
-                    Minecraft.getMinecraft().getResourcePackRepository().clearResourcePack();
+                    Mine.getMinecraft().getResourcePackRepository().clearResourcePack();
                     Realms.setScreen(new DisconnectedRealmsScreen(RealmsConnect.this.onlineScreen, "connect.failed", new ChatComponentTranslation("disconnect.genericReason", new Object[] {"Unknown host \'" + p_connect_1_ + "\'"})));
                 }
                 catch (Exception exception)

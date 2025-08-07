@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
@@ -246,7 +246,7 @@ public class CustomItems
         {
             if (customitemproperties.type == 1)
             {
-                TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
+                TextureMap texturemap = Mine.getMinecraft().getTextureMapBlocks();
                 customitemproperties.updateModelTexture(texturemap, itemModelGenerator);
                 customitemproperties.updateModelsFull();
             }
@@ -895,7 +895,7 @@ public class CustomItems
                                     Blender.setupBlend(customitemproperties.blend, 1.0F);
                                     GlStateManager.pushMatrix();
                                     GlStateManager.scale(f / 2.0F, f / 2.0F, f / 2.0F);
-                                    float f1 = customitemproperties.speed * (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F / 8.0F;
+                                    float f1 = customitemproperties.speed * (float)(Mine.getSystemTime() % 3000L) / 3000.0F / 8.0F;
                                     GlStateManager.translate(f1, 0.0F, 0.0F);
                                     GlStateManager.rotate(customitemproperties.rotation, 0.0F, 0.0F, 1.0F);
                                     renderItem.renderModel(model, -1);
@@ -997,7 +997,7 @@ public class CustomItems
                                     GlStateManager.rotate(customitemproperties.rotation, 0.0F, 0.0F, 1.0F);
                                     float f1 = f / 8.0F;
                                     GlStateManager.scale(f1, f1 / 2.0F, f1);
-                                    float f2 = customitemproperties.speed * (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F / 8.0F;
+                                    float f2 = customitemproperties.speed * (float)(Mine.getSystemTime() % 3000L) / 3000.0F / 8.0F;
                                     GlStateManager.translate(0.0F, f2, 0.0F);
                                     GlStateManager.matrixMode(5888);
                                     model.render(entity, limbSwing, prevLimbSwing, timeLimbSwing, yaw, pitch, scale);

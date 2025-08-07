@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import qwq.arcane.module.Mine;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -25,7 +26,6 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateBase;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
@@ -1328,8 +1328,8 @@ public class CustomColors
                 break;
 
             case 0:
-                Minecraft minecraft = Minecraft.getMinecraft();
-                fogVec = getFogColor(fogVec, minecraft.theWorld, renderViewEntity.posX, renderViewEntity.posY + 1.0D, renderViewEntity.posZ);
+                Mine mine = Mine.getMinecraft();
+                fogVec = getFogColor(fogVec, mine.theWorld, renderViewEntity.posX, renderViewEntity.posY + 1.0D, renderViewEntity.posZ);
                 break;
 
             case 1:
@@ -1346,8 +1346,8 @@ public class CustomColors
         switch (i)
         {
             case 0:
-                Minecraft minecraft = Minecraft.getMinecraft();
-                skyVec = getSkyColor(skyVec, minecraft.theWorld, renderViewEntity.posX, renderViewEntity.posY + 1.0D, renderViewEntity.posZ);
+                Mine mine = Mine.getMinecraft();
+                skyVec = getSkyColor(skyVec, mine.theWorld, renderViewEntity.posX, renderViewEntity.posY + 1.0D, renderViewEntity.posZ);
                 break;
 
             case 1:
@@ -1753,7 +1753,7 @@ public class CustomColors
 
             if (flag)
             {
-                Minecraft.getMinecraft().getTextureManager().reloadBannerTextures();
+                Mine.getMinecraft().getTextureManager().reloadBannerTextures();
             }
         }
     }

@@ -13,7 +13,9 @@ import net.minecraft.client.stream.IStream;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.EnumDifficulty;
+import qwq.arcane.utils.render.RenderUtil;
 
 public class GuiOptions extends GuiScreen implements GuiYesNoCallback
 {
@@ -234,7 +236,8 @@ public class GuiOptions extends GuiScreen implements GuiYesNoCallback
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        ScaledResolution sr = new ScaledResolution(mc);
+        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
         this.drawCenteredString(this.fontRendererObj, this.field_146442_a, this.width / 2, 15, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

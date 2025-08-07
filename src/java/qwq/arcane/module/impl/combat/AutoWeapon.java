@@ -1,28 +1,16 @@
 package qwq.arcane.module.impl.combat;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.*;
 import net.minecraft.network.play.client.C02PacketUseEntity;
-import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
-import qwq.arcane.event.impl.events.player.AttackEvent;
-import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.player.InventoryUtil;
-import qwq.arcane.utils.player.PlayerUtil;
-import qwq.arcane.utils.player.SlotSpoofComponent;
-import qwq.arcane.value.impl.BoolValue;
-import qwq.arcane.value.impl.NumberValue;
 
 import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
 
@@ -30,9 +18,7 @@ import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:01 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class AutoWeapon extends Module {
     public AutoWeapon() {
         super("AutoWeapon", Category.Combat);

@@ -6,9 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import net.minecraft.client.AnvilConverterException;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.ISaveHandler;
@@ -17,8 +18,7 @@ import net.minecraft.world.storage.WorldInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bytedeco.javacv.FrameGrabber;
-import qwq.arcane.gui.VideoPlayer;
+import qwq.arcane.utils.render.RenderUtil;
 
 public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
 {
@@ -237,11 +237,8 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         ScaledResolution sr = new ScaledResolution(mc);
-        try {
-            VideoPlayer.render(0, 0, sr.getScaledWidth(), sr.getScaledHeight());
-        } catch (FrameGrabber.Exception e) {
-            throw new RuntimeException(e);
-        }
+        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
+
         this.availableWorlds.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -268,7 +265,7 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
 
     class List extends GuiSlot
     {
-        public List(Minecraft mcIn)
+        public List(Mine mcIn)
         {
             super(mcIn, GuiSelectWorld.this.width, GuiSelectWorld.this.height, 32, GuiSelectWorld.this.height - 64, 36);
         }

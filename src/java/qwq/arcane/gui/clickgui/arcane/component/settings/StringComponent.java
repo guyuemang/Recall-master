@@ -1,9 +1,7 @@
 
 package qwq.arcane.gui.clickgui.arcane.component.settings;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.gui.clickgui.Component;
@@ -26,9 +24,7 @@ import static qwq.arcane.utils.fontrender.FontManager.Semibold;
  * @Author：Guyuemang
  * @Date：2025/7/3 23:16
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class StringComponent extends Component {
     private final TextValue setting;
     private final Animation input = new DecelerateAnimation(250, 1);

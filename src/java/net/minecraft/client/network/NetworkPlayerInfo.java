@@ -4,7 +4,7 @@ import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.network.play.server.S38PacketPlayerListItem;
@@ -111,7 +111,7 @@ public class NetworkPlayerInfo
 
     public ScorePlayerTeam getPlayerTeam()
     {
-        return Minecraft.getMinecraft().theWorld.getScoreboard().getPlayersTeam(this.getGameProfile().getName());
+        return Mine.getMinecraft().theWorld.getScoreboard().getPlayersTeam(this.getGameProfile().getName());
     }
 
     protected void loadPlayerTextures()
@@ -121,7 +121,7 @@ public class NetworkPlayerInfo
             if (!this.playerTexturesLoaded)
             {
                 this.playerTexturesLoaded = true;
-                Minecraft.getMinecraft().getSkinManager().loadProfileTextures(this.gameProfile, new SkinManager.SkinAvailableCallback()
+                Mine.getMinecraft().getSkinManager().loadProfileTextures(this.gameProfile, new SkinManager.SkinAvailableCallback()
                 {
                     public void skinAvailable(Type p_180521_1_, ResourceLocation location, MinecraftProfileTexture profileTexture)
                     {

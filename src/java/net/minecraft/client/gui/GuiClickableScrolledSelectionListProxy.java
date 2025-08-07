@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.realms.RealmsClickableScrolledSelectionList;
 import net.minecraft.realms.Tezzelator;
 import org.lwjgl.input.Mouse;
@@ -11,7 +11,7 @@ public class GuiClickableScrolledSelectionListProxy extends GuiSlot
 
     public GuiClickableScrolledSelectionListProxy(RealmsClickableScrolledSelectionList selectionList, int p_i45526_2_, int p_i45526_3_, int p_i45526_4_, int p_i45526_5_, int p_i45526_6_)
     {
-        super(Minecraft.getMinecraft(), p_i45526_2_, p_i45526_3_, p_i45526_4_, p_i45526_5_, p_i45526_6_);
+        super(Mine.getMinecraft(), p_i45526_2_, p_i45526_3_, p_i45526_4_, p_i45526_5_, p_i45526_6_);
         this.field_178046_u = selectionList;
     }
 

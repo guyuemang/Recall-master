@@ -3,7 +3,8 @@ package net.minecraft.client.gui.inventory;
 import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -171,7 +172,7 @@ public abstract class GuiContainer extends GuiScreen
 
         if (this.returningStack != null)
         {
-            float f = (float)(Minecraft.getSystemTime() - this.returningStackTime) / 100.0F;
+            float f = (float)(Mine.getSystemTime() - this.returningStackTime) / 100.0F;
 
             if (f >= 1.0F)
             {
@@ -361,7 +362,7 @@ public abstract class GuiContainer extends GuiScreen
         super.mouseClicked(mouseX, mouseY, mouseButton);
         boolean flag = mouseButton == this.mc.gameSettings.keyBindPickBlock.getKeyCode() + 100;
         Slot slot = this.getSlotAtPosition(mouseX, mouseY);
-        long i = Minecraft.getSystemTime();
+        long i = Mine.getSystemTime();
         this.doubleClick = this.lastClickSlot == slot && i - this.lastClickTime < 250L && this.lastClickButton == mouseButton;
         this.ignoreMouseUp = false;
 
@@ -481,7 +482,7 @@ public abstract class GuiContainer extends GuiScreen
                 }
                 else if (this.draggedStack.stackSize > 1 && slot != null && Container.canAddItemToSlot(slot, this.draggedStack, false))
                 {
-                    long i = Minecraft.getSystemTime();
+                    long i = Mine.getSystemTime();
 
                     if (this.currentDragTargetSlot == slot)
                     {
@@ -592,7 +593,7 @@ public abstract class GuiContainer extends GuiScreen
                             this.touchUpY = mouseY - j;
                             this.returningStackDestSlot = this.clickedSlot;
                             this.returningStack = this.draggedStack;
-                            this.returningStackTime = Minecraft.getSystemTime();
+                            this.returningStackTime = Mine.getSystemTime();
                         }
                         else
                         {
@@ -605,7 +606,7 @@ public abstract class GuiContainer extends GuiScreen
                         this.touchUpY = mouseY - j;
                         this.returningStackDestSlot = this.clickedSlot;
                         this.returningStack = this.draggedStack;
-                        this.returningStackTime = Minecraft.getSystemTime();
+                        this.returningStackTime = Mine.getSystemTime();
                     }
 
                     this.draggedStack = null;

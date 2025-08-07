@@ -1,8 +1,6 @@
 package qwq.arcane.utils.fontrender;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 import qwq.arcane.module.impl.visuals.InterFace;
@@ -20,9 +18,7 @@ import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class FontRenderer{
     private static final int[] colorCode = new int[32];
     private final boolean antiAlias;

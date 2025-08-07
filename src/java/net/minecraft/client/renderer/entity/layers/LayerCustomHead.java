@@ -2,7 +2,8 @@ package net.minecraft.client.renderer.entity.layers;
 
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -36,7 +37,7 @@ public class LayerCustomHead implements LayerRenderer<EntityLivingBase>
         if (itemstack != null && itemstack.getItem() != null)
         {
             Item item = itemstack.getItem();
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Mine mine = Mine.getMinecraft();
             GlStateManager.pushMatrix();
 
             if (entitylivingbaseIn.isSneaking())
@@ -69,7 +70,7 @@ public class LayerCustomHead implements LayerRenderer<EntityLivingBase>
                     GlStateManager.translate(0.0F, 0.1875F, 0.0F);
                 }
 
-                minecraft.getItemRenderer().renderItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.HEAD);
+                mine.getItemRenderer().renderItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.HEAD);
             }
             else if (item == Items.skull)
             {

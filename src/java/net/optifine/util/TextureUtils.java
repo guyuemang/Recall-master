@@ -15,7 +15,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerMooshroomMushroom;
@@ -279,7 +279,7 @@ public class TextureUtils
 
     public static TextureMap getTextureMapBlocks()
     {
-        return Minecraft.getMinecraft().getTextureMapBlocks();
+        return Mine.getMinecraft().getTextureMapBlocks();
     }
 
     public static void registerResourceListener()

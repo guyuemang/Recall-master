@@ -17,7 +17,7 @@ import java.util.UUID;
 import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.GuardianSound;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -213,6 +213,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.TeleportEvent;
 import qwq.arcane.module.impl.world.Disabler;
 
 public class NetHandlerPlayClient implements INetHandlerPlayClient
@@ -235,7 +237,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     /**
      * Reference to the Minecraft instance, which many handler methods operate on
      */
-    private Minecraft gameController;
+    private Mine gameController;
 
     /**
      * Reference to the current ClientWorld instance, which many handler methods operate on
@@ -257,7 +259,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
      */
     private final Random avRandomizer = new Random();
 
-    public NetHandlerPlayClient(Minecraft mcIn, GuiScreen p_i46300_2_, NetworkManager p_i46300_3_, GameProfile p_i46300_4_)
+    public NetHandlerPlayClient(Mine mcIn, GuiScreen p_i46300_2_, NetworkManager p_i46300_3_, GameProfile p_i46300_4_)
     {
         this.gameController = mcIn;
         this.guiScreenServer = p_i46300_2_;
@@ -679,7 +681,25 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         double d2 = packetIn.getZ();
         float f = packetIn.getYaw();
         float f1 = packetIn.getPitch();
+        final TeleportEvent event = new TeleportEvent(
+                new C03PacketPlayer.C06PacketPlayerPosLook(entityplayer.posX, entityplayer.posY, entityplayer.posZ, entityplayer.rotationYaw, entityplayer.rotationPitch, false),
+                d0,
+                d1,
+                d2,
+                f,
+                f1
+        );
 
+        Client.Instance.getEventManager().call(event);
+
+        if (event.isCancelled()) {
+            return;
+        }
+        d0 = event.getPosX();
+        d1 = event.getPosY();
+        d2 = event.getPosZ();
+        f = event.getYaw();
+        f1 = event.getPitch();
         if (packetIn.func_179834_f().contains(S08PacketPlayerPosLook.EnumFlags.X))
         {
             d0 += entityplayer.posX;
@@ -1604,7 +1624,9 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         this.gameController.ingameGUI.getTabList().setHeader(packetIn.getHeader().getFormattedText().length() == 0 ? null : packetIn.getHeader());
         this.gameController.ingameGUI.getTabList().setFooter(packetIn.getFooter().getFormattedText().length() == 0 ? null : packetIn.getFooter());
     }
-
+    public void addToSendQueueDirect(final Packet p_147297_1_) {
+        this.netManager.sendPacketDirect(p_147297_1_);
+    }
     public void handleRemoveEntityEffect(S1EPacketRemoveEntityEffect packetIn)
     {
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
@@ -1762,7 +1784,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
                         {
                             public void confirmClicked(boolean result, int id)
                             {
-                                NetHandlerPlayClient.this.gameController = Minecraft.getMinecraft();
+                                NetHandlerPlayClient.this.gameController = Mine.getMinecraft();
 
                                 if (result)
                                 {

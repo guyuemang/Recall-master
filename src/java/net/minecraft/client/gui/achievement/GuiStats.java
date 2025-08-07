@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -154,7 +155,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
         {
             this.drawDefaultBackground();
             this.drawCenteredString(this.fontRendererObj, I18n.format("multiplayer.downloadingStats", new Object[0]), this.width / 2, this.height / 2, 16777215);
-            this.drawCenteredString(this.fontRendererObj, lanSearchStates[(int)(Minecraft.getSystemTime() / 150L % (long)lanSearchStates.length)], this.width / 2, this.height / 2 + this.fontRendererObj.FONT_HEIGHT * 2, 16777215);
+            this.drawCenteredString(this.fontRendererObj, lanSearchStates[(int)(Mine.getSystemTime() / 150L % (long)lanSearchStates.length)], this.width / 2, this.height / 2 + this.fontRendererObj.FONT_HEIGHT * 2, 16777215);
         }
         else
         {
@@ -230,7 +231,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
         protected int field_148217_o = -1;
         protected int field_148215_p;
 
-        protected Stats(Minecraft mcIn)
+        protected Stats(Mine mcIn)
         {
             super(mcIn, GuiStats.this.width, GuiStats.this.height, 32, GuiStats.this.height - 64, 20);
             this.setShowSelectionBox(false);
@@ -454,7 +455,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
 
     class StatsBlock extends GuiStats.Stats
     {
-        public StatsBlock(Minecraft mcIn)
+        public StatsBlock(Mine mcIn)
         {
             super(mcIn);
             this.statsHolder = Lists.<StatCrafting>newArrayList();
@@ -585,7 +586,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
 
     class StatsGeneral extends GuiSlot
     {
-        public StatsGeneral(Minecraft mcIn)
+        public StatsGeneral(Mine mcIn)
         {
             super(mcIn, GuiStats.this.width, GuiStats.this.height, 32, GuiStats.this.height - 64, 10);
             this.setShowSelectionBox(false);
@@ -626,7 +627,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
 
     class StatsItem extends GuiStats.Stats
     {
-        public StatsItem(Minecraft mcIn)
+        public StatsItem(Mine mcIn)
         {
             super(mcIn);
             this.statsHolder = Lists.<StatCrafting>newArrayList();
@@ -759,7 +760,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
     {
         private final List<EntityList.EntityEggInfo> field_148222_l = Lists.<EntityList.EntityEggInfo>newArrayList();
 
-        public StatsMobsList(Minecraft mcIn)
+        public StatsMobsList(Mine mcIn)
         {
             super(mcIn, GuiStats.this.width, GuiStats.this.height, 32, GuiStats.this.height - 64, GuiStats.this.fontRendererObj.FONT_HEIGHT * 4);
             this.setShowSelectionBox(false);

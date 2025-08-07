@@ -20,7 +20,7 @@ import net.minecraft.block.BlockStoneSlab;
 import net.minecraft.block.BlockStoneSlabNew;
 import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.BlockWall;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -150,7 +150,7 @@ public class RenderItem implements IResourceManagerReloadListener
     {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        boolean flag = Minecraft.getMinecraft().getTextureMapBlocks().isTextureBound();
+        boolean flag = Mine.getMinecraft().getTextureMapBlocks().isTextureBound();
         boolean flag1 = Config.isMultiTexture() && flag;
 
         if (flag1)
@@ -243,14 +243,14 @@ public class RenderItem implements IResourceManagerReloadListener
                 GlStateManager.matrixMode(5890);
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(8.0F, 8.0F, 8.0F);
-                float f = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F / 8.0F;
+                float f = (float)(Mine.getSystemTime() % 3000L) / 3000.0F / 8.0F;
                 GlStateManager.translate(f, 0.0F, 0.0F);
                 GlStateManager.rotate(-50.0F, 0.0F, 0.0F, 1.0F);
                 this.renderModel(model, -8372020);
                 GlStateManager.popMatrix();
                 GlStateManager.pushMatrix();
                 GlStateManager.scale(8.0F, 8.0F, 8.0F);
-                float f1 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F / 8.0F;
+                float f1 = (float)(Mine.getSystemTime() % 4873L) / 4873.0F / 8.0F;
                 GlStateManager.translate(-f1, 0.0F, 0.0F);
                 GlStateManager.rotate(10.0F, 0.0F, 0.0F, 1.0F);
                 this.renderModel(model, -8372020);

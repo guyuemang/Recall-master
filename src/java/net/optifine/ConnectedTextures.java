@@ -21,7 +21,7 @@ import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.state.BlockStateBase;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -1827,7 +1827,7 @@ public class ConnectedTextures
     private static TextureAtlasSprite getNeighbourIcon(IBlockAccess iblockaccess, IBlockState blockState, BlockPos blockPos, IBlockState neighbourState, int side)
     {
         neighbourState = neighbourState.getBlock().getActualState(neighbourState, iblockaccess, blockPos);
-        IBakedModel ibakedmodel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(neighbourState);
+        IBakedModel ibakedmodel = Mine.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(neighbourState);
 
         if (ibakedmodel == null)
         {

@@ -1,6 +1,6 @@
 package net.minecraft.client.particle;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemDye;
@@ -16,7 +16,7 @@ public class EntityFirework
     {
         public EntityFX getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
         {
-            EntityFirework.SparkFX entityfirework$sparkfx = new EntityFirework.SparkFX(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, Minecraft.getMinecraft().effectRenderer);
+            EntityFirework.SparkFX entityfirework$sparkfx = new EntityFirework.SparkFX(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, Mine.getMinecraft().effectRenderer);
             entityfirework$sparkfx.setAlphaF(0.99F);
             return entityfirework$sparkfx;
         }
@@ -324,8 +324,8 @@ public class EntityFirework
 
         private boolean func_92037_i()
         {
-            Minecraft minecraft = Minecraft.getMinecraft();
-            return minecraft == null || minecraft.getRenderViewEntity() == null || minecraft.getRenderViewEntity().getDistanceSq(this.posX, this.posY, this.posZ) >= 256.0D;
+            Mine mine = Mine.getMinecraft();
+            return mine == null || mine.getRenderViewEntity() == null || mine.getRenderViewEntity().getDistanceSq(this.posX, this.posY, this.posZ) >= 256.0D;
         }
 
         private void createParticle(double p_92034_1_, double p_92034_3_, double p_92034_5_, double p_92034_7_, double p_92034_9_, double p_92034_11_, int[] p_92034_13_, int[] p_92034_14_, boolean p_92034_15_, boolean p_92034_16_)

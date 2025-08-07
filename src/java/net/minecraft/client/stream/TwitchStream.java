@@ -10,7 +10,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.stream.GuiTwitchUserMode;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -58,7 +59,7 @@ public class TwitchStream implements BroadcastController.BroadcastListener, Chat
     private String field_176029_e;
 
     /** the minecraft instance */
-    private final Minecraft mc;
+    private final Mine mc;
     private final IChatComponent twitchComponent = new ChatComponentText("Twitch");
     private final Map<String, ChatUserInfo> field_152955_g = Maps.<String, ChatUserInfo>newHashMap();
     private Framebuffer framebuffer;
@@ -74,7 +75,7 @@ public class TwitchStream implements BroadcastController.BroadcastListener, Chat
     private IStream.AuthFailureReason authFailureReason = IStream.AuthFailureReason.ERROR;
     private static boolean field_152965_q;
 
-    public TwitchStream(Minecraft mcIn, final Property streamProperty)
+    public TwitchStream(Mine mcIn, final Property streamProperty)
     {
         this.mc = mcIn;
         this.broadcastController = new BroadcastController();

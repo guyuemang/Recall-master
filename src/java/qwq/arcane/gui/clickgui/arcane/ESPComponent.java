@@ -1,15 +1,8 @@
 package qwq.arcane.gui.clickgui.arcane;
 
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import qwq.arcane.Client;
 import qwq.arcane.gui.clickgui.Component;
@@ -22,8 +15,6 @@ import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static net.minecraft.client.gui.inventory.GuiInventory.drawEntityOnScreen;
 import static org.lwjgl.opengl.GL11.*;

@@ -8,7 +8,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -209,7 +209,7 @@ public class InventoryUtil implements Instance {
     }
 
     public static void swap(final int slot, final int switchSlot) {
-        Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.inventoryContainer.windowId, slot, switchSlot, 2, (EntityPlayer)Minecraft.getMinecraft().thePlayer);
+        Mine.getMinecraft().playerController.windowClick(Mine.getMinecraft().thePlayer.inventoryContainer.windowId, slot, switchSlot, 2, (EntityPlayer) Mine.getMinecraft().thePlayer);
     }
 
     public static void click(int slot) {
@@ -374,7 +374,7 @@ public class InventoryUtil implements Instance {
         return damage;
     }
 
-    public static void windowClick(final Minecraft mc, final int slotId, final int mouseButtonClicked, final ClickType mode) {
+    public static void windowClick(final Mine mc, final int slotId, final int mouseButtonClicked, final ClickType mode) {
         mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, slotId, mouseButtonClicked, mode.ordinal(), mc.thePlayer);
     }
 

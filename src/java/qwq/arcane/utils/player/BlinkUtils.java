@@ -1,6 +1,6 @@
 package qwq.arcane.utils.player;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.network.Packet;
 import qwq.arcane.utils.math.Vector3d;
 import qwq.arcane.utils.pack.PacketUtil;
@@ -13,7 +13,7 @@ import java.util.List;
 
 
 public class BlinkUtils {
-    private static final Minecraft mc;
+    private static final Mine mc;
     private static Double prevYMotion;
     private static boolean isStarted;
     public static boolean limiter;
@@ -96,7 +96,7 @@ public class BlinkUtils {
     }
 
     static {
-        mc = Minecraft.getMinecraft();
+        mc = Mine.getMinecraft();
         BlinkUtils.prevYMotion = null;
         BlinkUtils.isStarted = false;
         BlinkUtils.limiter = false;

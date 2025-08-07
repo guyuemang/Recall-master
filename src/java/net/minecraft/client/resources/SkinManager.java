@@ -16,7 +16,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -41,7 +42,7 @@ public class SkinManager
         {
             public Map<Type, MinecraftProfileTexture> load(GameProfile p_load_1_) throws Exception
             {
-                return Minecraft.getMinecraft().getSessionService().getTextures(p_load_1_, false);
+                return Mine.getMinecraft().getSessionService().getTextures(p_load_1_, false);
             }
         });
     }
@@ -121,14 +122,14 @@ public class SkinManager
                     ;
                 }
 
-                if (map.isEmpty() && profile.getId().equals(Minecraft.getMinecraft().getSession().getProfile().getId()))
+                if (map.isEmpty() && profile.getId().equals(Mine.getMinecraft().getSession().getProfile().getId()))
                 {
                     profile.getProperties().clear();
-                    profile.getProperties().putAll(Minecraft.getMinecraft().getProfileProperties());
+                    profile.getProperties().putAll(Mine.getMinecraft().getProfileProperties());
                     map.putAll(SkinManager.this.sessionService.getTextures(profile, false));
                 }
 
-                Minecraft.getMinecraft().addScheduledTask(new Runnable()
+                Mine.getMinecraft().addScheduledTask(new Runnable()
                 {
                     public void run()
                     {

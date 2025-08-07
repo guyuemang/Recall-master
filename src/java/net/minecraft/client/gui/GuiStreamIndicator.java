@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -10,11 +10,11 @@ import net.minecraft.util.ResourceLocation;
 public class GuiStreamIndicator
 {
     private static final ResourceLocation locationStreamIndicator = new ResourceLocation("textures/gui/stream_indicator.png");
-    private final Minecraft mc;
+    private final Mine mc;
     private float streamAlpha = 1.0F;
     private int streamAlphaDelta = 1;
 
-    public GuiStreamIndicator(Minecraft mcIn)
+    public GuiStreamIndicator(Mine mcIn)
     {
         this.mc = mcIn;
     }

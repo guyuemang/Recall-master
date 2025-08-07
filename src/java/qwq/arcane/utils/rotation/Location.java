@@ -2,7 +2,7 @@
 package qwq.arcane.utils.rotation;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
 
@@ -83,7 +83,7 @@ public class Location {
     }
 
     public Block getBlock() {
-        return Minecraft.getMinecraft().theWorld.getBlockState(toBlockPos()).getBlock();
+        return Mine.getMinecraft().theWorld.getBlockState(toBlockPos()).getBlock();
     }
 
     public double getX() {

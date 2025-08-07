@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import qwq.arcane.module.Mine;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
@@ -14,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -39,7 +39,7 @@ import net.optifine.util.NativeMemory;
 
 public class GuiOverlayDebug extends Gui
 {
-    private final Minecraft mc;
+    private final Mine mc;
     private final FontRenderer fontRenderer;
     private String debugOF = null;
     private List<String> debugInfoLeft = null;
@@ -47,7 +47,7 @@ public class GuiOverlayDebug extends Gui
     private long updateInfoLeftTimeMs = 0L;
     private long updateInfoRightTimeMs = 0L;
 
-    public GuiOverlayDebug(Minecraft mc)
+    public GuiOverlayDebug(Mine mc)
     {
         this.mc = mc;
         this.fontRenderer = mc.fontRendererObj;

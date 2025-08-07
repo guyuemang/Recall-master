@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.multiplayer.ThreadLanServerPing;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.crash.CrashReport;
@@ -45,7 +45,7 @@ public class IntegratedServer extends MinecraftServer
     private static final Logger logger = LogManager.getLogger();
 
     /** The Minecraft instance. */
-    private final Minecraft mc;
+    private final Mine mc;
     private final WorldSettings theWorldSettings;
     private boolean isGamePaused;
     private boolean isPublic;
@@ -55,14 +55,14 @@ public class IntegratedServer extends MinecraftServer
     public BlockPos difficultyUpdatePos = null;
     public DifficultyInstance difficultyLast = null;
 
-    public IntegratedServer(Minecraft mcIn)
+    public IntegratedServer(Mine mcIn)
     {
         super(mcIn.getProxy(), new File(mcIn.mcDataDir, USER_CACHE_FILE.getName()));
         this.mc = mcIn;
         this.theWorldSettings = null;
     }
 
-    public IntegratedServer(Minecraft mcIn, String folderName, String worldName, WorldSettings settings)
+    public IntegratedServer(Mine mcIn, String folderName, String worldName, WorldSettings settings)
     {
         super(new File(mcIn.mcDataDir, "saves"), mcIn.getProxy(), new File(mcIn.mcDataDir, USER_CACHE_FILE.getName()));
         this.setServerOwner(mcIn.getSession().getUsername());
@@ -248,7 +248,7 @@ public class IntegratedServer extends MinecraftServer
     {
         this.onTick();
         boolean flag = this.isGamePaused;
-        this.isGamePaused = Minecraft.getMinecraft().getNetHandler() != null && Minecraft.getMinecraft().isGamePaused();
+        this.isGamePaused = Mine.getMinecraft().getNetHandler() != null && Mine.getMinecraft().isGamePaused();
 
         if (!flag && this.isGamePaused)
         {
@@ -419,7 +419,7 @@ public class IntegratedServer extends MinecraftServer
                 else
                 {
                     s = IntegratedServer.this.getServerModName();
-                    return !s.equals("vanilla") ? "Definitely; Server brand changed to \'" + s + "\'" : (Minecraft.class.getSigners() == null ? "Very likely; Jar signature invalidated" : "Probably not. Jar signature remains and both client + server brands are untouched.");
+                    return !s.equals("vanilla") ? "Definitely; Server brand changed to \'" + s + "\'" : (Mine.class.getSigners() == null ? "Very likely; Jar signature invalidated" : "Probably not. Jar signature remains and both client + server brands are untouched.");
                 }
             }
         });
@@ -447,7 +447,7 @@ public class IntegratedServer extends MinecraftServer
      */
     public boolean isSnooperEnabled()
     {
-        return Minecraft.getMinecraft().isSnooperEnabled();
+        return Mine.getMinecraft().isSnooperEnabled();
     }
 
     /**

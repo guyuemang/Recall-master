@@ -1,7 +1,7 @@
 package qwq.arcane.utils.render;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static java.lang.Math.PI;
-import static net.minecraft.client.renderer.RenderGlobal.drawSelectionBoundingBox;
+import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_NICEST;
 import static org.lwjgl.opengl.GL11.GL_POINTS;
@@ -55,9 +55,49 @@ public class RenderUtil {
     public static Framebuffer createFrameBuffer(Framebuffer framebuffer) {
         return createFrameBuffer(framebuffer, false);
     }
+    public static void drawImage(ResourceLocation image, float x, float y, int width, int height) {
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glDepthMask(false);
+        OpenGlHelper.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.getTextureManager().bindTexture(image);
+        drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
+        glDepthMask(true);
+        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    public static void drawImage(ResourceLocation image, double x, double y, double z, double width, double height, int color1, int color2, int color3, int color4) {
+        mc.getTextureManager().bindTexture(image);
+        drawImage(x, y, z, width, height, color1, color2, color3, color4);
+    }
+
+    public static void drawImage(double x, double y, double z, double width, double height, int color1, int color2, int color3, int color4) {
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+        boolean blend = glIsEnabled(GL_BLEND);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE);
+        glShadeModel(GL_SMOOTH);
+        glAlphaFunc(GL_GREATER, 0);
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        worldRenderer.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldRenderer.pos((float) x, (float) (y + height), (float) (z)).tex(0, 1 - 0.01f).color(color1).endVertex();
+        worldRenderer.pos((float) (x + width), (float) (y + height), (float) (z)).tex(1, 1 - 0.01f).color(color2).endVertex();
+        worldRenderer.pos((float) (x + width), (float) y, (float) z).tex(1, 0).color(color3).endVertex();
+        worldRenderer.pos((float) x, (float) y, (float) z).tex(0, 0).color(color4).endVertex();
+        tessellator.draw();
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        glShadeModel(GL_FLAT);
+        GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ZERO);
+        if (!blend)
+            GlStateManager.disableBlend();
+    }
+
     public static void scissorStart(double x, double y, double width, double height) {
         glEnable(GL_SCISSOR_TEST);
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        ScaledResolution sr = new ScaledResolution(Mine.getMinecraft());
         final double scale = sr.getScaleFactor();
         double finalHeight = height * scale;
         double finalY = (sr.getScaledHeight() - y) * scale;
@@ -72,7 +112,7 @@ public class RenderUtil {
     public static void drawItemStack(ItemStack stack, float x, float y) {
         GL11.glPushMatrix();
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Mine mc = Mine.getMinecraft();
 
         if (mc.theWorld != null) {
             RenderHelper.enableGUIStandardItemLighting();
@@ -553,12 +593,46 @@ public class RenderUtil {
         GLUtil.setup2DRendering(() -> {
             glEnable(GL_POINT_SMOOTH);
             glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-            glPointSize(radius * (2 * Minecraft.getMinecraft().gameSettings.guiScale));
+            glPointSize(radius * (2 * Mine.getMinecraft().gameSettings.guiScale));
             GLUtil.render(GL_POINTS, () -> glVertex2d(x, y));
         });
     }
     public static void bindTexture(int texture) {
         GlStateManager.bindTexture(texture);
+    }
+    public static void start3D() {
+        GL11.glDisable((int)3553);
+        GL11.glDisable((int)2929);
+        GL11.glBlendFunc((int)770, (int)771);
+        GL11.glEnable((int)3042);
+        GL11.glDepthMask((boolean)false);
+        GlStateManager.disableCull();
+    }
+
+    public static void stop3D() {
+        GlStateManager.enableCull();
+        GL11.glEnable((int)3553);
+        GL11.glEnable((int)2929);
+        GL11.glDepthMask((boolean)true);
+        GL11.glDisable((int)3042);
+    }
+
+    public static void renderBoundingBox(AxisAlignedBB aabb, Color color, int alpha) {
+        AxisAlignedBB bb = aabb;
+        GlStateManager.pushMatrix();
+        GLUtil.setup2DRendering();
+        GLUtil.enableCaps(GL_BLEND, GL_POINT_SMOOTH, GL_POLYGON_SMOOTH, GL_LINE_SMOOTH);
+
+        glLineWidth(5);
+        float actualAlpha = .3f * alpha;
+        glColor4f(color.getRed(), color.getGreen(), color.getBlue(), actualAlpha);
+        color(color.getRGB(), actualAlpha);
+        RenderGlobal.drawOutlinedBoundingBox(bb, color.getRed(), color.getGreen(), color.getBlue(), alpha);
+
+        GLUtil.disableCaps();
+        GLUtil.end2DRendering();
+
+        GlStateManager.popMatrix();
     }
     public static void renderBoundingBox(EntityLivingBase entityLivingBase, Color color, float alpha) {
         AxisAlignedBB bb = getInterpolatedBoundingBox(entityLivingBase);
@@ -955,7 +1029,7 @@ public class RenderUtil {
     public static double progressiveAnimation(double now, double desired, double speed) {
         double dif = Math.abs(now - desired);
 
-        final int fps = Minecraft.getDebugFPS();
+        final int fps = Mine.getDebugFPS();
 
         if (dif > 0) {
             double animationSpeed = MathUtils.roundToDecimalPlace(Math.min(
@@ -976,7 +1050,7 @@ public class RenderUtil {
     public static double linearAnimation(double now, double desired, double speed) {
         double dif = Math.abs(now - desired);
 
-        final int fps = Minecraft.getDebugFPS();
+        final int fps = Mine.getDebugFPS();
 
         if (dif > 0) {
             double animationSpeed = MathUtils.roundToDecimalPlace(Math.min(
@@ -1133,7 +1207,7 @@ public class RenderUtil {
         GL11.glPopMatrix();
     }
     public static double deltaTime() {
-        return Minecraft.getDebugFPS() > 0 ? (1.0000 / Minecraft.getDebugFPS()) : 1;
+        return Mine.getDebugFPS() > 0 ? (1.0000 / Mine.getDebugFPS()) : 1;
     }
     public static float animate(float end, float start, float multiple) {
         return (1 - MathHelper.clamp_float((float) (deltaTime() * multiple), 0, 1)) * end + MathHelper.clamp_float((float) (deltaTime() * multiple), 0, 1) * start;
@@ -1373,7 +1447,7 @@ public class RenderUtil {
         else return ColorUtil.getColor(red, green, blue, (int) alpha);
     }
     public static void startGlScissor(int x, int y, int width, int height) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Mine mc = Mine.getMinecraft();
         int scaleFactor = 1;
         int k = mc.gameSettings.guiScale;
         if (k == 0) {
@@ -1397,7 +1471,7 @@ public class RenderUtil {
             ++scaleFactor;
         }
         GL11.glScissor((int) (x * scaleFactor),
-                (int) (Minecraft.getMinecraft().displayHeight - (y + height) * scaleFactor),
+                (int) (Mine.getMinecraft().displayHeight - (y + height) * scaleFactor),
                 (int) (width * scaleFactor), (int) (height * scaleFactor));
     }
     public static void setAlphaLimit(float limit) {

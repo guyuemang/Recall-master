@@ -1,6 +1,6 @@
 package net.minecraft.client.particle;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -29,7 +29,7 @@ public class EntityBreakingFX extends EntityFX
     protected EntityBreakingFX(World worldIn, double posXIn, double posYIn, double posZIn, Item p_i1196_8_, int p_i1196_9_)
     {
         super(worldIn, posXIn, posYIn, posZIn, 0.0D, 0.0D, 0.0D);
-        this.setParticleIcon(Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(p_i1196_8_, p_i1196_9_));
+        this.setParticleIcon(Mine.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(p_i1196_8_, p_i1196_9_));
         this.particleRed = this.particleGreen = this.particleBlue = 1.0F;
         this.particleGravity = Blocks.snow.blockParticleGravity;
         this.particleScale /= 2.0F;

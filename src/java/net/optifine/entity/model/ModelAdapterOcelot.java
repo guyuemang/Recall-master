@@ -2,7 +2,8 @@ package net.optifine.entity.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelOcelot;
 import net.minecraft.client.model.ModelRenderer;
@@ -76,7 +77,7 @@ public class ModelAdapterOcelot extends ModelAdapter
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderOcelot renderocelot = new RenderOcelot(rendermanager, modelBase, shadowSize);
         return renderocelot;
     }

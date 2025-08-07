@@ -2,7 +2,7 @@ package net.optifine.player;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
@@ -49,7 +49,7 @@ public class PlayerItemModel
             if (this.texture == null && this.textureImage != null)
             {
                 this.texture = new DynamicTexture(this.textureImage);
-                Minecraft.getMinecraft().getTextureManager().loadTexture(this.textureLocation, this.texture);
+                Mine.getMinecraft().getTextureManager().loadTexture(this.textureLocation, this.texture);
             }
 
             texturemanager.bindTexture(this.textureLocation);

@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.client.gui.GuiHopper;
 import net.minecraft.client.gui.GuiMerchant;
@@ -36,7 +36,7 @@ import net.optifine.util.ResUtils;
 
 public class CustomGuis
 {
-    private static Minecraft mc = Config.getMinecraft();
+    private static Mine mc = Config.getMinecraft();
     private static PlayerControllerOF playerControllerOF = null;
     private static CustomGuiProperties[][] guiProperties = (CustomGuiProperties[][])null;
     public static boolean isChristmas = isChristmas();

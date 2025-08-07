@@ -1,7 +1,7 @@
 package qwq.arcane.utils.render.shader;
 
+import qwq.arcane.module.Mine;
 import qwq.arcane.utils.render.RoundedUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.shader.Framebuffer;
 
 import java.awt.*;
@@ -37,11 +37,11 @@ public class ShaderElement {
 
 
     public static Framebuffer createFrameBuffer(Framebuffer framebuffer) {
-        if (framebuffer == null || framebuffer.framebufferWidth != Minecraft.getMinecraft().displayWidth || framebuffer.framebufferHeight != Minecraft.getMinecraft().displayHeight) {
+        if (framebuffer == null || framebuffer.framebufferWidth != Mine.getMinecraft().displayWidth || framebuffer.framebufferHeight != Mine.getMinecraft().displayHeight) {
             if (framebuffer != null) {
                 framebuffer.deleteFramebuffer();
             }
-            return new Framebuffer(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, true);
+            return new Framebuffer(Mine.getMinecraft().displayWidth, Mine.getMinecraft().displayHeight, true);
         }
         return framebuffer;
     }

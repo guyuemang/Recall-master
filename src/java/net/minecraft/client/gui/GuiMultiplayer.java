@@ -12,11 +12,12 @@ import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.network.LanServerDetector;
 import net.minecraft.client.network.OldServerPinger;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bytedeco.javacv.FrameGrabber;
 import org.lwjgl.input.Keyboard;
-import qwq.arcane.gui.VideoPlayer;
+import qwq.arcane.utils.render.RenderUtil;
 
 public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 {
@@ -374,11 +375,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
     {
         this.hoveringText = null;
         ScaledResolution sr = new ScaledResolution(mc);
-        try {
-            VideoPlayer.render(0, 0, sr.getScaledWidth(), sr.getScaledHeight());
-        } catch (FrameGrabber.Exception e) {
-            throw new RuntimeException(e);
-        }
+        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
         this.serverListSelector.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, I18n.format("multiplayer.title", new Object[0]), this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);

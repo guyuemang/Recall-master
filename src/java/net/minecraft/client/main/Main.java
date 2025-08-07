@@ -3,22 +3,27 @@ package net.minecraft.client.main;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.properties.PropertyMap.Serializer;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
+import qwq.arcane.module.Mine;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
+import qwq.jnic.JNICInclude;
+
 import java.io.File;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.util.List;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
 
-public class Main
-{
+/**
+ * @Author：Guyuemang
+ * @Date：2025/8/4 22:19
+ */
+@JNICInclude
+public class Main {
     public static void main(String[] p_main_0_)
     {
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -62,7 +67,7 @@ public class Main
         {
             try
             {
-                proxy = new Proxy(Type.SOCKS, new InetSocketAddress(s, ((Integer)optionset.valueOf(optionspec6)).intValue()));
+                proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(s, ((Integer)optionset.valueOf(optionspec6)).intValue()));
             }
             catch (Exception var46)
             {
@@ -90,7 +95,7 @@ public class Main
         boolean flag1 = optionset.has("checkGlErrors");
         boolean flag2 = optionset.has("demo");
         String s3 = (String)optionset.valueOf(optionspec12);
-        Gson gson = (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new Serializer()).create();
+        Gson gson = (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create();
         PropertyMap propertymap = (PropertyMap)gson.fromJson((String)optionset.valueOf(optionspec15), PropertyMap.class);
         PropertyMap propertymap1 = (PropertyMap)gson.fromJson((String)optionset.valueOf(optionspec16), PropertyMap.class);
         File file1 = (File)optionset.valueOf(optionspec2);
@@ -106,7 +111,7 @@ public class Main
         {
             public void run()
             {
-                Minecraft.stopIntegratedServer();
+                Mine.stopIntegratedServer();
             }
         });
         Thread.currentThread().setName("Client thread");

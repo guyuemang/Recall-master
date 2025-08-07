@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelArmorStand;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -43,7 +43,7 @@ public class ModelAdapterArmorStand extends ModelAdapterBiped
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         ArmorStandRenderer armorstandrenderer = new ArmorStandRenderer(rendermanager);
         armorstandrenderer.mainModel = modelBase;
         armorstandrenderer.shadowSize = shadowSize;

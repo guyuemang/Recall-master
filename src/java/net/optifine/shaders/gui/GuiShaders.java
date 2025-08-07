@@ -3,7 +3,7 @@ package net.optifine.shaders.gui;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -385,7 +385,7 @@ public class GuiShaders extends GuiScreenOF
         --this.updateTimer;
     }
 
-    public Minecraft getMc()
+    public Mine getMc()
     {
         return this.mc;
     }

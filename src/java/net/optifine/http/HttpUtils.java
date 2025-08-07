@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.src.Config;
 
 public class HttpUtils
@@ -28,7 +28,7 @@ public class HttpUtils
         try
         {
             URL url = new URL(urlStr);
-            httpurlconnection = (HttpURLConnection)url.openConnection(Minecraft.getMinecraft().getProxy());
+            httpurlconnection = (HttpURLConnection)url.openConnection(Mine.getMinecraft().getProxy());
             httpurlconnection.setDoInput(true);
             httpurlconnection.setDoOutput(false);
             httpurlconnection.connect();
@@ -85,7 +85,7 @@ public class HttpUtils
         try
         {
             URL url = new URL(urlStr);
-            httpurlconnection = (HttpURLConnection)url.openConnection(Minecraft.getMinecraft().getProxy());
+            httpurlconnection = (HttpURLConnection)url.openConnection(Mine.getMinecraft().getProxy());
             httpurlconnection.setRequestMethod("POST");
 
             if (headers != null)
@@ -143,7 +143,7 @@ public class HttpUtils
 
                 if (flag)
                 {
-                    File file1 = Minecraft.getMinecraft().mcDataDir;
+                    File file1 = Mine.getMinecraft().mcDataDir;
                     File file2 = new File(file1, "playermodels");
                     playerItemsUrl = file2.toURI().toURL().toExternalForm();
                 }

@@ -1,6 +1,6 @@
 package qwq.arcane.gui.alt.auth;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.Session;
 
 import java.lang.reflect.Field;
@@ -13,7 +13,7 @@ public class SessionManager {
   public static Field getSessionField() {
     if (sessionField == null) {
       try {
-        for (Field f : Minecraft.class.getDeclaredFields()) {
+        for (Field f : Mine.class.getDeclaredFields()) {
           if (f.getType().isAssignableFrom(Session.class)) {
             sessionField = f;
             sessionField.setAccessible(true);

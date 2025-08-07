@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer.entity;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.item.EntityMinecartTNT;
@@ -33,7 +33,7 @@ public class RenderTntMinecart extends RenderMinecart<EntityMinecartTNT>
 
         if (i > -1 && i / 5 % 2 == 0)
         {
-            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            BlockRendererDispatcher blockrendererdispatcher = Mine.getMinecraft().getBlockRendererDispatcher();
             GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();

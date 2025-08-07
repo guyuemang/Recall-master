@@ -1,10 +1,10 @@
 package qwq.arcane.module.impl.world;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.block.*;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.player.UpdateEvent;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Blocks;
@@ -13,15 +13,12 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.util.*;
-import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.PlaceEvent;
 import qwq.arcane.event.impl.events.player.StrafeEvent;
-import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
-import qwq.arcane.module.Module;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.math.MathUtils;
@@ -37,9 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class BlockFly
 extends qwq.arcane.module.Module {
     private final Animation anim = new DecelerateAnimation(250, 1.0);
@@ -69,17 +64,16 @@ extends qwq.arcane.module.Module {
 
     @Override
     public void onEnable() {
-        this.idkTick = 5;
-        if (mc.thePlayer == null) {
-            return;
+        if (mc.thePlayer != null && mc.gameSettings != null) {
+            this.idkTick = 5;
+            this.prevItem = mc.thePlayer.inventory.currentItem;
+            mc.thePlayer.setSprinting(this.sprintValue.getValue() || !this.canTellyPlace);
+            mc.gameSettings.keyBindSprint.pressed = this.sprintValue.getValue() || !this.canTellyPlace;
+            this.canTellyPlace = false;
+            this.tip = false;
+            this.data = null;
+            this.slot = -1;
         }
-        this.prevItem = mc.thePlayer.inventory.currentItem;
-        mc.thePlayer.setSprinting(this.sprintValue.getValue() || !this.canTellyPlace);
-        mc.gameSettings.keyBindSprint.pressed = this.sprintValue.getValue() || !this.canTellyPlace;
-        this.canTellyPlace = false;
-        this.tip = false;
-        this.data = null;
-        this.slot = -1;
     }
 
     @Override
@@ -94,6 +88,7 @@ extends qwq.arcane.module.Module {
 
     @EventTarget
     public void onUpdate(MotionEvent event) {
+        setsuffix(String.valueOf(this.tellyTicks.get()));
         if (this.idkTick > 0) {
             --this.idkTick;
         }
@@ -103,7 +98,6 @@ extends qwq.arcane.module.Module {
             }
         }
     }
-
     @EventTarget
     public void onStrafe(StrafeEvent event) {
         if ((this.upValue.getValue() || keepYValue.getValue()) && mc.thePlayer.onGround && MovementUtil.isMoving() && !mc.gameSettings.keyBindJump.isKeyDown()) {
@@ -135,9 +129,6 @@ extends qwq.arcane.module.Module {
             mc.gameSettings.keyBindSprint.pressed = false;
         }
         event.setCancelled(true);
-        if (mc.thePlayer == null) {
-            return;
-        }
         this.place();
         mc.sendClickBlockToController(mc.currentScreen == null && mc.gameSettings.keyBindAttack.isKeyDown() && mc.inGameHasFocus);
     }
@@ -163,7 +154,7 @@ extends qwq.arcane.module.Module {
     }
 
     @EventTarget
-    private void onUpdate(UpdateEvent event) {
+    private void onUpdateMotionEvent(UpdateEvent event) {
         if (mc.thePlayer.onGround) {
             keepYCoord = Math.floor(mc.thePlayer.posY - 1.0);
         }
@@ -171,9 +162,9 @@ extends qwq.arcane.module.Module {
         if (this.slot < 1) {
             return;
         }
+        this.findBlock();
         mc.thePlayer.inventory.currentItem = this.slot;
         SlotSpoofComponent.startSpoofing(this.prevItem);
-        this.findBlock();
         if (this.telly.getValue()) {
             if (this.canTellyPlace && !mc.thePlayer.onGround && MovementUtil.isMoving()) {
                 mc.thePlayer.setSprinting(false);
@@ -186,7 +177,7 @@ extends qwq.arcane.module.Module {
         if (this.data != null) {
             float yaw = RotationUtil.getRotationBlock2(data.getBlockPos())[0];
             float pitch = RotationUtil.getRotationBlock2(data.getBlockPos())[1];
-            Client.Instance.rotationManager.setRotation(new Vector2f(yaw, pitch), 180.0f, true);
+            Client.Instance.getRotationManager().setRotation(new Vector2f(yaw, pitch), 180.0f, true);
             mc.thePlayer.setSprinting(this.sprintValue.getValue());
             if (this.idkTick != 0) {
                 this.towerTick = 0;
@@ -282,7 +273,7 @@ extends qwq.arcane.module.Module {
     private void findBlock() {
         boolean shouldGoDown = false;
         BlockPos blockPosition = new BlockPos(mc.thePlayer.posX, getYLevel(), mc.thePlayer.posZ);
-        Block block = Minecraft.getMinecraft().theWorld.getBlockState(blockPosition).getBlock();
+        Block block = Mine.getMinecraft().theWorld.getBlockState(blockPosition).getBlock();
         if (BlockUtil.isValidBock(blockPosition) || this.search(blockPosition, !shouldGoDown)) {
             return;
         }
@@ -329,7 +320,7 @@ extends qwq.arcane.module.Module {
                         Vec3 rotationVector = new Vec3(RotationUtil.getVectorForRotation(rotation).xCoord, RotationUtil.getVectorForRotation(rotation).yCoord, RotationUtil.getVectorForRotation(rotation).zCoord);
                         Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4.0, rotationVector.yCoord * 4.0, rotationVector.zCoord * 4.0);
                         MovingObjectPosition obj = mc.theWorld.rayTraceBlocks(eyesPos, vector, false, false, true);
-                        if (obj.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || !obj.getBlockPos().equals(neighbor) || placeRotation != null && !(Client.Instance.rotationManager.getRotationDifference(rotation) < Client.Instance.rotationManager.getRotationDifference(placeRotation.getRotation()))) continue;
+                        if (obj.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || !obj.getBlockPos().equals(neighbor) || placeRotation != null && !(Client.Instance.getRotationManager().getRotationDifference(rotation) < Client.Instance.getRotationManager().getRotationDifference(placeRotation.getRotation()))) continue;
                         placeRotation = new PlaceRotation(new PlaceInfo(neighbor, side.getOpposite(), hitVec), rotation);
                     }
                 }

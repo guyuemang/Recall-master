@@ -10,7 +10,7 @@ import javax.vecmath.Matrix4f;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.client.gui.GuiHopper;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -316,7 +316,7 @@ public class Reflector
     public static ReflectorField GuiHopper_hopperInventory = new ReflectorField(GuiHopper, IInventory.class, 1);
     public static ReflectorClass GuiMainMenu = new ReflectorClass(GuiMainMenu.class);
     public static ReflectorField GuiMainMenu_splashText = new ReflectorField(GuiMainMenu, String.class);
-    public static ReflectorClass Minecraft = new ReflectorClass(Minecraft.class);
+    public static ReflectorClass Minecraft = new ReflectorClass(Mine.class);
     public static ReflectorField Minecraft_defaultResourcePack = new ReflectorField(Minecraft, DefaultResourcePack.class);
     public static ReflectorClass ModelHumanoidHead = new ReflectorClass(ModelHumanoidHead.class);
     public static ReflectorField ModelHumanoidHead_head = new ReflectorField(ModelHumanoidHead, ModelRenderer.class);

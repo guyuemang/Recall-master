@@ -2,7 +2,8 @@ package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
@@ -56,7 +57,7 @@ public class GuiLabel extends Gui
         return this;
     }
 
-    public void drawLabel(Minecraft mc, int mouseX, int mouseY)
+    public void drawLabel(Mine mc, int mouseX, int mouseY)
     {
         if (this.visible)
         {
@@ -80,7 +81,7 @@ public class GuiLabel extends Gui
         }
     }
 
-    protected void drawLabelBackground(Minecraft mcIn, int p_146160_2_, int p_146160_3_)
+    protected void drawLabelBackground(Mine mcIn, int p_146160_2_, int p_146160_3_)
     {
         if (this.labelBgEnabled)
         {

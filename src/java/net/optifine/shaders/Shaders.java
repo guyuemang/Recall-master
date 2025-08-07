@@ -51,7 +51,7 @@ import com.google.common.base.Charsets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GLAllocation;
@@ -124,7 +124,7 @@ import net.optifine.util.TimedEvent;
 
 public class Shaders
 {
-    static Minecraft mc;
+    static Mine mc;
     static EntityRenderer entityRenderer;
     public static boolean isInitializedOnce = false;
     public static boolean isShaderPackInitialized = false;
@@ -1712,7 +1712,7 @@ public class Shaders
     private static void saveOptionProperties(IShaderPack sp, Properties props) throws IOException
     {
         String s = "shaderpacks/" + sp.getName() + ".txt";
-        File file1 = new File(Minecraft.getMinecraft().mcDataDir, s);
+        File file1 = new File(Mine.getMinecraft().mcDataDir, s);
 
         if (props.isEmpty())
         {
@@ -1765,7 +1765,7 @@ public class Shaders
     {
         Properties properties = new PropertiesOrdered();
         String s = "shaderpacks/" + sp.getName() + ".txt";
-        File file1 = new File(Minecraft.getMinecraft().mcDataDir, s);
+        File file1 = new File(Mine.getMinecraft().mcDataDir, s);
 
         if (file1.exists() && file1.isFile() && file1.canRead())
         {
@@ -2022,7 +2022,7 @@ public class Shaders
         SMCLog.info(stringbuilder.toString());
     }
 
-    public static void startup(Minecraft mcRefer)
+    public static void startup(Mine mcRefer)
     {
         checkShadersModInstalled();
         Shaders.mc = mcRefer;
@@ -3965,11 +3965,11 @@ public class Shaders
         }
     }
 
-    public static void beginRender(Minecraft minecraft, float partialTicks, long finishTimeNano)
+    public static void beginRender(Mine mine, float partialTicks, long finishTimeNano)
     {
         checkGLError("pre beginRender");
         checkWorldChanged(mc.theWorld);
-        mc = minecraft;
+        mc = mine;
         mc.mcProfiler.startSection("init");
         entityRenderer = mc.entityRenderer;
 
@@ -4030,7 +4030,7 @@ public class Shaders
         frameTime = (float)diffSystemTime / 1000.0F;
         frameTimeCounter += frameTime;
         frameTimeCounter %= 3600.0F;
-        rainStrength = minecraft.theWorld.getRainStrength(partialTicks);
+        rainStrength = mine.theWorld.getRainStrength(partialTicks);
         float f = (float)diffSystemTime * 0.01F;
         float f1 = (float)Math.exp(Math.log(0.5D) * (double)f / (double)(wetness < rainStrength ? drynessHalfLife : wetnessHalfLife));
         wetness = wetness * f1 + rainStrength * (1.0F - f1);
@@ -5866,7 +5866,7 @@ public class Shaders
 
     static
     {
-        shaderPacksDir = new File(Minecraft.getMinecraft().mcDataDir, "shaderpacks");
-        configFile = new File(Minecraft.getMinecraft().mcDataDir, "optionsshaders.txt");
+        shaderPacksDir = new File(Mine.getMinecraft().mcDataDir, "shaderpacks");
+        configFile = new File(Mine.getMinecraft().mcDataDir, "optionsshaders.txt");
     }
 }

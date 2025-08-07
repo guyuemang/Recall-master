@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.display;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
@@ -15,11 +13,9 @@ import qwq.arcane.value.impl.ModeValue;
  * @Author：Guyuemang
  * @Date：2025/6/2 13:38
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class Notification extends ModuleWidget {
-    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
+    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Type1"});
 
     public Notification() {
         super("Notification", Category.Display);
@@ -32,7 +28,10 @@ public class Notification extends ModuleWidget {
                 Client.Instance.getNotification().customshader(sr.getScaledHeight() - 6);
                 break;
             case "Normal":
-                Client.Instance.getNotification().shader(sr.getScaledHeight() - 6);
+                Client.Instance.getNotification().normalshader(sr.getScaledHeight() - 6);
+                break;
+            case "Type1":
+                Client.Instance.getNotification().type1shader(sr.getScaledHeight() / 2 + 26);
                 break;
         }
     }
@@ -44,7 +43,10 @@ public class Notification extends ModuleWidget {
                 Client.Instance.getNotification().custom(sr.getScaledHeight() - 6);
                 break;
             case "Normal":
-                Client.Instance.getNotification().render(sr.getScaledHeight() - 6);
+                Client.Instance.getNotification().normalrender(sr.getScaledHeight() - 6);
+                break;
+            case "Type1":
+                Client.Instance.getNotification().type1render(sr.getScaledHeight() / 2 + 26);
                 break;
         }
     }

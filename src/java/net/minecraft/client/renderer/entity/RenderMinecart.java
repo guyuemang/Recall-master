@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer.entity;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.renderer.GlStateManager;
@@ -121,7 +121,7 @@ public class RenderMinecart<T extends EntityMinecart> extends Render<T>
     protected void func_180560_a(T minecart, float partialTicks, IBlockState state)
     {
         GlStateManager.pushMatrix();
-        Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(state, minecart.getBrightness(partialTicks));
+        Mine.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(state, minecart.getBrightness(partialTicks));
         GlStateManager.popMatrix();
     }
 }

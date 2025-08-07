@@ -16,7 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDownloadTerrain;
@@ -114,7 +114,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
     public static int anaglyphField;
 
     /** A reference to the Minecraft object. */
-    private Minecraft mc;
+    private Mine mc;
     private final IResourceManager resourceManager;
     private Random random = new Random();
     private float farPlaneDistance;
@@ -162,7 +162,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
     private boolean drawBlockOutline = true;
 
     /** Previous frame time in milliseconds */
-    private long prevFrameTime = Minecraft.getSystemTime();
+    private long prevFrameTime = Mine.getSystemTime();
 
     /** End time of last render (ns) */
     private long renderEndNanoTime;
@@ -228,7 +228,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
     private ShaderGroup[] fxaaShaders = new ShaderGroup[10];
     private boolean loadVisibleChunks = false;
 
-    public EntityRenderer(Minecraft mcIn, IResourceManager resourceManagerIn)
+    public EntityRenderer(Mine mcIn, IResourceManager resourceManagerIn)
     {
         this.shaderIndex = shaderCount;
         this.useShader = false;
@@ -1291,19 +1291,19 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
         if (!flag && this.mc.gameSettings.pauseOnLostFocus && (!this.mc.gameSettings.touchscreen || !Mouse.isButtonDown(1)))
         {
-            if (Minecraft.getSystemTime() - this.prevFrameTime > 500L)
+            if (Mine.getSystemTime() - this.prevFrameTime > 500L)
             {
                 this.mc.displayInGameMenu();
             }
         }
         else
         {
-            this.prevFrameTime = Minecraft.getSystemTime();
+            this.prevFrameTime = Mine.getSystemTime();
         }
 
         this.mc.mcProfiler.startSection("mouse");
 
-        if (flag && Minecraft.isRunningOnMac && this.mc.inGameHasFocus && !Mouse.isInsideWindow())
+        if (flag && Mine.isRunningOnMac && this.mc.inGameHasFocus && !Mouse.isInsideWindow())
         {
             Mouse.setGrabbed(false);
             Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
@@ -1357,7 +1357,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             if (this.mc.theWorld != null)
             {
                 this.mc.mcProfiler.startSection("level");
-                int j = Math.min(Minecraft.getDebugFPS(), i2);
+                int j = Math.min(Mine.getDebugFPS(), i2);
                 j = Math.max(j, 60);
                 long k = System.nanoTime() - nanoTime;
                 long l = Math.max((long)(1000000000 / j / 4) - k, 0L);

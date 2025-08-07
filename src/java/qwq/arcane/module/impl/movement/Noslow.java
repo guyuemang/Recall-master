@@ -5,17 +5,14 @@ import com.viaversion.viarewind.utils.PacketUtil;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.*;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import qwq.arcane.event.annotations.EventTarget;
@@ -30,22 +27,18 @@ import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @Author：Guyuemang
  * @Date：7/7/2025 12:00 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class Noslow extends Module {
     public Noslow() {
         super("Noslow",Category.Movement);
     }
-    private final ModeValue mode = new ModeValue("Mode", "Blink", new String[]{"Blink","Grim"});
+    private final ModeValue mode = new ModeValue("Mode", "Blink", new String[]{"Blink","Grim", "Prediction"});
     private final BoolValue bedWarsFood = new BoolValue("Food (Bed Wars)",() -> this.mode.is("Grim"), false);
     private final BoolValue food = new BoolValue("Food",() -> this.mode.is("Grim"), true);
     public final BoolValue bow = new BoolValue("Bow",() -> this.mode.is("Grim"), true);
@@ -57,7 +50,7 @@ public class Noslow extends Module {
     public static boolean hasDroppedFood = false;
     private boolean sent = false;
     public static boolean hasSword() {
-        return Minecraft.getMinecraft().thePlayer.getHeldItem().getItem() instanceof ItemSword;
+        return Mine.getMinecraft().thePlayer.getHeldItem().getItem() instanceof ItemSword;
     }
 
     public static boolean isRest(Item item) {
@@ -123,7 +116,7 @@ public class Noslow extends Module {
                     if (mc.thePlayer == null || mc.theWorld == null || mc.thePlayer.getHeldItem() == null) return;
                     //F00d N0Sl0w
                     if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemFood && food.getValue()) {
-                        Minecraft.getMinecraft().rightClickDelayTimer = 4;
+                        Mine.getMinecraft().rightClickDelayTimer = 4;
                         if (mc.thePlayer.isUsingItem() && !hasDroppedFood && mc.thePlayer.getHeldItem().stackSize > 1) {
                             mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.DROP_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
                             hasDroppedFood = true;
@@ -131,7 +124,7 @@ public class Noslow extends Module {
                             hasDroppedFood = false;
                         }
                     }
-                    if (Minecraft.getMinecraft().thePlayer.inventory.getCurrentItem() != null) {
+                    if (Mine.getMinecraft().thePlayer.inventory.getCurrentItem() != null) {
                         if (mc.thePlayer.isBlocking() || mc.thePlayer.isUsingItem() && hasSword()) {
                             mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem % 8 + 1));
                             mc.getNetHandler().addToSendQueue(new C17PacketCustomPayload("germmod-netease", new PacketBuffer(Unpooled.buffer())));
@@ -165,6 +158,11 @@ public class Noslow extends Module {
     public void onSlowDown(SlowDownEvent event) {
         if (this.isGapple()) {
             return;
+        }
+        if (mode.is("Prediction")) {
+            if (mc.thePlayer.onGround && mc.thePlayer.offGroundTicks % 2 != 0) event.setCancelled(true);
+        } else {
+            event.setCancelled(true);
         }
         switch (mode.get()) {
             case "Grim":

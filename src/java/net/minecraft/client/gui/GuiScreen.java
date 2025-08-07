@@ -15,7 +15,8 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.stream.GuiTwitchUserMode;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -51,7 +52,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
     private static final Splitter NEWLINE_SPLITTER = Splitter.on('\n');
 
     /** Reference to the Minecraft object. */
-    protected static Minecraft mc;
+    protected static Mine mc;
 
     /**
      * Holds a instance of RenderItem, used to draw the achievement icons on screen (is based on ItemStack)
@@ -545,7 +546,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
      * Causes the screen to lay out its subcomponents again. This is the equivalent of the Java call
      * Container.validate()
      */
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    public void setWorldAndResolution(Mine mc, int width, int height)
     {
         this.mc = mc;
         this.itemRender = mc.getRenderItem();
@@ -615,7 +616,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
             }
 
             this.eventButton = k;
-            this.lastMouseEvent = Minecraft.getSystemTime();
+            this.lastMouseEvent = Mine.getSystemTime();
             this.mouseClicked(i, j, this.eventButton);
         }
         else if (k != -1)
@@ -630,7 +631,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
         }
         else if (this.eventButton != -1 && this.lastMouseEvent > 0L)
         {
-            long l = Minecraft.getSystemTime() - this.lastMouseEvent;
+            long l = Mine.getSystemTime() - this.lastMouseEvent;
             this.mouseClickMove(i, j, this.eventButton, l);
         }
     }
@@ -743,7 +744,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
      */
     public static boolean isCtrlKeyDown()
     {
-        return Minecraft.isRunningOnMac ? Keyboard.isKeyDown(219) || Keyboard.isKeyDown(220) : Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157);
+        return Mine.isRunningOnMac ? Keyboard.isKeyDown(219) || Keyboard.isKeyDown(220) : Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157);
     }
 
     /**
@@ -790,7 +791,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
      * @param w The width of the screen
      * @param h The height of the screen
      */
-    public void onResize(Minecraft mcIn, int w, int h)
+    public void onResize(Mine mcIn, int w, int h)
     {
         this.setWorldAndResolution(mcIn, w, h);
     }

@@ -1,7 +1,9 @@
 package net.minecraft.client.entity;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.client.Minecraft;
+import lombok.Getter;
+import lombok.Setter;
+import qwq.arcane.module.Mine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
@@ -9,6 +11,8 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+@Getter
+@Setter
 public class EntityOtherPlayerMP extends AbstractClientPlayer
 {
     private boolean isItemInUse;
@@ -153,7 +157,7 @@ public class EntityOtherPlayerMP extends AbstractClientPlayer
      */
     public void addChatMessage(IChatComponent component)
     {
-        Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(component);
+        Mine.getMinecraft().ingameGUI.getChatGUI().printChatMessage(component);
     }
 
     /**

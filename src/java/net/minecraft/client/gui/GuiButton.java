@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,7 +10,6 @@ import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.color.ColorUtil;
-import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RoundedUtil;
 
 public class GuiButton extends Gui
@@ -83,7 +82,7 @@ public class GuiButton extends Gui
      * Draws this button to the screen.
      */
     private Animation Animation = new DecelerateAnimation(100, 1);
-    public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Mine mc, int mouseX, int mouseY)
     {
         if (this.visible)
         {
@@ -95,7 +94,7 @@ public class GuiButton extends Gui
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            RoundedUtil.drawGradientHorizontal(this.xPosition, this.yPosition, this.width, this.height, 0, ColorUtil.applyOpacity(InterFace.color(1),0.2f + 0.2f * Animation.getOutput().floatValue()), ColorUtil.applyOpacity(InterFace.color(7),0.2f + 0.2f * Animation.getOutput().floatValue()));
+            RoundedUtil.drawGradientHorizontal(this.xPosition, this.yPosition, this.width, this.height, 6, ColorUtil.applyOpacity(InterFace.color(1),0.2f + 0.2f * Animation.getOutput().floatValue()), ColorUtil.applyOpacity(InterFace.color(7),0.2f + 0.2f * Animation.getOutput().floatValue()));
             Animation.setDirection(hovered ? Direction.FORWARDS : Direction.BACKWARDS);
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
@@ -107,7 +106,7 @@ public class GuiButton extends Gui
     /**
      * Fired when the mouse button is dragged. Equivalent of MouseListener.mouseDragged(MouseEvent e).
      */
-    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY)
+    protected void mouseDragged(Mine mc, int mouseX, int mouseY)
     {
     }
 
@@ -122,7 +121,7 @@ public class GuiButton extends Gui
      * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
      * e).
      */
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+    public boolean mousePressed(Mine mc, int mouseX, int mouseY)
     {
         return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
     }

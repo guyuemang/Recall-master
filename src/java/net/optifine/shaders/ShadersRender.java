@@ -1,7 +1,7 @@
 package net.optifine.shaders;
 
 import java.nio.IntBuffer;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -196,22 +196,22 @@ public class ShadersRender
     {
         if (Shaders.usedShadowDepthBuffers > 0 && --Shaders.shadowPassCounter <= 0)
         {
-            Minecraft minecraft = Minecraft.getMinecraft();
-            minecraft.mcProfiler.endStartSection("shadow pass");
-            RenderGlobal renderglobal = minecraft.renderGlobal;
+            Mine mine = Mine.getMinecraft();
+            mine.mcProfiler.endStartSection("shadow pass");
+            RenderGlobal renderglobal = mine.renderGlobal;
             Shaders.isShadowPass = true;
             Shaders.shadowPassCounter = Shaders.shadowPassInterval;
-            Shaders.preShadowPassThirdPersonView = minecraft.gameSettings.thirdPersonView;
-            minecraft.gameSettings.thirdPersonView = 1;
+            Shaders.preShadowPassThirdPersonView = mine.gameSettings.thirdPersonView;
+            mine.gameSettings.thirdPersonView = 1;
             Shaders.checkGLError("pre shadow");
             GL11.glMatrixMode(GL11.GL_PROJECTION);
             GL11.glPushMatrix();
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glPushMatrix();
-            minecraft.mcProfiler.endStartSection("shadow clear");
+            mine.mcProfiler.endStartSection("shadow clear");
             EXTFramebufferObject.glBindFramebufferEXT(36160, Shaders.sfb);
             Shaders.checkGLError("shadow bind sfb");
-            minecraft.mcProfiler.endStartSection("shadow camera");
+            mine.mcProfiler.endStartSection("shadow camera");
             entityRenderer.setupCameraTransform(partialTicks, 2);
             Shaders.setCameraShadow(partialTicks);
             Shaders.checkGLError("shadow camera");
@@ -231,11 +231,11 @@ public class ShadersRender
             GL11.glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glClear(Shaders.usedShadowColorBuffers != 0 ? GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT : GL11.GL_DEPTH_BUFFER_BIT);
             Shaders.checkGLError("shadow clear");
-            minecraft.mcProfiler.endStartSection("shadow frustum");
+            mine.mcProfiler.endStartSection("shadow frustum");
             ClippingHelper clippinghelper = ClippingHelperShadow.getInstance();
-            minecraft.mcProfiler.endStartSection("shadow culling");
+            mine.mcProfiler.endStartSection("shadow culling");
             Frustum frustum = new Frustum(clippinghelper);
-            Entity entity = minecraft.getRenderViewEntity();
+            Entity entity = mine.getRenderViewEntity();
             double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
             double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
             double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
@@ -246,15 +246,15 @@ public class ShadersRender
             GlStateManager.depthMask(true);
             GlStateManager.colorMask(true, true, true, true);
             GlStateManager.disableCull();
-            minecraft.mcProfiler.endStartSection("shadow prepareterrain");
-            minecraft.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-            minecraft.mcProfiler.endStartSection("shadow setupterrain");
+            mine.mcProfiler.endStartSection("shadow prepareterrain");
+            mine.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+            mine.mcProfiler.endStartSection("shadow setupterrain");
             int i = 0;
             i = entityRenderer.frameCount;
             entityRenderer.frameCount = i + 1;
-            renderglobal.setupTerrain(entity, (double)partialTicks, frustum, i, minecraft.thePlayer.isSpectator());
-            minecraft.mcProfiler.endStartSection("shadow updatechunks");
-            minecraft.mcProfiler.endStartSection("shadow terrain");
+            renderglobal.setupTerrain(entity, (double)partialTicks, frustum, i, mine.thePlayer.isSpectator());
+            mine.mcProfiler.endStartSection("shadow updatechunks");
+            mine.mcProfiler.endStartSection("shadow terrain");
             GlStateManager.matrixMode(5888);
             GlStateManager.pushMatrix();
             GlStateManager.disableAlpha();
@@ -263,16 +263,16 @@ public class ShadersRender
             GlStateManager.enableAlpha();
             renderglobal.renderBlockLayer(EnumWorldBlockLayer.CUTOUT_MIPPED, (double)partialTicks, 2, entity);
             Shaders.checkGLError("shadow terrain cutoutmipped");
-            minecraft.getTextureManager().getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
+            mine.getTextureManager().getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
             renderglobal.renderBlockLayer(EnumWorldBlockLayer.CUTOUT, (double)partialTicks, 2, entity);
             Shaders.checkGLError("shadow terrain cutout");
-            minecraft.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
+            mine.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
             GlStateManager.shadeModel(7424);
             GlStateManager.alphaFunc(516, 0.1F);
             GlStateManager.matrixMode(5888);
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            minecraft.mcProfiler.endStartSection("shadow entities");
+            mine.mcProfiler.endStartSection("shadow entities");
 
             if (Reflector.ForgeHooksClient_setRenderPass.exists())
             {
@@ -300,7 +300,7 @@ public class ShadersRender
 
             GlStateManager.disableBlend();
             GlStateManager.depthMask(true);
-            minecraft.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+            mine.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
             GlStateManager.shadeModel(7425);
             Shaders.checkGLError("shadow pre-translucent");
             GL20.glDrawBuffers(Shaders.sfbDrawBuffers);
@@ -309,7 +309,7 @@ public class ShadersRender
 
             if (Shaders.isRenderShadowTranslucent())
             {
-                minecraft.mcProfiler.endStartSection("shadow translucent");
+                mine.mcProfiler.endStartSection("shadow translucent");
                 renderglobal.renderBlockLayer(EnumWorldBlockLayer.TRANSLUCENT, (double)partialTicks, 2, entity);
                 Shaders.checkGLError("shadow translucent");
             }
@@ -331,8 +331,8 @@ public class ShadersRender
             GL11.glFlush();
             Shaders.checkGLError("shadow flush");
             Shaders.isShadowPass = false;
-            minecraft.gameSettings.thirdPersonView = Shaders.preShadowPassThirdPersonView;
-            minecraft.mcProfiler.endStartSection("shadow postprocess");
+            mine.gameSettings.thirdPersonView = Shaders.preShadowPassThirdPersonView;
+            mine.mcProfiler.endStartSection("shadow postprocess");
 
             if (Shaders.hasGlGenMipmap)
             {
@@ -383,7 +383,7 @@ public class ShadersRender
             EXTFramebufferObject.glBindFramebufferEXT(36160, Shaders.dfb);
             GL11.glViewport(0, 0, Shaders.renderWidth, Shaders.renderHeight);
             Shaders.activeDrawBuffers = null;
-            minecraft.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+            mine.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
             Shaders.useProgram(Shaders.ProgramTerrain);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glPopMatrix();

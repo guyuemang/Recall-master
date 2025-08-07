@@ -1,6 +1,6 @@
 package qwq.arcane.utils.chats;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
@@ -8,7 +8,7 @@ import net.minecraft.util.EnumChatFormatting;
  * 2025/5/25
  */
 public class ChatUtils {
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final Mine mc = Mine.getMinecraft();
 
     public static void sendMessage(String message) {
         if (mc.thePlayer != null) {

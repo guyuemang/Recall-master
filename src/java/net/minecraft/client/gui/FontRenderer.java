@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -1128,7 +1128,7 @@ public class FontRenderer implements IResourceManagerReloadListener
 
     protected InputStream getResourceInputStream(ResourceLocation p_getResourceInputStream_1_) throws IOException
     {
-        return Minecraft.getMinecraft().getResourceManager().getResource(p_getResourceInputStream_1_).getInputStream();
+        return Mine.getMinecraft().getResourceManager().getResource(p_getResourceInputStream_1_).getInputStream();
     }
 
     public void drawOutlinedString(final String string, final float x, final float y, final float width, final int color, final int outlineColor) {

@@ -20,7 +20,7 @@ import org.lwjgl.util.glu.Project;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -106,7 +106,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         try
         {
             List<String> list = Lists.<String>newArrayList();
-            bufferedreader = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(splashTexts).getInputStream(), Charsets.UTF_8));
+            bufferedreader = new BufferedReader(new InputStreamReader(Mine.getMinecraft().getResourceManager().getResource(splashTexts).getInputStream(), Charsets.UTF_8));
             String s;
 
             while ((s = bufferedreader.readLine()) != null)
@@ -164,7 +164,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
 
     private boolean func_183501_a()
     {
-        return Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && this.field_183503_M != null;
+        return Mine.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && this.field_183503_M != null;
     }
 
     /**
@@ -249,7 +249,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
 
         this.mc.setConnectedToRealms(false);
 
-        if (Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && !this.field_183502_L)
+        if (Mine.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && !this.field_183502_L)
         {
             RealmsBridge realmsbridge = new RealmsBridge();
             this.field_183503_M = realmsbridge.getNotificationScreen(this);
@@ -634,7 +634,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)(this.width / 2 + 90), 70.0F, 0.0F);
         GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
-        float f = 1.8F - MathHelper.abs(MathHelper.sin((float)(Minecraft.getSystemTime() % 1000L) / 1000.0F * (float)Math.PI * 2.0F) * 0.1F);
+        float f = 1.8F - MathHelper.abs(MathHelper.sin((float)(Mine.getSystemTime() % 1000L) / 1000.0F * (float)Math.PI * 2.0F) * 0.1F);
         f = f * 100.0F / (float)(this.fontRendererObj.getStringWidth(this.splashText) + 32);
         GlStateManager.scale(f, f, f);
         this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);

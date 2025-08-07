@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.player;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -44,9 +42,7 @@ import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
  * @Author：Guyuemang
  * @Date：7/7/2025 12:02 AM
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 //依旧Solitude老鼠搬新家
 public class InvManager extends Module {
     private final ModeValue mode = new ModeValue("Mode", "Open Inventory", new String[]{"Open Inventory", "Spoof"});
@@ -85,6 +81,7 @@ public class InvManager extends Module {
     @EventTarget
     public void onPacketSend(PacketSendEvent event) {
         if (INSTANCE.getModuleManager().getModule(Scaffold.class).getState() || INSTANCE.getModuleManager().getModule(KillAura.class).target != null) return;
+        if (mc.thePlayer == null) return;
         if (usingItemCheck.get() && mc.thePlayer.isUsingItem()) return;
         final Packet<?> packet = event.getPacket();
 

@@ -1,7 +1,7 @@
 package net.minecraft.realms;
 
 import java.lang.reflect.Constructor;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenRealmsProxy;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +22,7 @@ public class RealmsBridge extends RealmsScreen
             Constructor<?> constructor = oclass.getDeclaredConstructor(new Class[] {RealmsScreen.class});
             constructor.setAccessible(true);
             Object object = constructor.newInstance(new Object[] {this});
-            Minecraft.getMinecraft().displayGuiScreen(((RealmsScreen)object).getProxy());
+            Mine.getMinecraft().displayGuiScreen(((RealmsScreen)object).getProxy());
         }
         catch (Exception exception)
         {
@@ -50,6 +50,6 @@ public class RealmsBridge extends RealmsScreen
 
     public void init()
     {
-        Minecraft.getMinecraft().displayGuiScreen(this.previousScreen);
+        Mine.getMinecraft().displayGuiScreen(this.previousScreen);
     }
 }

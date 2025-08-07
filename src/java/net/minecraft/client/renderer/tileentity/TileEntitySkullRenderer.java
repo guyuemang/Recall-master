@@ -5,7 +5,8 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelHumanoidHead;
 import net.minecraft.client.model.ModelSkeletonHead;
@@ -76,12 +77,12 @@ public class TileEntitySkullRenderer extends TileEntitySpecialRenderer<TileEntit
 
                     if (p_180543_7_ != null)
                     {
-                        Minecraft minecraft = Minecraft.getMinecraft();
-                        Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(p_180543_7_);
+                        Mine mine = Mine.getMinecraft();
+                        Map<Type, MinecraftProfileTexture> map = mine.getSkinManager().loadSkinFromCache(p_180543_7_);
 
                         if (map.containsKey(Type.SKIN))
                         {
-                            resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+                            resourcelocation = mine.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
                         }
                         else
                         {

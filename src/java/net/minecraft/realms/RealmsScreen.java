@@ -2,7 +2,8 @@ package net.minecraft.realms;
 
 import com.mojang.util.UUIDTypeAdapter;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreenRealmsProxy;
@@ -23,7 +24,7 @@ public class RealmsScreen
     public static final int SKIN_HAT_HEIGHT = 8;
     public static final int SKIN_TEX_WIDTH = 64;
     public static final int SKIN_TEX_HEIGHT = 64;
-    protected Minecraft minecraft;
+    protected Mine mine;
     public int width;
     public int height;
     private GuiScreenRealmsProxy proxy = new GuiScreenRealmsProxy(this);
@@ -37,7 +38,7 @@ public class RealmsScreen
     {
     }
 
-    public void init(Minecraft p_init_1_, int p_init_2_, int p_init_3_)
+    public void init(Mine p_init_1_, int p_init_2_, int p_init_3_)
     {
     }
 
@@ -124,13 +125,13 @@ public class RealmsScreen
         }
 
         AbstractClientPlayer.getDownloadImageSkin(resourcelocation, p_bindFace_1_);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resourcelocation);
+        Mine.getMinecraft().getTextureManager().bindTexture(resourcelocation);
     }
 
     public static void bind(String p_bind_0_)
     {
         ResourceLocation resourcelocation = new ResourceLocation(p_bind_0_);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resourcelocation);
+        Mine.getMinecraft().getTextureManager().bindTexture(resourcelocation);
     }
 
     public void tick()
@@ -246,7 +247,7 @@ public class RealmsScreen
 
     public RealmsAnvilLevelStorageSource getLevelStorageSource()
     {
-        return new RealmsAnvilLevelStorageSource(Minecraft.getMinecraft().getSaveLoader());
+        return new RealmsAnvilLevelStorageSource(Mine.getMinecraft().getSaveLoader());
     }
 
     public void removed()

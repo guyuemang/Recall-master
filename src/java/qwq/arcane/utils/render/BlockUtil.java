@@ -2,7 +2,7 @@ package qwq.arcane.utils.render;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.util.BlockPos;
 
 import java.util.HashMap;
@@ -14,12 +14,12 @@ public class BlockUtil {
 
 
     public static boolean isAirBlock(final BlockPos blockPos) {
-        final Block block = Minecraft.getMinecraft().theWorld.getBlockState(blockPos).getBlock();
+        final Block block = Mine.getMinecraft().theWorld.getBlockState(blockPos).getBlock();
         return block instanceof BlockAir;
     }
 
     public static boolean isValidBock(final BlockPos blockPos) {
-        final Block block = Minecraft.getMinecraft().theWorld.getBlockState(blockPos).getBlock();
+        final Block block = Mine.getMinecraft().theWorld.getBlockState(blockPos).getBlock();
         return !(block instanceof BlockLiquid) && !(block instanceof BlockAir) && !(block instanceof BlockChest) && !(block instanceof BlockFurnace) && !(block instanceof BlockLadder) && !(block instanceof BlockTNT);
     }
     public static BlockPos getBlockCorner(BlockPos start, BlockPos end) {

@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.I18n;
 
 public class GuiListButton extends GuiButton
@@ -41,7 +41,7 @@ public class GuiListButton extends GuiButton
      * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
      * e).
      */
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+    public boolean mousePressed(Mine mc, int mouseX, int mouseY)
     {
         if (super.mousePressed(mc, mouseX, mouseY))
         {

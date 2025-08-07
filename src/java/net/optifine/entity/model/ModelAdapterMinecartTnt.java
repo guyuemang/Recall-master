@@ -1,6 +1,6 @@
 package net.optifine.entity.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderTntMinecart;
@@ -17,7 +17,7 @@ public class ModelAdapterMinecartTnt extends ModelAdapterMinecart
 
     public IEntityRenderer makeEntityRender(ModelBase modelBase, float shadowSize)
     {
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager rendermanager = Mine.getMinecraft().getRenderManager();
         RenderTntMinecart rendertntminecart = new RenderTntMinecart(rendermanager);
 
         if (!Reflector.RenderMinecart_modelMinecart.exists())

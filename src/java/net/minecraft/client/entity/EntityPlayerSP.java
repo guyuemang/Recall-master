@@ -1,7 +1,8 @@
 package net.minecraft.client.entity;
 
-import de.florianmichael.vialoadingbase.ViaLoadingBase;
-import net.minecraft.client.Minecraft;
+import lombok.Getter;
+import lombok.Setter;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiCommandBlock;
@@ -108,7 +109,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     private boolean hasValidHealth;
     private String clientBrand;
     public MovementInput movementInput;
-    protected Minecraft mc;
+    protected Mine mc;
 
     /**
      * Used to tell if the player pressed forward twice. If this is at 0 and it's pressed (And they are allowed to
@@ -136,12 +137,18 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
     public MovementInput keyMovementInput;
     public boolean omniSprint;
-
-    public EntityPlayerSP(Minecraft mcIn, World worldIn, NetHandlerPlayClient netHandler, StatFileWriter statFile)
+    @Getter
+    @Setter
+    private Vec3 severPosition;
+    @Getter @Setter
+    private Vec3 lastServerPosition;
+    public EntityPlayerSP(Mine mcIn, World worldIn, NetHandlerPlayClient netHandler, StatFileWriter statFile)
     {
         super(worldIn, netHandler.getGameProfile());
         this.sendQueue = netHandler;
         this.statWriter = statFile;
+        this.severPosition = new Vec3(0.0, 0.0, 0.0);
+        this.lastServerPosition = new Vec3(0.0, 0.0, 0.0);
         this.mc = mcIn;
         this.dimension = 0;
     }
@@ -542,6 +549,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     public Vector2f getPreviousRotation() {
         return new Vector2f(lastReportedYaw, lastReportedPitch);
     }
+
     /**
      * Send a chat message to the CommandSender
      */
@@ -934,7 +942,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
             this.mc.lastTickSentC03 = true;
             while (!this.mc.scheduledTasks.isEmpty()) {
                 try {
-                    Util.runTask(this.mc.scheduledTasks.poll(), Minecraft.logger);
+                    Util.runTask(this.mc.scheduledTasks.poll(), Mine.logger);
                 }
                 catch (ThreadQuickExitException threadQuickExitException) {}
             }

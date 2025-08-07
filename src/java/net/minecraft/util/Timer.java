@@ -1,6 +1,6 @@
 package net.minecraft.util;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 
 public class Timer
 {
@@ -55,7 +55,7 @@ public class Timer
     public Timer(float tps)
     {
         this.ticksPerSecond = tps;
-        this.lastSyncSysClock = Minecraft.getSystemTime();
+        this.lastSyncSysClock = Mine.getSystemTime();
         this.lastSyncHRClock = System.nanoTime() / 1000000L;
     }
 
@@ -64,7 +64,7 @@ public class Timer
      */
     public void updateTimer()
     {
-        long i = Minecraft.getSystemTime();
+        long i = Mine.getSystemTime();
         long j = i - this.lastSyncSysClock;
         long k = System.nanoTime() / 1000000L;
         double d0 = (double)k / 1000.0D;

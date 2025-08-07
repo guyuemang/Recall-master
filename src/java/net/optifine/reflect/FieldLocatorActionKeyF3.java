@@ -4,14 +4,15 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.src.Config;
 
 public class FieldLocatorActionKeyF3 implements IFieldLocator
 {
     public Field getField()
     {
-        Class oclass = Minecraft.class;
+        Class oclass = Mine.class;
         Field field = this.getFieldRenderChunksMany();
 
         if (field == null)
@@ -21,7 +22,7 @@ public class FieldLocatorActionKeyF3 implements IFieldLocator
         }
         else
         {
-            Field field1 = ReflectorRaw.getFieldAfter(Minecraft.class, field, Boolean.TYPE, 0);
+            Field field1 = ReflectorRaw.getFieldAfter(Mine.class, field, Boolean.TYPE, 0);
 
             if (field1 == null)
             {
@@ -37,14 +38,14 @@ public class FieldLocatorActionKeyF3 implements IFieldLocator
 
     private Field getFieldRenderChunksMany()
     {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        boolean flag = minecraft.renderChunksMany;
-        Field[] afield = Minecraft.class.getDeclaredFields();
-        minecraft.renderChunksMany = true;
-        Field[] afield1 = ReflectorRaw.getFields(minecraft, afield, Boolean.TYPE, Boolean.TRUE);
-        minecraft.renderChunksMany = false;
-        Field[] afield2 = ReflectorRaw.getFields(minecraft, afield, Boolean.TYPE, Boolean.FALSE);
-        minecraft.renderChunksMany = flag;
+        Mine mine = Mine.getMinecraft();
+        boolean flag = mine.renderChunksMany;
+        Field[] afield = Mine.class.getDeclaredFields();
+        mine.renderChunksMany = true;
+        Field[] afield1 = ReflectorRaw.getFields(mine, afield, Boolean.TYPE, Boolean.TRUE);
+        mine.renderChunksMany = false;
+        Field[] afield2 = ReflectorRaw.getFields(mine, afield, Boolean.TYPE, Boolean.FALSE);
+        mine.renderChunksMany = flag;
         Set<Field> set = new HashSet(Arrays.asList(afield1));
         Set<Field> set1 = new HashSet(Arrays.asList(afield2));
         Set<Field> set2 = new HashSet(set);

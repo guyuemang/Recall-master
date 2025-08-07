@@ -3,7 +3,8 @@ package net.minecraft.client.shader;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -80,8 +81,8 @@ public class Shader
         this.manager.getShaderUniformOrDefault("InSize").set((float)this.framebufferIn.framebufferTextureWidth, (float)this.framebufferIn.framebufferTextureHeight);
         this.manager.getShaderUniformOrDefault("OutSize").set(f, f1);
         this.manager.getShaderUniformOrDefault("Time").set(p_148042_1_);
-        Minecraft minecraft = Minecraft.getMinecraft();
-        this.manager.getShaderUniformOrDefault("ScreenSize").set((float)minecraft.displayWidth, (float)minecraft.displayHeight);
+        Mine mine = Mine.getMinecraft();
+        this.manager.getShaderUniformOrDefault("ScreenSize").set((float) mine.displayWidth, (float) mine.displayHeight);
         this.manager.useShader();
         this.framebufferOut.framebufferClear();
         this.framebufferOut.bindFramebuffer(false);

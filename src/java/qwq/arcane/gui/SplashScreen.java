@@ -1,11 +1,10 @@
 package qwq.arcane.gui;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
@@ -23,9 +22,7 @@ import java.awt.*;
  * @Author：Guyuemang
  * @Date：2025/6/28 23:23
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class SplashScreen implements Instance {
     public static Animation progressAnim;
     public static boolean menu;
@@ -54,7 +51,7 @@ public class SplashScreen implements Instance {
         // Create the scale factor
         // Bind the width and height to the framebuffer
         framebuffer = RenderUtil.createFrameBuffer(framebuffer);
-        progressAnim = new DecelerateAnimation(9000, 1);
+        progressAnim = new DecelerateAnimation(7000, 1);
         progress2Anim = new DecelerateAnimation(5000, 1);
         progress3Anim = new DecelerateAnimation(400, 1).setDirection(Direction.BACKWARDS);
         progress4Anim = new DecelerateAnimation(5000, 1).setDirection(Direction.BACKWARDS);
@@ -98,11 +95,11 @@ public class SplashScreen implements Instance {
     private static void drawScreen(float width, float height) {
         animation.setDirection(progressAnim.getOutput().floatValue() >= 0.5 ? Direction.FORWARDS : Direction.BACKWARDS);
         float progress = progress2Anim.getOutput().floatValue();
-        RenderUtil.drawRect(0, 0, width, height, new Color(0, 0, 0, 255));
+        RoundedUtil.drawGradientHorizontal(0,0,width,height,0,ColorUtil.applyOpacity(InterFace.mainColor.get(),0.2f + 0.2f * animation.getOutput().floatValue()),ColorUtil.applyOpacity(InterFace.secondColor.get(),0.2f + 0.2f * animation.getOutput().floatValue()));
 
         float aWidth = FontManager.Bold.get(80).getStringWidth("A");
 
-        if (progress2Anim.getOutput().floatValue() >= 0.99f) {
+       if (progress2Anim.getOutput().floatValue() >= 0.99f) {
             progress3Anim.setDirection(Direction.FORWARDS);
             progress4Anim.setDirection(Direction.FORWARDS);
 
@@ -112,7 +109,7 @@ public class SplashScreen implements Instance {
             FontManager.Bold.get(80).drawStringDynamic("A",5 + width / 2 - aWidth / 2, height / 2 - 50 + 7 , -1, 7);
         }
 
-        RoundedUtil.drawRound(width / 2 - 170 / 2, height / 2 + 15, 170, 5, 4, new Color(221, 228, 255));
-        RoundedUtil.drawGradientHorizontal(width / 2 - 170 / 2, height / 2 + 15, 170 * progress, 5, 4, InterFace.color(1),InterFace.color(7));
+        RoundedUtil.drawRound(width / 2 - 170 / 2, height / 2 + 15, 170, 5, 3, new Color(221, 228, 255));
+        RoundedUtil.drawGradientHorizontal(width / 2 - 170 / 2, height / 2 + 15, 170 * progress, 5, 3, InterFace.color(1),InterFace.color(7));
     }
 }

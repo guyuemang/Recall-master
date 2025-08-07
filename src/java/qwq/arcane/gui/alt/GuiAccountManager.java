@@ -2,15 +2,10 @@ package qwq.arcane.gui.alt;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
-import net.minecraft.client.Minecraft;
+
+import net.minecraft.client.gui.*;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
@@ -25,6 +20,7 @@ import qwq.arcane.gui.alt.gui.GuiAltCracked;
 import qwq.arcane.gui.alt.gui.GuiMicrosoftAuth;
 import qwq.arcane.gui.alt.gui.GuiSessionLogin;
 import qwq.arcane.gui.alt.utils.Notification;
+import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.utils.render.StencilUtils;
 
@@ -42,9 +38,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class GuiAccountManager extends GuiScreen {
   private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
   private int selectedAccount = -1;
@@ -89,7 +83,9 @@ public class GuiAccountManager extends GuiScreen {
 
   @Override
   public void drawScreen(int mouseX, int mouseY, float renderPartialTicks) {
-    this.drawDefaultBackground(); // Draw background first
+    ScaledResolution sr = new ScaledResolution(mc);
+    RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
+
     if (guiAccountList != null) {
       guiAccountList.drawScreen(mouseX, mouseY, renderPartialTicks);
     }
@@ -375,7 +371,7 @@ public class GuiAccountManager extends GuiScreen {
   }
 
   class GuiAccountList extends GuiSlot {
-    public GuiAccountList(Minecraft mc) {
+    public GuiAccountList(Mine mc) {
       super(mc, GuiAccountManager.this.width, GuiAccountManager.this.height, 32, GuiAccountManager.this.height - 64, 27);
     }
 

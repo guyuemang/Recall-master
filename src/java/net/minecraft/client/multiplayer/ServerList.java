@@ -3,7 +3,8 @@ package net.minecraft.client.multiplayer;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
+import qwq.arcane.module.Mine;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,10 +16,10 @@ public class ServerList
     private static final Logger logger = LogManager.getLogger();
 
     /** The Minecraft instance. */
-    private final Minecraft mc;
+    private final Mine mc;
     private final List<ServerData> servers = Lists.<ServerData>newArrayList();
 
-    public ServerList(Minecraft mcIn)
+    public ServerList(Mine mcIn)
     {
         this.mc = mcIn;
         this.loadServerList();
@@ -128,7 +129,7 @@ public class ServerList
 
     public static void func_147414_b(ServerData p_147414_0_)
     {
-        ServerList serverlist = new ServerList(Minecraft.getMinecraft());
+        ServerList serverlist = new ServerList(Mine.getMinecraft());
         serverlist.loadServerList();
 
         for (int i = 0; i < serverlist.countServers(); ++i)

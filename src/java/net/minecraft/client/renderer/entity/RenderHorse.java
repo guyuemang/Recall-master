@@ -2,7 +2,7 @@ package net.minecraft.client.renderer.entity;
 
 import com.google.common.collect.Maps;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.client.model.ModelHorse;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.LayeredTexture;
@@ -92,7 +92,7 @@ public class RenderHorse extends RenderLiving<EntityHorse>
             if (resourcelocation == null)
             {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getMinecraft().getTextureManager().loadTexture(resourcelocation, new LayeredTexture(horse.getVariantTexturePaths()));
+                Mine.getMinecraft().getTextureManager().loadTexture(resourcelocation, new LayeredTexture(horse.getVariantTexturePaths()));
                 field_110852_a.put(s, resourcelocation);
             }
 

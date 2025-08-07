@@ -5,11 +5,10 @@ import com.viaversion.viarewind.utils.PacketUtil;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Native;
-import com.yumegod.obfuscation.Rename;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.fixes.AttackOrder;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,30 +17,38 @@ import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import org.apache.commons.lang3.RandomUtils;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
-import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
+import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
+import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Sprint;
 import qwq.arcane.module.impl.player.Blink;
+import qwq.arcane.module.impl.visuals.InterFace;
+import qwq.arcane.module.impl.world.BlockFly;
 import qwq.arcane.module.impl.world.Scaffold;
+import qwq.arcane.utils.animations.Animation;
+import qwq.arcane.utils.animations.Direction;
+import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.BlinkUtils;
 import qwq.arcane.utils.player.PlayerUtil;
+import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -49,9 +56,6 @@ import java.util.List;
 
 import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura",Category.Combat);
@@ -64,7 +68,7 @@ public class KillAura extends Module {
     public BoolValue keepsprint = new BoolValue("KeepSprint",false);
     public BoolValue autoblock = new BoolValue("AutoBlock",false);
     public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
-    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim", "Interact"});
+    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim","Blink","LEGIT", "Interact"});
     public BoolValue rotation = new BoolValue("Rotation",false);
     public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
@@ -82,6 +86,12 @@ public class KillAura extends Module {
             new BoolValue("Invisible",false),
             new BoolValue("Teams",false)
     ));
+    private final MultiBooleanValue auraESP = new MultiBooleanValue("TargetHUD ESP", Arrays.asList(
+            new BoolValue("Circle", true),
+            new BoolValue("Tracer", false),
+            new BoolValue("Box", false),
+            new BoolValue("Custom Color", false)));
+    private final ColorValue customColor = new ColorValue("Custom Color", Color.WHITE);
     public List<EntityLivingBase> targets = new ArrayList<>();
     public static EntityLivingBase target;
     public EntityLivingBase blockTarget;
@@ -91,6 +101,7 @@ public class KillAura extends Module {
     public TimerUtil attacktimer = new TimerUtil();
     private int index;
     private int cps;
+    private Entity auraESPTarget;
     @Override
     public void onEnable() {
         StopAutoBlock();
@@ -122,7 +133,13 @@ public class KillAura extends Module {
     }
 
     @EventTarget
+    public void onWorldLoad(WorldLoadEvent event){
+        setState(false);
+    }
+
+    @EventTarget
     public void UpdateEvent(UpdateEvent event){
+        setsuffix(modeValue.get());
         targets = setTargets();
         if (!targets.isEmpty()) {
             if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
@@ -133,23 +150,23 @@ public class KillAura extends Module {
                 index = 0;
                 switchTimer.reset();
             }
-
             if (attacktimer.delay(cps)) {
                 if (keepsprint.get()) {
                     Sprint.keepSprinting = true;
                 }
-                switch (modeValue.get()) {
-                    case "Multi":
-                        mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
-                        break;
-                    case "Single":
-                        target = targets.get(0);
-                        attack(target);
-                        break;
-                    case "Switch": {
-                        target = targets.get(index);
-                        attack(target);
-                        break;
+                if (!mc.gameSettings.keyBindUseItem.isKeyDown() && autoblock.get() && blockmode.is("LEGIT")) {
+                    switch (modeValue.get()) {
+                        case "Multi":
+                            mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
+                            break;
+                        case "Single":
+                            target = targets.get(0);
+                            attack(target);
+                            break;
+                        case "Switch":
+                            target = targets.get(index);
+                            attack(target);
+                            break;
                     }
                 }
                 final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
@@ -176,6 +193,9 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onPostMotion(MotionEvent event){
+        if (event.isPre()){
+            return;
+        }
         if (keepsprint.get()) {
             Sprint.keepSprinting = false;
         }
@@ -238,17 +258,21 @@ public class KillAura extends Module {
         if (shouldRotation(entity)){
             switch (rotationmode.get()){
                 case "Smart":
+                    rotaiton = RotationUtil.getAngles(target);
+                    break;
                 case "Normal":
+                    Vector2f vec = RotationUtil.calculate(target, true, range.getValue() + 0.2f, range.getValue() + 0.2, true, true);
+                    rotaiton = new float[]{vec.x, vec.y};
+                    break;
                 case "HvH":
                     rotaiton = RotationUtil.getHVHRotation(entity, Rotationrange.getValue());
                     break;
             }
-            Client.Instance.rotationManager.setRotation(new Vector2f(rotaiton[0],rotaiton[1]),rotationspeed.get().intValue(), movefix.get(),strictValue.get());
+            Client.Instance.getRotationManager().setRotation(new Vector2f(rotaiton[0],rotaiton[1]),rotationspeed.get().intValue(), movefix.get(),strictValue.getValue());
         }
     }
 
     public void onAutoBlock(){
-        final int currentSlot = mc.thePlayer.inventory.currentItem;
         if (shouldAutoBlock(blockTarget)) {
             switch (blockmode.get()) {
                 case "Grim":
@@ -264,16 +288,30 @@ public class KillAura extends Module {
                 case "Fake":
                     blocking = true;
                     break;
-                case "Interact":
+                case "LEGIT":
                     if (mc.thePlayer.ticksExisted % 4 == 0) {
                         mc.gameSettings.keyBindUseItem.setPressed(true);
-                        blocking = true;
                     } else {
                         mc.gameSettings.keyBindUseItem.setPressed(false);
-                        blocking = false;
                     }
+                    blocking = true;
+                    break;
+                case "Interact":
+                    KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
                     break;
                 case "Blink":
+                    switch (mc.thePlayer.ticksExisted % 4){
+                        case 1:
+                            break;
+                        case 2:
+                            sendPacket(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+                            sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+                            BlinkComponent.blinking = false;
+                            break;
+                        case 3:
+                            break;
+                    }
+                    blocking = true;
                     break;
             }
         }
@@ -292,10 +330,12 @@ public class KillAura extends Module {
                     blocking = false;
                     break;
                 case "Interact":
+                case "LEGIT":
                     mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
                 case "Blink":
                     sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                    BlinkComponent.blinking = false;
                     BlinkUtils.stopBlink();
                     blocking = false;
                     break;
@@ -359,5 +399,38 @@ public class KillAura extends Module {
             return (sorttargets.isEnabled("Mobs") && PlayerUtil.isMob(entity)) || (sorttargets.isEnabled("Animals") && PlayerUtil.isAnimal(entity));
         }
         return false;
+    }
+
+    private final Animation auraESPAnim = new DecelerateAnimation(300, 1);
+
+    private final ScaledResolution sr = new ScaledResolution(mc);
+    @EventTarget
+    public void onRender3DEvent(Render3DEvent event) {
+        auraESPAnim.setDirection(KillAura.target != null ? Direction.FORWARDS : Direction.BACKWARDS);
+        if (KillAura.target != null) {
+            auraESPTarget = KillAura.target;
+        }
+
+        if (auraESPAnim.finished(Direction.BACKWARDS)) {
+            auraESPTarget = null;
+        }
+
+        Color color = Client.Instance.getModuleManager().getModule(InterFace.class).color(1);
+
+        if (auraESP.isEnabled("Custom Color")) {
+            color = customColor.get();
+        }
+        if (auraESPTarget != null) {
+            if (auraESP.isEnabled("Box")) {
+                RenderUtil.renderBoundingBox((EntityLivingBase) auraESPTarget, color, auraESPAnim.getOutput().floatValue());
+            }
+            if (auraESP.isEnabled("Circle")) {
+                RenderUtil.drawCircle(this.auraESPTarget, event.partialTicks(), 0.75, color.getRGB(), this.auraESPAnim.getOutput().floatValue());
+            }
+            if (auraESP.isEnabled("Tracer")) {
+                RenderUtil.drawTracerLine(auraESPTarget, 4f, Color.BLACK, auraESPAnim.getOutput().floatValue());
+                RenderUtil.drawTracerLine(auraESPTarget, 2.5f, color, auraESPAnim.getOutput().floatValue());
+            }
+        }
     }
 }

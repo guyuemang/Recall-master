@@ -1,18 +1,14 @@
 package qwq.arcane.utils.fontrender;
 
 import com.google.common.base.Preconditions;
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 
 import java.awt.*;
 import java.io.InputStream;
 
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public enum FontManager {
     Bold("bold"),
     Icon("icon"),

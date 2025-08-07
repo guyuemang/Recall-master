@@ -1,8 +1,6 @@
 package qwq.arcane.module.impl.display;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
+
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.StringUtils;
 import qwq.arcane.Client;
@@ -22,6 +20,7 @@ import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.module.Module;
 import qwq.arcane.value.impl.NumberValue;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Comparator;
 
@@ -29,14 +28,13 @@ import java.util.Comparator;
  * @Author：Guyuemang
  * @Date：2025/7/4 16:06
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
+
 public class ArrayList extends ModuleWidget {
     public ArrayList() {
         super("ArrayList",Category.Display);
     }
 
+    public ModeValue style = new ModeValue("Style","Simple",new String[]{"HotKey","Simple","Icon"});
     public static BoolValue importantModules = new BoolValue("Important", false);
     public ModeValue fontmode = new ModeValue("FontMode","Custom",new String[]{"Custom","Bold","Semibold","Regular","Light"});
     public ModeValue textShadow = new ModeValue("Text Shadow","None", new String[]{"Black", "Colored", "None"});
@@ -46,9 +44,10 @@ public class ArrayList extends ModuleWidget {
     public final ModeValue color = new ModeValue("Color Setting","Fade", new String[]{"Custom", "Rainbow", "Dynamic","Double","Astolfo","Tenacity"});
     public final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> color.is("Dynamic") || color.is("Fade") || color.is("Tenacity"), 4, 1, 10, 1);
     public final NumberValue colorIndex = new NumberValue("Color Seperation", 1, 1, 50, 1);
-    public ColorValue FirstColor = new ColorValue("MainColor", new Color(213, 63, 119));
-    public ColorValue SecondColor = new ColorValue("SecondColor", new Color(157, 68, 110));
+    public ColorValue FirstColor = new ColorValue("MainColor", new Color(41, 128, 185));
+    public ColorValue SecondColor = new ColorValue("SecondColor", new Color(109, 213, 250));
     public BoolValue background = new BoolValue("BackGround",false);
+    public BoolValue white = new BoolValue("White",false);
     public ModeValue misc = new ModeValue("Rectangle","None",new String[]{"None", "Top", "Side"});
     public NumberValue radius = new NumberValue("radius",()-> background.get(),3,0,8,1);
     public ModeValue backgroundmod = new ModeValue("BackGroundMod",()-> background.get(),"Rect",new String[]{"Rect","Round"});
@@ -56,19 +55,15 @@ public class ArrayList extends ModuleWidget {
     public NumberValue hight2 = new NumberValue("RectangleHight",1,1.0,20.0,0.1);
     public NumberValue hight = new NumberValue("ArrayHight",14,1.0,20.0,0.1);
     public NumberValue sb = new NumberValue("FontCount",0.0,-20.0,20.0,0.1);
-    public NumberValue count = new NumberValue("ArrayCount",1,1.0,5,0.1);
-
+    public NumberValue count = new NumberValue("ArrayCount",1,-5.0,5,0.1);
+    FontRenderer fontManager = FontManager.Regular.get(18);
     @Override
     public void onShader(Shader2DEvent event) {
-        rendermodule();
+        rendermodule(true);
     }
 
     @Override
     public void render() {
-        rendermodule();
-    }
-    public void rendermodule(){
-        FontRenderer fontManager = FontManager.Regular.get(18);
         switch (fontmode.get()){
             case "Bold":
                 fontManager = FontManager.Bold.get(18);
@@ -82,10 +77,23 @@ public class ArrayList extends ModuleWidget {
             case "Light":
                 fontManager = FontManager.Light.get(18);
         }
+        rendermodule(false);
+    }
+    public void rendermodule(boolean shader){
         java.util.ArrayList<Module> enabledMods = getModuleArrayList(fontManager);
         int count = 0;
         int counts = 0;
         ScaledResolution sr = new ScaledResolution(mc);
+        int renderx2 = (int) renderX - 2;
+        int rendery2 = (int) renderY + 4;
+        boolean flip2 = renderX + width / 2 <= sr.getScaledWidth() / 2f;
+        int x2 = flip2 ? (renderx2 + 4) : (int) (renderx2 + (this.width - ( fontmode.get().equals("Custom")? 80 : 80))) + 21;
+        int y2 = rendery2 + count - 4;
+        if (style.is("HotKey")){
+            RoundedUtil.drawRound(x2,y2 - 18,80,13,radius.get().intValue(),ColorUtil.applyOpacity3(white.get() ? new Color(255,255,255).getRGB() :new Color(1,1,1).getRGB(),shader ? 1 : backgroundAlpha.get().floatValue()));
+            Bold.get(18).drawString("Hot Key",x2 + 17,y2 - 14.5, INTERFACE.color());
+            Icon.get(20).drawString("F",x2 + 4,y2 - 12.5, INTERFACE.color());
+        }
         for (Module module : enabledMods){
             if (importantModules.get()){
                 if (module.getCategory() == Category.Visuals) continue;
@@ -139,54 +147,59 @@ public class ArrayList extends ModuleWidget {
                 default:
                     break;
             }
+            if (style.is("HotKey") || style.is("Icon") && background.getValue()){
+                RoundedUtil.drawRound(x + 6 + (fontmode.get().equals("Custom")? mc.fontRendererObj.getStringWidth(displayText) : fontManager.getStringWidth(displayText) + 4),rendery - 4 + count,15,hight.get().intValue(),radius.get().intValue(),ColorUtil.applyOpacity3(white.get() ? new Color(255,255,255).getRGB() :new Color(1,1,1).getRGB(),shader ? 255 : backgroundAlpha.get().floatValue()));
+            }
+            if (style.is("HotKey")){
+                Icon.get(30).drawString("T",x + 7 + (fontmode.get().equals("Custom")? mc.fontRendererObj.getStringWidth(displayText) : fontManager.getStringWidth(displayText) + 4),rendery - 1 + count, textcolor);
+            }
+            if (!shader) {
+                if (style.is("Icon")) {
+                    Icon.get(22).drawString(module.getCategory().icon, x + 13 - Icon.get(22).getStringWidth(module.getCategory().icon) / 2 + (fontmode.get().equals("Custom") ? mc.fontRendererObj.getStringWidth(displayText) : fontManager.getStringWidth(displayText) + 4), rendery + 1 + count, textcolor);
+                }
+            }
             if (background.getValue()) {
                 switch (backgroundmod.get()) {
                     case "Rect" :
-                        RenderUtil.drawRect(x - 2, rendery + count - 4, w, hight.get().intValue(),ColorUtil.applyOpacity(new Color(1,1,1),backgroundAlpha.get().floatValue()));
+                        RenderUtil.drawRect(x - 2, rendery + count - 4, w, hight.get().intValue(),ColorUtil.applyOpacity(white.get() ? new Color(255,255,255) :new Color(1,1,1),shader ? 255 : backgroundAlpha.get().floatValue()));
                         break;
                     case "Round":
-                        RoundedUtil.drawRound(x - 2, rendery + count - 4, w, hight.get().intValue(),radius.get().intValue(),ColorUtil.applyOpacity3(new Color(1,1,1).getRGB(),backgroundAlpha.get().floatValue()));
+                        RoundedUtil.drawRound(x - 2, rendery + count - 4, w, hight.get().intValue(),radius.get().intValue(),ColorUtil.applyOpacity3(white.get() ? new Color(255,255,255).getRGB() :new Color(1,1,1).getRGB(),shader ? 255 : backgroundAlpha.get().floatValue()));
                         break;
                 }
             }
-            switch (textShadow.getValue()) {
-                case "None":
-                    if (fontmode.get().equals("Custom")) {
-                        mc.fontRendererObj.drawString(displayText, x + 1, y, textcolor);
-                    }else {
-                        fontManager.drawString(displayText, x + 1, y, textcolor);
-                    }
-                    break;
-                case "Colored":
-                    RenderUtil.resetColor();
-                    if (fontmode.get().equals("Custom")) {
-                        mc.fontRendererObj.drawString(StringUtils.stripColorCodes(displayText), x + 2, y + 1 - 2, ColorUtil.darker(textcolor, .5f));
-                    }else {
-                        fontManager.drawString(StringUtils.stripColorCodes(displayText), x + 2, y + 1 - 2, ColorUtil.darker(textcolor, .5f));
-                    }
-                    RenderUtil.resetColor();
-                    if (fontmode.get().equals("Custom")) {
-                        mc.fontRendererObj.drawString(displayText, x + 1, y - 2, textcolor);
-                    }else {
-                        fontManager.drawString(displayText, x + 1, y - 2, textcolor);
-                    }
-                    break;
-                case "Black":
-                    float f = 2f;
-                    if (fontmode.get().equals("Custom")) {
-                        mc.fontRendererObj.drawString(StringUtils.stripColorCodes(displayText), (int) (x + f), (int) (y + f - 2),
-                                ColorUtil.applyOpacity(Color.BLACK,1f).getRGB());
-                    }else {
-                        fontManager.drawString(StringUtils.stripColorCodes(displayText), x + f, y + f - 2,
-                                ColorUtil.applyOpacity(Color.BLACK,1f).getRGB());
-                    }
-                    RenderUtil.resetColor();
-                    if (fontmode.get().equals("Custom")) {
-                        mc.fontRendererObj.drawString(displayText, x + 1, y - 2, textcolor);
-                    }else {
-                        fontManager.drawString(displayText, x + 1, y - 2, textcolor);
-                    }
-                    break;
+            if (!shader) {
+                switch (textShadow.getValue()) {
+                    case "None":
+                        if (fontmode.get().equals("Custom")) {
+                            mc.fontRendererObj.drawString(displayText, x + 1, y, textcolor);
+                        } else {
+                            fontManager.drawString(displayText, x + 1, y, textcolor);
+                        }
+                        break;
+                    case "Colored":
+                        RenderUtil.resetColor();
+                        if (fontmode.get().equals("Custom")) {
+                            mc.fontRendererObj.drawString(StringUtils.stripColorCodes(displayText), x + 2, y + 1 - 2, ColorUtil.darker(textcolor, .5f));
+                        } else {
+                            fontManager.drawString(StringUtils.stripColorCodes(displayText), x + 2, y + 1 - 2, ColorUtil.darker(textcolor, .5f));
+                        }
+                        RenderUtil.resetColor();
+                        if (fontmode.get().equals("Custom")) {
+                            mc.fontRendererObj.drawString(displayText, x + 1, y - 2, textcolor);
+                        } else {
+                            fontManager.drawString(displayText, x + 1, y - 2, textcolor);
+                        }
+                        break;
+                    case "Black":
+                        RenderUtil.resetColor();
+                        if (fontmode.get().equals("Custom")) {
+                            mc.fontRendererObj.drawStringWithShadow(displayText, x + 1, y - 2, textcolor);
+                        } else {
+                            fontManager.drawStringWithShadow(displayText, x + 1, y - 2, textcolor);
+                        }
+                        break;
+                }
             }
             if (animation.get().equals("Scale In")) {
                 RenderUtil.scaleEnd();

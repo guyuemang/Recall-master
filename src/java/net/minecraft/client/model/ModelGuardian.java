@@ -1,6 +1,6 @@
 package net.minecraft.client.model;
 
-import net.minecraft.client.Minecraft;
+import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.util.MathHelper;
@@ -92,7 +92,7 @@ public class ModelGuardian extends ModelBase
         }
 
         this.guardianEye.rotationPointZ = -8.25F;
-        Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
+        Entity entity = Mine.getMinecraft().getRenderViewEntity();
 
         if (entityguardian.hasTargetedEntity())
         {

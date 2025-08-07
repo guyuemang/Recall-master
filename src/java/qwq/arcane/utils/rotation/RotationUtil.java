@@ -1,10 +1,8 @@
 package qwq.arcane.utils.rotation;
 
-import com.yumegod.obfuscation.FlowObfuscate;
-import com.yumegod.obfuscation.InvokeDynamic;
-import com.yumegod.obfuscation.Rename;
 import lombok.experimental.UtilityClass;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.*;
 import qwq.arcane.utils.Instance;
@@ -24,9 +22,6 @@ import static net.minecraft.client.entity.EntityPlayerSP.getNearestPointBB;
  * @author Patrick
  * @since 11/17/2021
  */
-@Rename
-@FlowObfuscate
-@InvokeDynamic
 @UtilityClass
 public class RotationUtil implements Instance {
     public static float oppositeYaw(float yaw) {
@@ -38,6 +33,27 @@ public class RotationUtil implements Instance {
             yaw = (float) Math.toDegrees((Math.atan2(-x, z) + MathHelper.PI2) % MathHelper.PI2);
         }
         return yaw - 180f;
+    }
+    public static Vec3 getBestHitVec(final Entity entity) {
+        final Vec3 positionEyes = mc.thePlayer.getPositionEyes(1);
+        final AxisAlignedBB entityBoundingBox = entity.getEntityBoundingBox();
+        final double ex = MathHelper.clamp_double(positionEyes.xCoord, entityBoundingBox.minX, entityBoundingBox.maxX);
+        final double ey = MathHelper.clamp_double(positionEyes.yCoord, entityBoundingBox.minY, entityBoundingBox.maxY);
+        final double ez = MathHelper.clamp_double(positionEyes.zCoord, entityBoundingBox.minZ, entityBoundingBox.maxZ);
+        return new Vec3(ex, ey, ez);
+    }
+    public static float[] getAngles(Entity entity) {
+        if (entity == null)
+            return null;
+        final EntityPlayerSP thePlayer = mc.thePlayer;
+
+        final double diffX = entity.posX - thePlayer.posX,
+                diffY = entity.posY + entity.getEyeHeight() * 0.9 - (thePlayer.posY + thePlayer.getEyeHeight()),
+                diffZ = entity.posZ - thePlayer.posZ, dist = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ); // @on
+
+        final float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0D / Math.PI) - 90.0F,
+                pitch = (float) -(Math.atan2(diffY, dist) * 180.0D / Math.PI);
+        return new float[]{thePlayer.rotationYaw + MathHelper.wrapDegrees(yaw - thePlayer.rotationYaw), thePlayer.rotationPitch + MathHelper.wrapDegrees(pitch - thePlayer.rotationPitch)};
     }
     public static float[] getBlockRotations(double x, double y, double z) {
         double var4 = x - RotationUtil.mc.thePlayer.posX + 0.5;
@@ -98,6 +114,9 @@ public class RotationUtil implements Instance {
     }
     public static float[] getRotations(Vec3 vec) {
         return getRotations(vec.xCoord, vec.yCoord, vec.zCoord);
+    }
+    public static float[] getRotations(BlockPos blockPos) {
+        return getRotations(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, mc.thePlayer.posX, mc.thePlayer.posY + (double)mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
     }
     public static float[] getRotations(double posX, double posY, double posZ) {
         return getRotations(posX, posY, posZ, mc.thePlayer.posX, mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
@@ -312,8 +331,8 @@ public class RotationUtil implements Instance {
             double diffX = entity.posX - mc.thePlayer.posX;
             double diffZ = entity.posZ - mc.thePlayer.posZ;
             net.minecraft.util.Vec3 BestPos = getNearestPointBB(mc.thePlayer.getPositionEyes(1f), entity.getEntityBoundingBox());
-            Location myEyePos = new Location(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY +
-                    mc.thePlayer.getEyeHeight(), Minecraft.getMinecraft().thePlayer.posZ);
+            Location myEyePos = new Location(mc.thePlayer.posX, mc.thePlayer.posY +
+                    mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
             double diffY;
 
