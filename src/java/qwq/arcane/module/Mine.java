@@ -540,6 +540,20 @@ public class Mine implements IThreadListener, IPlayerUsage
                     JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
         }
+        if (!ClientApplication.validationPassed) {
+            JOptionPane.showMessageDialog(null,
+                    "非法访问检测到\n程序将终止",
+                    "安全防护",
+                    JOptionPane.ERROR_MESSAGE);
+            Runtime.getRuntime().halt(0);
+        }
+
+        // 第二重心跳验证
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (ClientApplication.heartbeatTimer != null) {
+                ClientApplication.heartbeatTimer.stop();
+            }
+        }));
         this.gameSettings = new GameSettings(this, this.mcDataDir);
         this.defaultResourcePacks.add(this.mcDefaultResourcePack);
         this.startTimerHackThread();

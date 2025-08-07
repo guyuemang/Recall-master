@@ -30,6 +30,7 @@ public class ClientApplication extends JFrame {
     private JTabbedPane tabbedPane;
     public static Timer heartbeatTimer;
     public static boolean Hwid = true;
+    public static boolean validationPassed = false;
 
     // 简约的2D颜色方案
     private static final Color DARK_BG = new Color(245, 245, 245);   // 浅灰背景
@@ -322,6 +323,7 @@ public class ClientApplication extends JFrame {
                 try {
                     Hwid = false;
                     Mine.resumeGame();
+                    validationPassed = true;
                     statusArea.append("[" + new Date() + "] Game resumed\n");
                 } catch (Exception e) {
                     statusArea.append("[" + new Date() + "] Failed to resume game: " + e.getMessage() + "\n");
