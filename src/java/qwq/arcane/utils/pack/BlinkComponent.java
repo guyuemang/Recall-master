@@ -22,20 +22,12 @@ import static qwq.arcane.utils.Instance.mc;
 public class BlinkComponent {
     public static final ConcurrentLinkedQueue<Packet<?>> packets = new ConcurrentLinkedQueue<>();
     public static boolean blinking, dispatch;
-    public static ArrayList<Class<?>> exemptedPackets = new ArrayList<>();
-    public static TimerUtil exemptionWatch = new TimerUtil();
-
-    public static void setExempt(Class<?>... packets) {
-        exemptedPackets = new ArrayList<>(Arrays.asList(packets));
-        exemptionWatch.reset();
-    }
 
     @EventTarget
     @EventPriority(-1)
     public void onPacketSend(PacketSendEvent event) {
         if (mc.thePlayer == null) {
             packets.clear();
-            exemptedPackets.clear();
             return;
         }
 
@@ -43,7 +35,6 @@ public class BlinkComponent {
             packets.forEach(PacketUtil::sendPacketNoEvent);
             packets.clear();
             blinking = false;
-            exemptedPackets.clear();
             return;
         }
 
@@ -55,26 +46,21 @@ public class BlinkComponent {
             return;
         }
 
-        if (blinking && !dispatch) {
-            if (exemptionWatch.hasTimeElapsed(100)) {
-                exemptionWatch.reset();
-                exemptedPackets.clear();
-            }
+        if (blinking) {
 
-            if (!event.isCancelled() && exemptedPackets.stream().noneMatch(packetClass ->
-                    packetClass == packet.getClass())) {
+            if (!event.isCancelled()) {
                 packets.add(packet);
                 event.setCancelled(true);
             }
-        } else if (packet instanceof C03PacketPlayer) {
-            packets.forEach(PacketUtil::sendPacketNoEvent);
-            packets.clear();
-            dispatch = false;
         }
+
     }
 
     public static void dispatch() {
-        dispatch = true;
+        blinking = false;
+        packets.forEach(PacketUtil::sendPacketNoEvent);
+        packets.clear();
+
     }
 
     @EventTarget

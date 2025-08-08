@@ -111,6 +111,7 @@ public class KillAura extends Module {
     @Override
     public void onEnable() {
         StopAutoBlock();
+        BlinkComponent.dispatch();
         blocking = false;
         index = 0;
         cps = 0;
@@ -126,6 +127,7 @@ public class KillAura extends Module {
     @Override
     public void onDisable() {
         StopAutoBlock();
+        BlinkComponent.dispatch();
         blocking = false;
         index = 0;
         cps = 0;
@@ -145,14 +147,6 @@ public class KillAura extends Module {
 
     public void Attack(){
         if (!targets.isEmpty()) {
-            if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
-                ++index;
-                switchTimer.reset();
-            }
-            if (index >= targets.size()) {
-                index = 0;
-                switchTimer.reset();
-            }
             if (attacktimer.delay(cps)) {
                 if (keepsprint.get()) {
                     Sprint.keepSprinting = true;
@@ -172,14 +166,6 @@ public class KillAura extends Module {
             final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
             cps = MathUtils.getRandomInRange(minValue, maxValue);
             attacktimer.reset();
-        } else {
-            Sprint.keepSprinting = false;
-            index = 0;
-            cps = 0;
-            switchTimer.reset();
-            attacktimer.reset();
-            targets.clear();
-            target = null;
         }
     }
     /**
@@ -189,6 +175,14 @@ public class KillAura extends Module {
     @EventTarget
     public void PreUpdate(PreUpdateEvent e){
         if (!targets.isEmpty()) {
+            if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
+                ++index;
+                switchTimer.reset();
+            }
+            if (index >= targets.size()) {
+                index = 0;
+                switchTimer.reset();
+            }
             switch (modeValue.get()) {
                 case "Single":
                     target = targets.get(0);
@@ -197,6 +191,14 @@ public class KillAura extends Module {
                     target = targets.get(index);
                     break;
             }
+        } else {
+            Sprint.keepSprinting = false;
+            index = 0;
+            cps = 0;
+            switchTimer.reset();
+            attacktimer.reset();
+            targets.clear();
+            target = null;
         }
         if (target == null) return;
         if (blockmode.is("Blink")){
@@ -231,6 +233,7 @@ public class KillAura extends Module {
                 onAutoBlock();
             } else {
                 StopAutoBlock();
+                BlinkComponent.dispatch();
             }
         }
         if (event.isPost() && !targets.isEmpty() && target != null){
@@ -335,7 +338,6 @@ public class KillAura extends Module {
             blink = true;
             newSlot = mc.thePlayer.inventory.currentItem % 8 + 1;
             if (blocking) {
-                mc.playerController.onStoppedUsingItem(mc.thePlayer);
                 if (this.serverSlot != newSlot) {
                     qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
                     this.swapped = true;
@@ -393,7 +395,6 @@ public class KillAura extends Module {
                         this.swapped = false;
                     }
                     sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-                    BlinkComponent.dispatch();
                     blocking = false;
                     break;
                 case "Fake":
