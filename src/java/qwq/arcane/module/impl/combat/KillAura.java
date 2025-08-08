@@ -7,16 +7,15 @@ import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.type.Type;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.fixes.AttackOrder;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -26,6 +25,7 @@ import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.player.AttackEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.player.PreUpdateEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
@@ -44,6 +44,7 @@ import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.BlinkUtils;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.rotation.RayCastUtil;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.*;
@@ -55,6 +56,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
+
 
 public class KillAura extends Module {
     public KillAura() {
@@ -103,7 +105,9 @@ public class KillAura extends Module {
     private int cps;
     private Entity auraESPTarget;
     public boolean blink;
-    public int blinktick;
+    public boolean blinkab = false;
+    private boolean swapped = false;
+    private int serverSlot = -1;
     @Override
     public void onEnable() {
         StopAutoBlock();
@@ -139,10 +143,7 @@ public class KillAura extends Module {
         setState(false);
     }
 
-    @EventTarget
-    public void UpdateEvent(UpdateEvent event){
-        setsuffix(modeValue.get());
-        targets = setTargets();
+    public void Attack(){
         if (!targets.isEmpty()) {
             if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
                 ++index;
@@ -183,6 +184,24 @@ public class KillAura extends Module {
             targets.clear();
             target = null;
         }
+    }
+    /**
+     * @Author：22666j
+     * @Description：别抄，抄了死全家
+     */
+    @EventTarget
+    public void PreUpdate(PreUpdateEvent e){
+        if (target == null) return;
+        if (blockmode.is("Blink")){
+            preBlinktick();
+            return;
+        }
+        Attack();
+    }
+    @EventTarget
+    public void UpdateEvent(UpdateEvent event){
+        setsuffix(modeValue.get());
+        targets = setTargets();
         if (rotation.get()) {
             rotationTarget = findClosestEntity(Rotationrange.get());
             if (rotationTarget != null) {
@@ -298,35 +317,46 @@ public class KillAura extends Module {
                     break;
                 case "Interact":
                     break;
-                case "Blink":
-                    BlinkComponent.blinking = true;
-                    blink = true;
-                    blocking = true;
-                    break;
             }
         }
     }
 
     public void preBlinktick(){
-        if (blocking){
-            blinktick ++;
-        }
-        switch (blinktick){
-            case 0:
-                break;
-            case 1:
-                BlinkComponent.blinking = true;
-                if (blink){
-                    sendPacket(new C08PacketPlayerBlockPlacement(new BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0.0F, 0.0F, 0.0F));
-                    BlinkComponent.dispatch();
+        int newSlot;
+        if (blinkab) {
+            BlinkComponent.blinking = true;
+            blink = true;
+            newSlot = mc.thePlayer.inventory.currentItem % 8 + 1;
+            if (blocking) {
+                mc.playerController.onStoppedUsingItem(mc.thePlayer);
+                if (this.serverSlot != newSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
+                    this.swapped = true;
                 }
-                sendPacket(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-                break;
-            case 2:
-                blinktick = 0;
-                blink = false;
-                BlinkComponent.blinking = false;
-                break;
+                blocking = false;
+            }
+            qwq.arcane.utils.pack.PacketUtil.sendPacket(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
+            blinkab = false;
+        } else {
+            newSlot = mc.thePlayer.inventory.currentItem;
+            if (this.serverSlot != newSlot) {
+                qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
+                this.swapped = false;
+            }
+            Attack();
+            MovingObjectPosition result = RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation ,range.getValue().floatValue());
+            if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
+                if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, result.entityHit, result)) {
+                    mc.playerController.interactWithEntitySendPacket(mc.thePlayer, result.entityHit);
+                }
+                if (!blocking) {
+                    blocking = true;
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
+                }
+            }
+            blinkab = true;
+            BlinkComponent.dispatch();
+            blink = false;
         }
     }
 
@@ -348,8 +378,15 @@ public class KillAura extends Module {
                     mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
                 case "Blink":
+                    if (this.swapped) {
+                        int currentSlot = mc.thePlayer.inventory.currentItem;
+                        if (this.serverSlot != currentSlot) {
+                            qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
+                        }
+                        this.swapped = false;
+                    }
                     sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-                    BlinkComponent.blinking = false;
+                    BlinkComponent.dispatch();
                     blocking = false;
                     break;
                 case "Fake":

@@ -2,6 +2,7 @@ package net.minecraft.client.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import qwq.arcane.event.impl.events.player.*;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -52,10 +53,6 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.misc.ChatEvent;
-import qwq.arcane.event.impl.events.player.MotionEvent;
-import qwq.arcane.event.impl.events.player.PostUpdateEvent;
-import qwq.arcane.event.impl.events.player.SlowDownEvent;
-import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.impl.world.Disabler;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.player.MovementUtil;
@@ -186,9 +183,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onUpdate()
     {
-        Client.Instance.getEventManager().call(new UpdateEvent());
+        Client.Instance.getEventManager().call(new PreUpdateEvent());
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ)))
         {
+            Client.Instance.getEventManager().call(new UpdateEvent());
             prevRenderPitchHead = renderPitchHead;
             renderPitchHead = rotationPitch;
 
