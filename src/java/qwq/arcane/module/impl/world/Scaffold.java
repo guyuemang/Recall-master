@@ -138,7 +138,7 @@ public class Scaffold extends Module {
 
     }
     @EventTarget
-    public void onMotion(MotionEvent event){
+    public void onMotion(UpdateEvent event){
         setsuffix(String.valueOf(this.mode.get()));
         if (data != null && rotation.get() && mode.is("Normal") || mode.is("Telly") && canPlace && rotation.get()) {
             switch (modeValue.get()){

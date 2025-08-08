@@ -102,6 +102,8 @@ public class KillAura extends Module {
     private int index;
     private int cps;
     private Entity auraESPTarget;
+    public boolean blink;
+    public int blinktick;
     @Override
     public void onEnable() {
         StopAutoBlock();
@@ -154,26 +156,24 @@ public class KillAura extends Module {
                 if (keepsprint.get()) {
                     Sprint.keepSprinting = true;
                 }
-                if (!mc.gameSettings.keyBindUseItem.isKeyDown() && autoblock.get() && blockmode.is("LEGIT")) {
-                    switch (modeValue.get()) {
-                        case "Multi":
-                            mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
-                            break;
-                        case "Single":
-                            target = targets.get(0);
-                            attack(target);
-                            break;
-                        case "Switch":
-                            target = targets.get(index);
-                            attack(target);
-                            break;
-                    }
+                switch (modeValue.get()) {
+                    case "Multi":
+                        mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
+                        break;
+                    case "Single":
+                        target = targets.get(0);
+                        attack(target);
+                        break;
+                    case "Switch":
+                        target = targets.get(index);
+                        attack(target);
+                        break;
                 }
-                final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
-                final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
-                cps = MathUtils.getRandomInRange(minValue, maxValue);
-                attacktimer.reset();
             }
+            final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
+            final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
+            cps = MathUtils.getRandomInRange(minValue, maxValue);
+            attacktimer.reset();
         } else {
             Sprint.keepSprinting = false;
             index = 0;
@@ -297,23 +297,36 @@ public class KillAura extends Module {
                     blocking = true;
                     break;
                 case "Interact":
-                    KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
                     break;
                 case "Blink":
-                    switch (mc.thePlayer.ticksExisted % 4){
-                        case 1:
-                            break;
-                        case 2:
-                            sendPacket(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-                            sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
-                            BlinkComponent.blinking = false;
-                            break;
-                        case 3:
-                            break;
-                    }
+                    BlinkComponent.blinking = true;
+                    blink = true;
                     blocking = true;
                     break;
             }
+        }
+    }
+
+    public void preBlinktick(){
+        if (blocking){
+            blinktick ++;
+        }
+        switch (blinktick){
+            case 0:
+                break;
+            case 1:
+                BlinkComponent.blinking = true;
+                if (blink){
+                    sendPacket(new C08PacketPlayerBlockPlacement(new BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0.0F, 0.0F, 0.0F));
+                    BlinkComponent.dispatch();
+                }
+                sendPacket(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+                break;
+            case 2:
+                blinktick = 0;
+                blink = false;
+                BlinkComponent.blinking = false;
+                break;
         }
     }
 
@@ -330,13 +343,13 @@ public class KillAura extends Module {
                     blocking = false;
                     break;
                 case "Interact":
+                    break;
                 case "LEGIT":
                     mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
                 case "Blink":
                     sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
                     BlinkComponent.blinking = false;
-                    BlinkUtils.stopBlink();
                     blocking = false;
                     break;
                 case "Fake":
@@ -423,13 +436,19 @@ public class KillAura extends Module {
         if (auraESPTarget != null) {
             if (auraESP.isEnabled("Box")) {
                 RenderUtil.renderBoundingBox((EntityLivingBase) auraESPTarget, color, auraESPAnim.getOutput().floatValue());
+                RenderUtil.resetColor();
+                RenderUtil.resetColor2();
             }
             if (auraESP.isEnabled("Circle")) {
                 RenderUtil.drawCircle(this.auraESPTarget, event.partialTicks(), 0.75, color.getRGB(), this.auraESPAnim.getOutput().floatValue());
+                RenderUtil.resetColor();
+                RenderUtil.resetColor2();
             }
             if (auraESP.isEnabled("Tracer")) {
                 RenderUtil.drawTracerLine(auraESPTarget, 4f, Color.BLACK, auraESPAnim.getOutput().floatValue());
                 RenderUtil.drawTracerLine(auraESPTarget, 2.5f, color, auraESPAnim.getOutput().floatValue());
+                RenderUtil.resetColor();
+                RenderUtil.resetColor2();
             }
         }
     }

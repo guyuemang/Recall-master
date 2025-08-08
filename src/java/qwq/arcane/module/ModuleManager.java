@@ -93,6 +93,7 @@ public class ModuleManager {
         registerModule(new PlayerTracker());
         registerModule(new Scaffold());
         registerModule(new BlockFly());
+        registerModule(new Stuck());
 
         registerModule(new ArrayList());
         registerModule(new Notification());

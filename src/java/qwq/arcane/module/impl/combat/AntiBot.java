@@ -93,7 +93,7 @@ public class AntiBot extends Module {
         setsuffix(mode.get());
     }
     public static void tellPlayer(String message) {
-        Mine.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\247a[Distance] \247r" + message));
+        Mine.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\247a[Arcane] \247r" + message));
     }
 
     @Override
