@@ -62,7 +62,7 @@ public class KillAura extends Module {
     public KillAura() {
         super("KillAura",Category.Combat);
     }
-    public ModeValue modeValue = new ModeValue("AttackMode","Switch",new String[]{"Single","Multi","Switch"});
+    public ModeValue modeValue = new ModeValue("AttackMode","Switch",new String[]{"Single","Switch"});
     public NumberValue switchdelay = new NumberValue("SwitchDelay",()-> modeValue.getValue().equals("Switch"),10,1,20,1);
     public NumberValue max = new NumberValue("MaxDelay",10,1,20,1);
     public NumberValue min = new NumberValue("MinDelay",10,1,20,1);
@@ -158,9 +158,6 @@ public class KillAura extends Module {
                     Sprint.keepSprinting = true;
                 }
                 switch (modeValue.get()) {
-                    case "Multi":
-                        mc.playerController.attackEntity(mc.thePlayer, (Entity) targets);
-                        break;
                     case "Single":
                         target = targets.get(0);
                         attack(target);
@@ -191,6 +188,16 @@ public class KillAura extends Module {
      */
     @EventTarget
     public void PreUpdate(PreUpdateEvent e){
+        if (!targets.isEmpty()) {
+            switch (modeValue.get()) {
+                case "Single":
+                    target = targets.get(0);
+                    break;
+                case "Switch":
+                    target = targets.get(index);
+                    break;
+            }
+        }
         if (target == null) return;
         if (blockmode.is("Blink")){
             preBlinktick();
