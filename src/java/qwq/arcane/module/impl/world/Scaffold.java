@@ -146,14 +146,8 @@ public class Scaffold extends Module {
                     rotations = RotationUtil.getRotations(getVec3(data));
                     break;
                 case "Telly":
-                    float yaw = MovementUtil.getRawDirection();
+                    float yaw = MovementUtil.getRawDirection() - 125;
                     float pitch = RotationUtil.getRotations(getVec3(data))[1];
-                    boolean shouldTurn = mode.is("Telly") ? tellyStage : mc.thePlayer.offGroundTicks % 8 < 4;
-                    if (shouldTurn){
-                        yaw += mc.thePlayer.rotationYaw + 180 + RandomUtils.nextInt(0, 5);
-                    }else {
-                        yaw -= mc.thePlayer.rotationYaw + 180 + RandomUtils.nextInt(0, 5);
-                    }
                     rotations = new float[]{yaw, pitch};
                     break;
             }

@@ -23,10 +23,7 @@ import org.apache.commons.lang3.RandomUtils;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
-import qwq.arcane.event.impl.events.player.AttackEvent;
-import qwq.arcane.event.impl.events.player.MotionEvent;
-import qwq.arcane.event.impl.events.player.PreUpdateEvent;
-import qwq.arcane.event.impl.events.player.UpdateEvent;
+import qwq.arcane.event.impl.events.player.*;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
@@ -42,6 +39,7 @@ import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.BlinkUtils;
+import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.rotation.RayCastUtil;
@@ -208,6 +206,16 @@ public class KillAura extends Module {
         Attack();
     }
     @EventTarget
+    public void onSlowDown(SlowDownEvent e) {
+        if (blockmode.is("Blink")) {
+            if (blocking) {
+                mc.thePlayer.movementInput.moveStrafe *= 0.2f;
+                mc.thePlayer.movementInput.moveForward *= 0.2f;
+                mc.thePlayer.sprintToggleTimer = 0;
+            }
+        }
+    }
+    @EventTarget
     public void UpdateEvent(UpdateEvent event){
         setsuffix(modeValue.get());
         targets = setTargets();
@@ -332,26 +340,16 @@ public class KillAura extends Module {
     }
 
     public void preBlinktick(){
-        int newSlot;
         if (blinkab) {
             BlinkComponent.blinking = true;
             blink = true;
-            newSlot = mc.thePlayer.inventory.currentItem % 8 + 1;
             if (blocking) {
-                if (this.serverSlot != newSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
-                    this.swapped = true;
-                }
+                mc.playerController.onStoppedUsingItem(mc.thePlayer);
                 blocking = false;
             }
             qwq.arcane.utils.pack.PacketUtil.sendPacket(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
             blinkab = false;
         } else {
-            newSlot = mc.thePlayer.inventory.currentItem;
-            if (this.serverSlot != newSlot) {
-                qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
-                this.swapped = false;
-            }
             Attack();
             MovingObjectPosition result = RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation ,range.getValue().floatValue());
             if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
