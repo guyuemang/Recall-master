@@ -10,9 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Base64;
 import java.util.Date;
@@ -31,7 +29,7 @@ public class ClientApplication extends JFrame {
     public static Timer heartbeatTimer;
     public static boolean Hwid = true;
     public static boolean validationPassed = false;
-
+    private JCheckBox autoLoginCheckbox;
     // 简约的2D颜色方案
     private static final Color DARK_BG = new Color(245, 245, 245);   // 浅灰背景
     private static final Color MEDIUM_BG = new Color(255, 255, 255); // 纯白内容区
@@ -54,8 +52,73 @@ public class ClientApplication extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setupUI();
+        checkAutoLogin();
+    }
+    private void checkAutoLogin() {
+        File configFile = new File("autologin.cfg");
+        if (configFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                String username = reader.readLine();
+                String encryptedPassword = reader.readLine();
+
+                if (username != null && encryptedPassword != null) {
+                    // 解密密码
+                    String password = new String(Base64.getDecoder().decode(encryptedPassword));
+
+                    // 填充到输入框
+                    usernameField.setText(username);
+                    passwordField.setText(password);
+                    autoLoginCheckbox.setSelected(true);
+
+                    // 延迟执行自动登录
+                    SwingUtilities.invokeLater(() -> {
+                        login();
+                    });
+                }
+            } catch (Exception ex) {
+                logError("自动登录配置读取失败: " + ex.getMessage());
+            }
+        }
+    }
+    private void saveAutoLoginConfig() {
+        try (PrintWriter writer = new PrintWriter("autologin.cfg")) {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            // 加密存储密码
+            String encryptedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+
+            writer.println(username);
+            writer.println(encryptedPassword);
+        } catch (Exception ex) {
+            logError("保存自动登录配置失败: " + ex.getMessage());
+        }
     }
 
+    // 添加：清除自动登录配置
+    private void clearAutoLoginConfig() {
+        File configFile = new File("autologin.cfg");
+        if (configFile.exists()) {
+            configFile.delete();
+        }
+    }
+
+    // 添加：记录错误日志
+    private void logError(String message) {
+        statusArea.append("[" + new Date() + "] ERROR: " + message + "\n");
+    }
+    // 添加：在认证面板创建自动登录复选框
+    private void addAutoLoginCheckbox(JPanel authPanel) {
+        JPanel checkboxPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        checkboxPanel.setOpaque(false);
+
+        autoLoginCheckbox = new JCheckBox("下次自动登录");
+        autoLoginCheckbox.setFont(REGULAR_FONT);
+        autoLoginCheckbox.setForeground(TEXT_COLOR);
+
+        checkboxPanel.add(autoLoginCheckbox);
+        authPanel.add(checkboxPanel, BorderLayout.NORTH); // 放在输入区域上方
+    }
     private void setupUI() {
         // 设置全局UI样式
         UIManager.put("TabbedPane.background", DARK_BG);
@@ -80,6 +143,7 @@ public class ClientApplication extends JFrame {
 
         setContentPane(mainPanel);
 
+        addAutoLoginCheckbox(mainPanel);
         // 添加事件监听器
         loginBtn.addActionListener(e -> login());
         registerBtn.addActionListener(e -> register());
@@ -212,6 +276,15 @@ public class ClientApplication extends JFrame {
                 "\n\nInstructions:\n1. Register an account first\n2. Log in after registration\n3. Renew your subscription when needed\n4. Contact support for assistance");
 
         infoPanel.add(infoArea, BorderLayout.CENTER);
+        JButton logoutBtn = createFlatButton("注销", new Color(220, 100, 100));
+        logoutBtn.addActionListener(e -> logout());
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(logoutBtn);
+
+        infoPanel.add(buttonPanel, BorderLayout.SOUTH);
+
         return infoPanel;
     }
 
@@ -295,10 +368,17 @@ public class ClientApplication extends JFrame {
                      PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-                    out.println(request);
-                    response = in.readLine();
+                    // 加密请求
+                    String encryptedRequest = AESUtil.encrypt(request);
+                    out.println(encryptedRequest);
+
+                    // 接收加密响应
+                    String encryptedResponse = in.readLine();
+                    if (encryptedResponse != null) {
+                        response = AESUtil.decrypt(encryptedResponse);
+                    }
                 } catch (Exception ex) {
-                    response = "ERROR:Server connection failed";
+                    response = "ERROR:通信失败";
                 }
                 return null;
             }
@@ -306,7 +386,7 @@ public class ClientApplication extends JFrame {
             @Override
             protected void done() {
                 if (response != null) {
-                    statusArea.append("[" + new Date() + "] Server response: " + response + "\n");
+                    statusArea.append("[" + new Date() + "] 服务器响应: " + response + "\n");
                     processResponse(response);
                 }
             }
@@ -318,7 +398,7 @@ public class ClientApplication extends JFrame {
             String message = response.substring(8); // Remove "SUCCESS:"
             String operation = response.split(":")[0]; // 获取操作类型
 
-            if (message.contains("2025") || message.contains("2026") || message.contains("2027") || message.contains("2028") || message.contains("2029") || message.contains("2030")) {
+            if (message.contains("2025") || message.contains("2026") || message.contains("2027") || message.contains("2028") || message.contains("2029") || message.contains("2030") || message.contains("2031") || message.contains("2032") || message.contains("2033") || message.contains("2034") || message.contains("2035") || message.contains("2036") || message.contains("2037") || message.contains("2038")) {
                 // 恢复游戏
                 try {
                     Hwid = false;
@@ -328,7 +408,11 @@ public class ClientApplication extends JFrame {
                 } catch (Exception e) {
                     statusArea.append("[" + new Date() + "] Failed to resume game: " + e.getMessage() + "\n");
                 }
-
+                if (autoLoginCheckbox.isSelected()) {
+                    saveAutoLoginConfig();
+                } else {
+                    clearAutoLoginConfig();
+                }
                 // 启动心跳
                 startHeartbeat();
 
@@ -361,7 +445,12 @@ public class ClientApplication extends JFrame {
         });
         heartbeatTimer.start();
     }
-
+    private void logout() {
+        clearAutoLoginConfig();
+        usernameField.setText("");
+        passwordField.setText("");
+        statusArea.append("[" + new Date() + "] 已注销\n");
+    }
     private void sendHeartbeat() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());

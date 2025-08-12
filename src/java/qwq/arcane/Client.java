@@ -28,7 +28,7 @@ import qwq.arcane.utils.rotation.RotationManager;
 public class Client implements Instance {
     public static Client Instance = new Client();
     public static String name = "Arcane";
-    public static String version = " Release 1.7";
+    public static String version = " Release 2.4";
 
     private EventManager eventManager;
     private ModuleManager moduleManager;

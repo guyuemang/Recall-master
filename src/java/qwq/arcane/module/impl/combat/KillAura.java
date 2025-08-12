@@ -39,7 +39,6 @@ import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.BlinkUtils;
-import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.rotation.RayCastUtil;
@@ -68,7 +67,7 @@ public class KillAura extends Module {
     public BoolValue keepsprint = new BoolValue("KeepSprint",false);
     public BoolValue autoblock = new BoolValue("AutoBlock",false);
     public NumberValue blockrange = new NumberValue("BlockRange",()->autoblock.get(), 3.0,1.0,6.0,0.1);
-    private final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim","Blink","LEGIT", "Interact"});
+    public final ModeValue blockmode = new ModeValue("BlockMode",()->autoblock.get(), "Fake", new String[]{"Fake", "Grim","Blink","LEGIT", "Interact"});
     public BoolValue rotation = new BoolValue("Rotation",false);
     public NumberValue Rotationrange = new NumberValue("RotationRange",()->rotation.get(),3.0,1.0,6.0,0.1);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,180.0,1);
@@ -109,7 +108,6 @@ public class KillAura extends Module {
     @Override
     public void onEnable() {
         StopAutoBlock();
-        BlinkComponent.dispatch();
         blocking = false;
         index = 0;
         cps = 0;
@@ -119,13 +117,27 @@ public class KillAura extends Module {
         target = null;
         blockTarget = null;
         rotationTarget = null;
+        if (blockmode.is("Blink")){
+            if (this.swapped) {
+                int currentSlot = mc.thePlayer.inventory.currentItem;
+                if (this.serverSlot != currentSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
+                }
+                this.swapped = false;
+            }
+            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+            BlinkComponent.dispatch();
+            BlinkComponent.blinking = false;
+            blocking = false;
+            this.blink = false;
+            this.blinkab = false;
+        }
         super.onEnable();
     }
 
     @Override
     public void onDisable() {
         StopAutoBlock();
-        BlinkComponent.dispatch();
         blocking = false;
         index = 0;
         cps = 0;
@@ -135,6 +147,21 @@ public class KillAura extends Module {
         target = null;
         blockTarget = null;
         rotationTarget = null;
+        if (blockmode.is("Blink")){
+            if (this.swapped) {
+                int currentSlot = mc.thePlayer.inventory.currentItem;
+                if (this.serverSlot != currentSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
+                }
+                this.swapped = false;
+            }
+            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+            BlinkComponent.dispatch();
+            BlinkComponent.blinking = false;
+            blocking = false;
+            this.blink = false;
+            this.blinkab = false;
+        }
         super.onDisable();
     }
 
@@ -145,34 +172,6 @@ public class KillAura extends Module {
 
     public void Attack(){
         if (!targets.isEmpty()) {
-            if (attacktimer.delay(cps)) {
-                if (keepsprint.get()) {
-                    Sprint.keepSprinting = true;
-                }
-                switch (modeValue.get()) {
-                    case "Single":
-                        target = targets.get(0);
-                        attack(target);
-                        break;
-                    case "Switch":
-                        target = targets.get(index);
-                        attack(target);
-                        break;
-                }
-            }
-            final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
-            final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
-            cps = MathUtils.getRandomInRange(minValue, maxValue);
-            attacktimer.reset();
-        }
-    }
-    /**
-     * @Author：22666j
-     * @Description：别抄，抄了死全家
-     */
-    @EventTarget
-    public void PreUpdate(PreUpdateEvent e){
-        if (!targets.isEmpty()) {
             if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
                 ++index;
                 switchTimer.reset();
@@ -181,6 +180,71 @@ public class KillAura extends Module {
                 index = 0;
                 switchTimer.reset();
             }
+            if (attacktimer.delay(cps)) {
+                if (keepsprint.get()) {
+                    Sprint.keepSprinting = true;
+                }
+                attack(target);
+            }
+            final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
+            final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
+            cps = MathUtils.getRandomInRange(minValue, maxValue);
+            attacktimer.reset();
+        } else {
+            if (this.swapped) {
+                int currentSlot = mc.thePlayer.inventory.currentItem;
+                if (this.serverSlot != currentSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
+                }
+                this.swapped = false;
+            }
+            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+            BlinkComponent.dispatch();
+            BlinkComponent.blinking = false;
+            blocking = false;
+            this.blink = false;
+            this.blinkab = false;
+            Sprint.keepSprinting = false;
+            index = 0;
+            cps = 0;
+            switchTimer.reset();
+            attacktimer.reset();
+            targets.clear();
+            target = null;
+        }
+    }
+    /**
+     * @Author：22666j
+     * @Description：别抄，抄了死全家
+     */
+    @EventTarget
+    public void PreUpdate(PreUpdateEvent e){
+        if (target == null){
+            if (this.swapped) {
+                int currentSlot = mc.thePlayer.inventory.currentItem;
+                if (this.serverSlot != currentSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
+                }
+                this.swapped = false;
+            }
+            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+            BlinkComponent.dispatch();
+            BlinkComponent.blinking = false;
+            blocking = false;
+            this.blink = false;
+            this.blinkab = false;
+        }
+        if (target == null) return;
+        if (blockmode.is("Blink")){
+            preTickBlock();
+            return;
+        }
+        Attack();
+    }
+    @EventTarget
+    public void UpdateEvent(UpdateEvent event){
+        setsuffix(modeValue.get());
+        if (!targets.isEmpty()) {
             switch (modeValue.get()) {
                 case "Single":
                     target = targets.get(0);
@@ -190,34 +254,27 @@ public class KillAura extends Module {
                     break;
             }
         } else {
+            targets.clear();
+            target = null;
+            if (this.swapped) {
+                int currentSlot = mc.thePlayer.inventory.currentItem;
+                if (this.serverSlot != currentSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
+                }
+                this.swapped = false;
+            }
+            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+            BlinkComponent.dispatch();
+            BlinkComponent.blinking = false;
+            blocking = false;
+            this.blink = false;
+            this.blinkab = false;
             Sprint.keepSprinting = false;
             index = 0;
             cps = 0;
             switchTimer.reset();
             attacktimer.reset();
-            targets.clear();
-            target = null;
         }
-        if (target == null) return;
-        if (blockmode.is("Blink")){
-            preBlinktick();
-            return;
-        }
-        Attack();
-    }
-    @EventTarget
-    public void onSlowDown(SlowDownEvent e) {
-        if (blockmode.is("Blink")) {
-            if (blocking) {
-                mc.thePlayer.movementInput.moveStrafe *= 0.2f;
-                mc.thePlayer.movementInput.moveForward *= 0.2f;
-                mc.thePlayer.sprintToggleTimer = 0;
-            }
-        }
-    }
-    @EventTarget
-    public void UpdateEvent(UpdateEvent event){
-        setsuffix(modeValue.get());
         targets = setTargets();
         if (rotation.get()) {
             rotationTarget = findClosestEntity(Rotationrange.get());
@@ -241,7 +298,6 @@ public class KillAura extends Module {
                 onAutoBlock();
             } else {
                 StopAutoBlock();
-                BlinkComponent.dispatch();
             }
         }
         if (event.isPost() && !targets.isEmpty() && target != null){
@@ -302,7 +358,7 @@ public class KillAura extends Module {
                     rotaiton = new float[]{vec.x, vec.y};
                     break;
                 case "HvH":
-                    rotaiton = RotationUtil.getHVHRotation(entity, Rotationrange.getValue());
+                    rotaiton = RotationUtil.getHVHRotation(entity);
                     break;
             }
             Client.Instance.getRotationManager().setRotation(new Vector2f(rotaiton[0],rotaiton[1]),rotationspeed.get().intValue(), movefix.get(),strictValue.getValue());
@@ -339,32 +395,43 @@ public class KillAura extends Module {
         }
     }
 
-    public void preBlinktick(){
-        if (blinkab) {
+    @EventTarget
+    public void onSlow(SlowDownEvent e){
+        if (blocking && blockmode.is("Blink")){
+            mc.thePlayer.movementInput.moveStrafe *= 0.2f;
+            mc.thePlayer.movementInput.moveForward *= 0.2f;
+        }
+    }
+
+    private boolean preTickBlock() {
+        if (this.blinkab) {
             BlinkComponent.blinking = true;
-            blink = true;
+            this.blink = true;
             if (blocking) {
                 mc.playerController.onStoppedUsingItem(mc.thePlayer);
                 blocking = false;
             }
-            qwq.arcane.utils.pack.PacketUtil.sendPacket(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
-            blinkab = false;
+            this.blinkab = false;
         } else {
             Attack();
-            MovingObjectPosition result = RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation ,range.getValue().floatValue());
-            if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
-                if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, result.entityHit, result)) {
-                    mc.playerController.interactWithEntitySendPacket(mc.thePlayer, result.entityHit);
-                }
-                if (!blocking) {
-                    blocking = true;
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
+            if(mc.thePlayer.inventory.getCurrentItem() != null && mc.thePlayer.inventory.getCurrentItem().getItem() instanceof ItemSword) {
+                MovingObjectPosition result = RayCastUtil.rayCast(new Vector2f(Client.Instance.getRotationManager().rotation.getX(), Client.Instance.getRotationManager().rotation.getY()), range.getValue().floatValue());
+                if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
+                    if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, result.entityHit, result)) {
+                        mc.playerController.interactWithEntitySendPacket(mc.thePlayer, result.entityHit);
+                    }
+                    if (!blocking) {
+                        blocking = true;
+                        sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
+                    }
                 }
             }
-            blinkab = true;
+
             BlinkComponent.dispatch();
-            blink = false;
+            this.blink = false;
+            this.blinkab = true;
         }
+        return true;
     }
 
     public void StopAutoBlock(){
@@ -385,6 +452,8 @@ public class KillAura extends Module {
                     mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
                 case "Blink":
+                    targets.clear();
+                    target = null;
                     if (this.swapped) {
                         int currentSlot = mc.thePlayer.inventory.currentItem;
                         if (this.serverSlot != currentSlot) {
@@ -393,7 +462,11 @@ public class KillAura extends Module {
                         this.swapped = false;
                     }
                     sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                    BlinkComponent.dispatch();
+                    BlinkComponent.blinking = false;
                     blocking = false;
+                    this.blink = false;
+                    this.blinkab = false;
                     break;
                 case "Fake":
                     blocking = false;

@@ -2,7 +2,11 @@ package qwq.arcane.module.impl.world;
 
 
 import net.minecraft.block.*;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import qwq.arcane.Client;
+import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -23,6 +27,7 @@ import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.*;
 import qwq.arcane.utils.render.BlockUtil;
 import qwq.arcane.utils.render.PlaceInfo;
@@ -30,9 +35,7 @@ import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.NumberValue;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 public class BlockFly
@@ -47,6 +50,7 @@ extends qwq.arcane.module.Module {
     private final NumberValue tellyTicks = new NumberValue("TellyTicks", 2.9, 0.5, 8.0, 0.01);
     public final BoolValue eagle = new BoolValue("Eagle", false);
     public final BoolValue telly = new BoolValue("Telly", true);
+    public final BoolValue flyValue = new BoolValue("BlockFLY", false);
     public final BoolValue upValue = new BoolValue("Up", () -> this.telly.getValue() && !keepYValue.getValue(), false);
     public boolean tip = false;
     private int direction;
@@ -57,7 +61,9 @@ extends qwq.arcane.module.Module {
     private boolean canTellyPlace;
     private int prevItem = 0;
     int towerTick = 0;
-
+    public static LinkedList<List<Packet<?>>> packets = new LinkedList<>();
+    private int c08PacketSize = 0;
+    private boolean flyFlag = false;
     public BlockFly() {
         super("BlockFly", Category.World);
     }
@@ -75,11 +81,24 @@ extends qwq.arcane.module.Module {
             this.slot = -1;
         }
     }
-
+    private void sendTick(List<Packet<?>> tick) {
+        if (mc.getNetHandler() != null) {
+            tick.forEach(packet -> {
+                if (packet instanceof C08PacketPlayerBlockPlacement) {
+                    c08PacketSize -= 1;
+                }
+                PacketUtil.sendPacketNoEvent(packet);
+            });
+        }
+    }
     @Override
     public void onDisable() {
         if (mc.thePlayer == null) {
             return;
+        }
+        if (flyValue.getValue()) {
+            packets.forEach(this::sendTick);
+            packets.clear();
         }
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSneak.getKeyCode(), false);
         mc.thePlayer.inventory.currentItem = this.prevItem;
@@ -113,11 +132,29 @@ extends qwq.arcane.module.Module {
         if (this.slot < 0) {
             return;
         }
+        if (flyValue.getValue()) {
+            packets.add(new ArrayList<>());
+
+            if (c08PacketSize >= 12 && !flyFlag) {
+                flyFlag = true;
+                while (c08PacketSize > 2) {
+                    poll();
+                }
+            }
+
+            while (flyFlag && c08PacketSize > 2) {
+                poll();
+            }
+        }
         if (!this.telly.getValue()) {
             this.canTellyPlace = true;
         }
     }
-
+    private void poll() {
+        if (packets.isEmpty()) return;
+        this.sendTick(packets.getFirst());
+        packets.removeFirst();
+    }
     @EventTarget
     private void onPlace(PlaceEvent event) {
         this.slot = this.getBlockSlot();
@@ -269,7 +306,23 @@ extends qwq.arcane.module.Module {
             }
         }
     }
+    @EventTarget
+    public void onPacket(PacketSendEvent e) {
+        final Packet<?> packet = e.getPacket();
 
+        if (flyValue.getValue()) {
+            if (packet instanceof C08PacketPlayerBlockPlacement) {
+                c08PacketSize += 1;
+            }
+            mc.addScheduledTask(() -> {
+                if (packets.isEmpty()) {
+                    packets.add(new LinkedList<Packet<?>>());
+                }
+                packets.getLast().add(packet);
+            });
+            e.setCancelled(true);
+        }
+    }
     private void findBlock() {
         boolean shouldGoDown = false;
         BlockPos blockPosition = new BlockPos(mc.thePlayer.posX, getYLevel(), mc.thePlayer.posZ);

@@ -324,7 +324,7 @@ public class RotationUtil implements Instance {
                 (float) (-Math.toDegrees(Math.atan2(diffY, Math.sqrt(diffX * diffX + diffZ * diffZ))))
         ));
     }
-    public static float[] getHVHRotation(Entity entity, double maxRange) {
+    public static float[] getHVHRotation(Entity entity) {
         if (entity == null) {
             return null;
         } else {

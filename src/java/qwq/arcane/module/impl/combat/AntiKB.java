@@ -6,16 +6,22 @@ import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSoulSand;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.network.handshake.client.C00Handshake;
+import net.minecraft.network.login.client.C00PacketLoginStart;
+import net.minecraft.network.login.client.C01PacketEncryptionResponse;
+import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.S32PacketConfirmTransaction;
+import net.minecraft.network.status.client.C00PacketServerQuery;
+import net.minecraft.network.status.client.C01PacketPing;
 import net.minecraft.world.World;
+import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
+import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
@@ -30,31 +36,34 @@ import qwq.arcane.event.impl.events.player.StrafeEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.PacketUtil;
+import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
+import qwq.arcane.utils.rotation.RotationManager;
+import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
+import qwq.jnic.JNICInclude;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @Author：Guyuemang
  * @Date：7/7/2025 12:05 AM
  */
-
+@JNICInclude
 public class AntiKB extends Module {
     public AntiKB() {
         super("AntiKB",Category.Combat);
     }
 
-    private final ModeValue mode = new ModeValue("Mode","Prediction", new String[]{"Watchdog","Grim","Prediction","Jump Reset"});
+    private final ModeValue mode = new ModeValue("Mode","Prediction", new String[]{"Watchdog","Grim", "Delay","Prediction","Jump Reset"});
     private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset"), "Packet", new String[]{"Hurt Time", "Packet", "Advanced"});
+    private final NumberValue delayValue = new NumberValue("Packet Delay", 0, 1.0, 1000, 50);
     private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
     private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 100, 0, 100, 1);
     private final NumberValue hitsUntilJump = new NumberValue("Hits Until Jump", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 2, 1, 10, 1);
@@ -75,15 +84,18 @@ public class AntiKB extends Module {
     private boolean veloPacket = false;
     private boolean isFallDamage;
     private final Random random = new Random();
-    private TimerUtil timer = new TimerUtil();
     private TimerUtil flagtimer = new TimerUtil();
-
+    private boolean absorbedVelocity;
+    private final ArrayList<Packet<?>> delayedPackets = new ArrayList<>();
+    boolean delay;
+    private int velocityTicks;
+    private final TimerUtil timerUtil = new TimerUtil();
+    int start;
     public boolean velocityInput;
     private boolean grim_1_17Velocity;
     private boolean attacked;
     private double reduceXZ;
     private int flags;
-    private boolean reducing;
     @Override
     public void onEnable() {
         velocityInput = false;
@@ -92,6 +104,26 @@ public class AntiKB extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.setsuffix(mode.is("Grim") ? (ViaLoadingBase.getInstance().getTargetVersion().getVersion() >= 755 ? "Grim1.17+" : "Reduce") : mode.getValue());
+        if (mode.is("Prediction")) {
+            while (mc.thePlayer.hurtTime >= 8) {
+                mc.gameSettings.keyBindJump.pressed = true;
+                break;
+            }
+
+            while (mc.thePlayer.hurtTime >= 7 && !mc.gameSettings.keyBindForward.pressed) {
+                mc.gameSettings.keyBindForward.pressed = true;
+                start = 1;
+                break;
+            }
+
+            if (mc.thePlayer.hurtTime < 7 && mc.thePlayer.hurtTime > 0) {
+                mc.gameSettings.keyBindJump.pressed = false;
+                if (start == 1) {
+                    mc.gameSettings.keyBindForward.pressed = false;
+                    start = 0;
+                }
+            }
+        }
         switch (mode.get()) {
             case "Watchdog":
                 if (mc.thePlayer.onGround) {
@@ -110,7 +142,6 @@ public class AntiKB extends Module {
                         flags--;
                 }
                 if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() > 47) {
-
                     if (velocityInput) {
 
                         if (attacked) {
@@ -134,6 +165,31 @@ public class AntiKB extends Module {
                 }
             }
             break;
+            case "Delay":
+                if (delay) {
+                    velocityTicks++;
+                    if (timerUtil.reached(delayValue.getValue().intValue())) {
+                        if (mc.thePlayer.onGround && isPlayerValid()) {
+                            for (Packet<?> packet : delayedPackets) {
+                                mc.thePlayer.sendQueue.getNetworkManager().sendPacket(packet);
+                            }
+                            delayedPackets.clear();
+                            mc.thePlayer.jump();
+                            delay = false;
+                            velocityTicks = 0;
+                        } else if (!isPlayerValid() || velocityTicks > 40) {
+                            for (Packet<?> packet : delayedPackets) {
+                                mc.thePlayer.sendQueue.getNetworkManager().sendPacket(packet);
+                            }
+                            delayedPackets.clear();
+                            delay = false;
+                            velocityTicks = 0;
+                        }
+                        timerUtil.reset();
+                    }
+                }
+
+                break;
             case "Jump Reset":
                 if (jumpResetMode.is("Advanced")) {
                     if (mc.thePlayer.hurtTime == 9) {
@@ -173,7 +229,16 @@ public class AntiKB extends Module {
                         s12.motionX = (int) (mc.thePlayer.motionX * 8000);
                         s12.motionZ = (int) (mc.thePlayer.motionZ * 8000);
                         break;
-
+                    case "Delay": {
+                        if (isPlayerValid()) {
+                            velocityTicks = 0;
+                            if (!delay) {
+                                delayedPackets.clear();
+                                delay = true;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -252,6 +317,7 @@ public class AntiKB extends Module {
             grim_1_17Velocity = true;
         }
     }
+
     public static boolean soulSandCheck() {
         final AxisAlignedBB par1AxisAlignedBB = Mine.getMinecraft().thePlayer.getEntityBoundingBox().contract(0.001, 0.001,
                 0.001);
@@ -277,6 +343,7 @@ public class AntiKB extends Module {
 
     @EventTarget
     public void onStrafe(StrafeEvent event) {
+
         if (mode.is("Jump Reset")) {
             boolean shouldJump = false;
 
@@ -302,39 +369,24 @@ public class AntiKB extends Module {
             }
         }
     }
-    boolean enable;
+
     @EventTarget
-    public void onUpdates(UpdateEvent event) {
-        if (mode.is("Prediction")) {
-            if (mc.getCurrentScreen() != null) return;
-            if (KillAura.target == null){
-                return;
-            }
-            if (mc.thePlayer.hurtTime == 10) {
-                enable = MathHelper.getRandomDoubleInRange(new Random(), 0, 1) <= chance.getValue();
-            }
-            if (!enable) return;
-            if (mc.thePlayer.hurtTime >= 8) {
-                mc.gameSettings.keyBindJump.pressed = true;
-            } else if (mc.thePlayer.hurtTime > 6) {
-                mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
-                mc.gameSettings.keyBindJump.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindJump);
+    public void onPacketSend(PacketSendEvent event){
+        final Packet<?> packet = event.getPacket();
+        if (mode.getValue().equals("Delay")) {
+            if (!mc.thePlayer.onGround) {
+                if (packet instanceof C00Handshake || packet instanceof C00PacketLoginStart || packet instanceof C00PacketServerQuery || packet instanceof C01PacketPing || packet instanceof C01PacketEncryptionResponse || packet instanceof C00PacketKeepAlive || packet instanceof C02PacketUseEntity || packet instanceof C0APacketAnimation || packet instanceof C0BPacketEntityAction) {
+                    return;
+                }
+                if (delay) {
+                    event.setCancelled(true);;
+                    delayedPackets.add(event.getPacket());
+                }
             }
         }
     }
-    @Override
-    public void onDisable() {
-        if (mode.is("Prediction")) {
-            mc.gameSettings.keyBindJump.pressed = false;
-            mc.gameSettings.keyBindForward.pressed = false;
-        }
-    }
-    @EventTarget
-    public void onWorldEvent(WorldLoadEvent event) {
-        if (mode.is("Prediction")) {
-            mc.gameSettings.keyBindJump.pressed = false;
-            mc.gameSettings.keyBindForward.pressed = false;
-        }
+    private boolean isPlayerValid() {
+        return mc.thePlayer != null && !mc.thePlayer.isDead && !mc.thePlayer.isRiding() && mc.thePlayer.hurtResistantTime <= 10 && getModule(KillAura.class).getState() && KillAura.target != null;
     }
 
     private boolean checks() {

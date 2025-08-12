@@ -23,7 +23,6 @@ import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.player.PingerUtils;
-import qwq.arcane.utils.render.GradientUtil;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.utils.render.shader.impl.Bloom;

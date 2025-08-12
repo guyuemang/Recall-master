@@ -1,7 +1,6 @@
 package qwq.arcane.module.impl.misc;
 
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S02PacketChat;
@@ -15,12 +14,8 @@ import qwq.arcane.module.ModuleManager;
 import qwq.arcane.module.impl.combat.KillAura;
 import qwq.arcane.module.impl.player.InvManager;
 import qwq.arcane.module.impl.player.Stealer;
-import qwq.arcane.module.impl.world.PlayerTracker;
-import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
-import qwq.arcane.value.impl.NumberValue;
 
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /**
