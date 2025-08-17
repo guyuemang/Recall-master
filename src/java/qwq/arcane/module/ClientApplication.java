@@ -112,7 +112,7 @@ public class ClientApplication extends JFrame {
         JPanel checkboxPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         checkboxPanel.setOpaque(false);
 
-        autoLoginCheckbox = new JCheckBox("下次自动登录");
+        autoLoginCheckbox = new JCheckBox("remember password");
         autoLoginCheckbox.setFont(REGULAR_FONT);
         autoLoginCheckbox.setForeground(TEXT_COLOR);
 

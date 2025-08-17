@@ -69,16 +69,16 @@ public class MainMenu extends GuiScreen {
 
         ScaledResolution sr = new ScaledResolution(mc);
         RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
-        RoundedUtil.drawRound(width - 200, height - 50 , 180, 30, 5, new Color(35, 37, 43, 150));
+        RoundedUtil.drawRound(width / 2 - 90, height - 50 , 180, 30, 5, new Color(35, 37, 43, 150));
         RoundedUtil.drawRound(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0, new Color(0, 0, 0,50));
         FontManager.Icon.get(100).drawString("I", sr.getScaledWidth() / 2 - FontManager.Icon.get(100).getStringWidth("I") / 2 + 8, sr.getScaledHeight() / 2 - 130, new Color(109, 213, 250).getRGB());
         FontManager.Bold.get(50).drawCenteredString(Client.name, sr.getScaledWidth() / 2, sr.getScaledHeight() / 2 - 90, new Color(109, 213, 250).getRGB());
-
-        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 130, sr.getScaledHeight() - 45, 260, 40, 6, new Color(0, 0, 0, 120));
-        FontManager.Bold.get(18).drawCenteredString(Client.name + " " + Client.version, sr.getScaledWidth() / 2, sr.getScaledHeight() - 38, new Color(255, 255, 255).getRGB());
-        FontManager.Bold.get(18).drawCenteredString("OptiFine_1.8.9_HD_U_M6_pre2", sr.getScaledWidth() / 2, sr.getScaledHeight() - 28, new Color(255, 255, 255).getRGB());
-        FontManager.Bold.get(18).drawCenteredString("Made by Guyuemang", sr.getScaledWidth() / 2, sr.getScaledHeight() - 18, new Color(255, 255, 255).getRGB());
-        //按钮专属背景
+        FontManager.Regular.get(20).drawString("New NextGen? 8.20!",0,5, new Color(255, 255, 255).getRGB());
+//        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 130, sr.getScaledHeight() - 45, 260, 40, 6, new Color(0, 0, 0, 120));
+//        FontManager.Bold.get(18).drawCenteredString(Client.name + " " + Client.version, sr.getScaledWidth() / 2, sr.getScaledHeight() - 38, new Color(255, 255, 255).getRGB());
+//        FontManager.Bold.get(18).drawCenteredString("OptiFine_1.8.9_HD_U_M6_pre2", sr.getScaledWidth() / 2, sr.getScaledHeight() - 28, new Color(255, 255, 255).getRGB());
+//        FontManager.Bold.get(18).drawCenteredString("Made by Guyuemang", sr.getScaledWidth() / 2, sr.getScaledHeight() - 18, new Color(255, 255, 255).getRGB());
+//        //按钮专属背景
         RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 80, sr.getScaledHeight() / 2 - 55, 160, 175, 14, new Color(0, 0, 0, 120));
         float count = 0;
         for (Button button : buttons) {
@@ -115,7 +115,7 @@ public class MainMenu extends GuiScreen {
         }
         float count2 = 0;
         for (Button2 buttons2 : buttons2) {
-            buttons2.x = width - 200 + count2;
+            buttons2.x = width / 2 - 90 + count2;
             buttons2.y = height - 42;
             buttons2.width = FontManager.Icon.get(40).getStringWidth(buttons2.icon);
             buttons2.height = 15;
@@ -181,7 +181,7 @@ public class MainMenu extends GuiScreen {
                     case "Shop":{
                         URI uri = null;
                         try {
-                            uri = new URI("https://kw.atrishop.top/item?id=210");
+                            uri = new URI("https://guyuem.xyz/");
                         } catch (URISyntaxException e) {
                             throw new RuntimeException(e);
                         }

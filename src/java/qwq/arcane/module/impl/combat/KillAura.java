@@ -117,21 +117,6 @@ public class KillAura extends Module {
         target = null;
         blockTarget = null;
         rotationTarget = null;
-        if (blockmode.is("Blink")){
-            if (this.swapped) {
-                int currentSlot = mc.thePlayer.inventory.currentItem;
-                if (this.serverSlot != currentSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
-                }
-                this.swapped = false;
-            }
-            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-            BlinkComponent.dispatch();
-            BlinkComponent.blinking = false;
-            blocking = false;
-            this.blink = false;
-            this.blinkab = false;
-        }
         super.onEnable();
     }
 
@@ -147,21 +132,6 @@ public class KillAura extends Module {
         target = null;
         blockTarget = null;
         rotationTarget = null;
-        if (blockmode.is("Blink")){
-            if (this.swapped) {
-                int currentSlot = mc.thePlayer.inventory.currentItem;
-                if (this.serverSlot != currentSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
-                }
-                this.swapped = false;
-            }
-            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-            BlinkComponent.dispatch();
-            BlinkComponent.blinking = false;
-            blocking = false;
-            this.blink = false;
-            this.blinkab = false;
-        }
         super.onDisable();
     }
 
@@ -184,26 +154,22 @@ public class KillAura extends Module {
                 if (keepsprint.get()) {
                     Sprint.keepSprinting = true;
                 }
-                attack(target);
+                switch (modeValue.get()) {
+                    case "Single":
+                        target = targets.get(0);
+                        attack(target);
+                        break;
+                    case "Switch":
+                        target = targets.get(index);
+                        attack(target);
+                        break;
+                }
             }
             final int maxValue = (int) ((min.getMax() - max.getValue()) * 20);
             final int minValue = (int) ((min.getMin() - min.getValue()) * 20);
             cps = MathUtils.getRandomInRange(minValue, maxValue);
             attacktimer.reset();
         } else {
-            if (this.swapped) {
-                int currentSlot = mc.thePlayer.inventory.currentItem;
-                if (this.serverSlot != currentSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
-                }
-                this.swapped = false;
-            }
-            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-            BlinkComponent.dispatch();
-            BlinkComponent.blinking = false;
-            blocking = false;
-            this.blink = false;
-            this.blinkab = false;
             Sprint.keepSprinting = false;
             index = 0;
             cps = 0;
@@ -219,20 +185,15 @@ public class KillAura extends Module {
      */
     @EventTarget
     public void PreUpdate(PreUpdateEvent e){
-        if (target == null){
-            if (this.swapped) {
-                int currentSlot = mc.thePlayer.inventory.currentItem;
-                if (this.serverSlot != currentSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
-                }
-                this.swapped = false;
+        if (!targets.isEmpty()) {
+            switch (modeValue.get()) {
+                case "Single":
+                    target = targets.get(0);
+                    break;
+                case "Switch":
+                    target = targets.get(index);
+                    break;
             }
-            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-            BlinkComponent.dispatch();
-            BlinkComponent.blinking = false;
-            blocking = false;
-            this.blink = false;
-            this.blinkab = false;
         }
         if (target == null) return;
         if (blockmode.is("Blink")){
@@ -244,37 +205,6 @@ public class KillAura extends Module {
     @EventTarget
     public void UpdateEvent(UpdateEvent event){
         setsuffix(modeValue.get());
-        if (!targets.isEmpty()) {
-            switch (modeValue.get()) {
-                case "Single":
-                    target = targets.get(0);
-                    break;
-                case "Switch":
-                    target = targets.get(index);
-                    break;
-            }
-        } else {
-            targets.clear();
-            target = null;
-            if (this.swapped) {
-                int currentSlot = mc.thePlayer.inventory.currentItem;
-                if (this.serverSlot != currentSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
-                }
-                this.swapped = false;
-            }
-            sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-            BlinkComponent.dispatch();
-            BlinkComponent.blinking = false;
-            blocking = false;
-            this.blink = false;
-            this.blinkab = false;
-            Sprint.keepSprinting = false;
-            index = 0;
-            cps = 0;
-            switchTimer.reset();
-            attacktimer.reset();
-        }
         targets = setTargets();
         if (rotation.get()) {
             rotationTarget = findClosestEntity(Rotationrange.get());
@@ -397,7 +327,7 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onSlow(SlowDownEvent e){
-        if (blocking && blockmode.is("Blink")){
+        if (blocking && blockmode.is("Blink") && !mc.thePlayer.isInWeb){
             mc.thePlayer.movementInput.moveStrafe *= 0.2f;
             mc.thePlayer.movementInput.moveForward *= 0.2f;
         }
@@ -452,8 +382,6 @@ public class KillAura extends Module {
                     mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
                 case "Blink":
-                    targets.clear();
-                    target = null;
                     if (this.swapped) {
                         int currentSlot = mc.thePlayer.inventory.currentItem;
                         if (this.serverSlot != currentSlot) {
@@ -463,10 +391,7 @@ public class KillAura extends Module {
                     }
                     sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
                     BlinkComponent.dispatch();
-                    BlinkComponent.blinking = false;
                     blocking = false;
-                    this.blink = false;
-                    this.blinkab = false;
                     break;
                 case "Fake":
                     blocking = false;

@@ -406,7 +406,7 @@ public class ItemRenderer
                     this.renderItemMap(abstractclientplayer, f2, f, f1);
                 }
 
-                else if (abstractclientplayer.getItemInUseCount() > 0 || aura.blocking || aura.blockmode.is("Blink") && aura.blockTarget != null || animations.getBlockWhenSwing().get() && mc.thePlayer.isSwingInProgress)
+                else if (abstractclientplayer.getItemInUseCount() > 0 || aura.blocking || aura.blockmode.is("Blink") && !aura.targets.isEmpty() || animations.getBlockWhenSwing().get() && mc.thePlayer.isSwingInProgress)
                 {
                     EnumAction enumaction = this.itemToRender.getItemUseAction();
 

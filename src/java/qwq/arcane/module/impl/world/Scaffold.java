@@ -1,6 +1,7 @@
 package qwq.arcane.module.impl.world;
 
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.C0APacketAnimation;
@@ -45,7 +46,7 @@ public class Scaffold extends Module {
     public final BoolValue sprint = new BoolValue("sprint", true);
     public BoolValue rotation = new BoolValue("Rotation",true);
     public NumberValue rotationspeed = new NumberValue("RotationSpeed",()->rotation.get(),180.0,1.0,360,1);
-    public ModeValue modeValue = new ModeValue("RotationMode","Normal",new String[]{"Normal","Telly"});
+    public ModeValue modeValue = new ModeValue("RotationMode","Normal",new String[]{"Normal","Telly","Telly2"});
     public static BoolValue rayCastValue = new BoolValue("RayCast", true);
     public BoolValue movefix = new BoolValue("MoveFix",true);
     public final BoolValue esp = new BoolValue("ESP", true);
@@ -144,6 +145,14 @@ public class Scaffold extends Module {
             switch (modeValue.get()){
                 case "Normal":
                     rotations = RotationUtil.getRotations(getVec3(data));
+                    break;
+                case "Telly2":
+                    rotations[1] = 82;
+                    float yaw2 = 120;
+                    if (GameSettings.isKeyDown(mc.gameSettings.keyBindRight))
+                        yaw2 = - yaw2;
+
+                    rotations[0] = mc.thePlayer.rotationYaw + yaw2;
                     break;
                 case "Telly":
                     float yaw = MovementUtil.getRawDirection() - 125;
