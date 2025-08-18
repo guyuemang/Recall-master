@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.client.gui.GuiButton;
 import qwq.arcane.gui.MainMenu;
 
 public class GuiGameOver extends GuiScreen implements GuiYesNoCallback

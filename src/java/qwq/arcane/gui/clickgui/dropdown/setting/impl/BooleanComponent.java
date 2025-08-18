@@ -32,7 +32,7 @@ public class BooleanComponent extends Component {
         FontManager.Bold.get(15).drawString(setting.getName(), getX() + 4, getY() + 2.5f, new Color(234, 234, 234).getRGB());
 
         RoundedUtil.drawRound(getX() + getWidth() - 15.5f, getY() + 2.5f, 13f, 6, 2.7f, InterFace.mainColor.get().brighter());
-        RenderUtil.drawCircleCGUI(getX() + getWidth() - 12.5f + 7 * (float) toggleAnimation.getOutput().floatValue(), getY() + 5.5f, 7f, new Color(219, 226, 239).getRGB());
+        RenderUtil.drawCircleCGUI(getX() + getWidth() - 12.5f + 7 * (float) toggleAnimation.getOutput().floatValue(), getY() + 5.5f, 7f,InterFace.mainColor.get().darker().darker().getRGB());
         super.drawScreen(mouseX, mouseY);
     }
 

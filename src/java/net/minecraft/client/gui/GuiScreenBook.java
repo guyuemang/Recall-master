@@ -5,6 +5,8 @@ import com.google.gson.JsonParseException;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.util.List;
+
+import net.minecraft.client.gui.GuiButton;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;

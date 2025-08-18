@@ -1,10 +1,13 @@
 package qwq.arcane.utils.render;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+import qwq.arcane.module.Mine;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -28,6 +31,36 @@ public class GLUtil {
         render.run();
         GL11.glEnd();
     }
+    public static int getMouseX() {
+        return Mouse.getX() * getScreenWidth() / Mine.getMinecraft().displayWidth;
+    }
+
+    public static int getMouseY() {
+        return getScreenHeight() - Mouse.getY() * getScreenHeight() / Mine.getMinecraft().displayWidth - 1;
+    }
+    public static int getScaleFactor() {
+        int scaleFactor = 1;
+        final boolean isUnicode = Mine.getMinecraft().isUnicode();
+        int guiScale = Mine.getMinecraft().gameSettings.guiScale;
+        if (guiScale == 0) {
+            guiScale = 1000;
+        }
+        while (scaleFactor < guiScale && Mine.getMinecraft().displayWidth / (scaleFactor + 1) >= 320 && Mine.getMinecraft().displayHeight / (scaleFactor + 1) >= 240) {
+            ++scaleFactor;
+        }
+        if (isUnicode && scaleFactor % 2 != 0 && scaleFactor != 1) {
+            --scaleFactor;
+        }
+        return scaleFactor;
+    }
+    public static int getScreenWidth() {
+        return Mine.getMinecraft().displayWidth / getScaleFactor();
+    }
+
+    public static int getScreenHeight() {
+        return Mine.getMinecraft().displayHeight / getScaleFactor();
+    }
+
     public static void disableDepth() {
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);

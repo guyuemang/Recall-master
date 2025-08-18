@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.*;
+import qwq.arcane.module.Mine;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.math.MathConst;
 import qwq.arcane.utils.math.MathUtils;
@@ -79,7 +80,7 @@ public class RotationUtil implements Instance {
             return null;
         }
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Mine mc = Mine.getMinecraft();
         double xSize = entity.posX - mc.thePlayer.posX;
         double ySize = (entity.posY + entity.getEyeHeight() / 2) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
         double zSize = entity.posZ - mc.thePlayer.posZ;
@@ -475,7 +476,7 @@ public class RotationUtil implements Instance {
             yaw = lastYaw + moveYaw;
             pitch = lastPitch + movePitch;
 
-            for (int i = 1; i <= (int) (Minecraft.getDebugFPS() / 20f + Math.random() * 10); ++i) {
+            for (int i = 1; i <= (int) (Mine.getDebugFPS() / 20f + Math.random() * 10); ++i) {
 
                 if (Math.abs(moveYaw) + Math.abs(movePitch) > 1) {
                     yaw += (Math.random() - 0.5) / 1000;

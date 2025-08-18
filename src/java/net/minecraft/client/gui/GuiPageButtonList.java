@@ -6,6 +6,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiButton;
 import qwq.arcane.module.Mine;
 import net.minecraft.util.IntHashMap;
 

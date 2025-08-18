@@ -6,6 +6,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldSettings;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiShareToLan extends GuiScreen
 {

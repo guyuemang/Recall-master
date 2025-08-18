@@ -1,5 +1,6 @@
 package net.minecraft.client.gui;
 
+import qwq.arcane.gui.mcgui.GuiMultiplayer;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.network.LanServerDetector;
 import net.minecraft.client.resources.I18n;

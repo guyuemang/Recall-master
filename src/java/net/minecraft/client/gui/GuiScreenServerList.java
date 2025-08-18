@@ -4,6 +4,7 @@ import java.io.IOException;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiScreenServerList extends GuiScreen
 {

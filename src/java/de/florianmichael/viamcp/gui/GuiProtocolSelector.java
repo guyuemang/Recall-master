@@ -27,6 +27,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
+import qwq.arcane.utils.render.shader.MainMenu;
 
 import java.io.IOException;
 
@@ -62,6 +63,7 @@ public class GuiProtocolSelector extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        MainMenu.drawBackground(width,height,mouseX,mouseY);
         list.drawScreen(mouseX, mouseY, partialTicks);
         GlStateManager.pushMatrix();
         GlStateManager.scale(2.0, 2.0, 2.0);

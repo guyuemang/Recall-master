@@ -5,6 +5,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.optifine.gui.GuiButtonOF;
 import net.optifine.gui.GuiScreenCapeOF;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiCustomizeSkin extends GuiScreen
 {

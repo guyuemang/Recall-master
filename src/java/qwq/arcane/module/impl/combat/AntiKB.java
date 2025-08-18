@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import qwq.arcane.event.impl.events.misc.TickEvent;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
+import qwq.arcane.event.impl.events.player.*;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.Entity;
@@ -30,10 +31,6 @@ import net.minecraft.world.WorldSettings;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
-import qwq.arcane.event.impl.events.player.AttackEvent;
-import qwq.arcane.event.impl.events.player.MoveInputEvent;
-import qwq.arcane.event.impl.events.player.StrafeEvent;
-import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.world.Scaffold;
@@ -101,6 +98,7 @@ public class AntiKB extends Module {
         velocityInput = false;
         attacked = false;
     }
+
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.setsuffix(mode.is("Grim") ? (ViaLoadingBase.getInstance().getTargetVersion().getVersion() >= 755 ? "Grim1.17+" : "Reduce") : mode.getValue());
@@ -239,6 +237,25 @@ public class AntiKB extends Module {
                         }
                         break;
                     }
+                    case "Prediction":
+                        if(s12.getEntityID()== mc.thePlayer.getEntityId()) {
+                            double velX = s12.getMotionX() / 8000.0D;
+                            double velZ = s12.getMotionZ() / 8000.0D;
+                            float desiredYaw = (float) Math.toDegrees(Math.atan2(velZ, velX));
+                            if (desiredYaw < -180) desiredYaw += 360;
+                            if (desiredYaw > 180) desiredYaw -= 360;
+
+                            KillAura.externalRotation = new Vector2f(desiredYaw + 90F, mc.thePlayer.rotationPitch);
+                            KillAura.useExternalRotation = true;
+
+                            Client.Instance.getRotationManager().setRotation(
+                                    new Vector2f(desiredYaw + 90F, mc.thePlayer.rotationPitch),
+                                    360,
+                                    true,
+                                    true
+                            );
+                        }
+                        break;
                 }
             }
         }

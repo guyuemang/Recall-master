@@ -17,7 +17,7 @@ import java.util.Date;
 
 @JNICInclude
 public class ClientApplication extends JFrame {
-    private JTextField usernameField;
+    public static JTextField usernameField;
     private JPasswordField passwordField;
     private JTextField cardField;
     private JButton loginBtn;

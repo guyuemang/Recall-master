@@ -32,7 +32,7 @@ public class Inventory extends ModuleWidget {
         float itemWidth = 14;
         switch (modeValue.getValue()) {
             case "Solitude":
-                RoundedUtil.drawRound(x,y, itemWidth + 120, 65, INTERFACE.radius.get().intValue(), new Color(255, 255, 255, 255));
+                RoundedUtil.drawRound(x, y, 135, 71,11, new Color(0, 0, 0, 255));
                 break;
             case "Custom":
                 RoundedUtil.drawRound(x, y, 130, 66,6, new Color(255, 255, 255, 255));
@@ -50,15 +50,19 @@ public class Inventory extends ModuleWidget {
         float itemHeight = 14;
         float y1 = 17.0F;
         float x1 = 0.7F;
+        float x3 = renderX;
+        float y3 = renderY;
+        float itemWidth3 = 14;
+        float itemHeight3 = 14;
+        float y13 = 17.0F;
+        float x13 = 0.7F;
         switch (modeValue.getValue()) {
             case "Solitude":
-                RenderUtil.drawRect(x,y, itemWidth + 120, 65, new Color(255, 255, 255, 89));
-                RenderUtil.drawRect(x,y, itemWidth + 120, 15, new Color(255, 255, 255, 89));
-                Bold.get(18).drawCenteredString("Inventory",x + itemWidth / 2 + 60,y + 5, new Color(255, 255, 255).getRGB());
+                RoundedUtil.drawRound(x, y, 135, 71,11, new Color(0, 0, 0, 190));
+                FontManager.Bold.get(20).drawString("Inventory", x + 5, y + 5, -1);
                 for (int i = 9; i < 36; ++i) {
                     ItemStack slot = mc.thePlayer.inventory.getStackInSlot(i);
-                    RenderUtil.drawRect(x + 1.7F, y + 17.5F,13,13, new Color(255, 255, 255, 30));
-                    RenderUtil.renderItemStack(slot, x + 1.7F, y + 17.5F, 0.80F);
+                    RenderUtil.renderItemStack(slot, x + 2.7F, y + 20, 0.80F);
                     x += itemWidth;
                     x += x1;
                     if (i == 17) {
@@ -73,6 +77,9 @@ public class Inventory extends ModuleWidget {
                         x -= x1 * 9.0F;
                     }
                 }
+
+                width = (itemWidth * 9.1F + x1 * 9.0F);
+                height = (itemHeight * 3.0F + 19.0F);
                 break;
             case "Custom":
                 RoundedUtil.drawRound(x, y, 130, 66,6, new Color(255, 255, 255, 80));

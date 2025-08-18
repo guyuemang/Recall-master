@@ -15,7 +15,9 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraft.client.gui.GuiButton;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.render.shader.MainMenu;
 
 public class GuiOptions extends GuiScreen implements GuiYesNoCallback
 {
@@ -67,7 +69,7 @@ public class GuiOptions extends GuiScreen implements GuiYesNoCallback
             if (this.mc.isSingleplayer() && !this.mc.theWorld.getWorldInfo().isHardcoreModeEnabled())
             {
                 this.field_175357_i.setWidth(this.field_175357_i.getButtonWidth() - 20);
-                this.field_175356_r = new GuiLockIconButton(109, this.field_175357_i.xPosition + this.field_175357_i.getButtonWidth(), this.field_175357_i.yPosition);
+                this.field_175356_r = new GuiLockIconButton(109, (int) (this.field_175357_i.xPosition + this.field_175357_i.getButtonWidth()), (int) this.field_175357_i.yPosition);
                 this.buttonList.add(this.field_175356_r);
                 this.field_175356_r.func_175229_b(this.mc.theWorld.getWorldInfo().isDifficultyLocked());
                 this.field_175356_r.enabled = !this.field_175356_r.func_175230_c();
@@ -237,7 +239,7 @@ public class GuiOptions extends GuiScreen implements GuiYesNoCallback
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         ScaledResolution sr = new ScaledResolution(mc);
-        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
+        MainMenu.drawBackground(sr.getScaledWidth(), sr.getScaledHeight(), mouseX, mouseY);
         this.drawCenteredString(this.fontRendererObj, this.field_146442_a, this.width / 2, 15, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

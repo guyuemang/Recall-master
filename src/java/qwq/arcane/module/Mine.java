@@ -1143,7 +1143,6 @@ public class Mine implements IThreadListener, IPlayerUsage
         try
         {
             ScaledResolution sr = new ScaledResolution(mc);
-            RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
 
             this.stream.shutdownStream();
             logger.info("Stopping!");

@@ -83,7 +83,6 @@ public class ModuleManager {
         registerModule(new InterFace());
         registerModule(new ItemESP());
         registerModule(new KillEffect());
-        registerModule(new MotionBlur());
         registerModule(new NoHurtCam());
         registerModule(new Projectile());
 

@@ -35,7 +35,8 @@ public abstract class Animation {
         this.endPoint = endPoint; //The desired distance for the animated object to go.
         this.direction = direction; //Direction in which the graph is going. If backwards, will start from endPoint and go to 0.
     }
-
+    public Animation() {
+    }
 
     public boolean finished(Direction direction) {
         return isDone() && this.direction.equals(direction);

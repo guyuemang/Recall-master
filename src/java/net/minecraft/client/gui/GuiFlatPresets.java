@@ -20,6 +20,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.FlatGeneratorInfo;
 import net.minecraft.world.gen.FlatLayerInfo;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiFlatPresets extends GuiScreen
 {

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 
 public class EffectHUD extends ModuleWidget {
-    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
+    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom"});
 
     private final Map<Integer, Integer> potionMaxDurations = new HashMap<>();
     private final ContinualAnimation widthanimation = new ContinualAnimation();
@@ -88,9 +88,6 @@ public class EffectHUD extends ModuleWidget {
             animation.setDirection(Direction.BACKWARDS);
         }
         switch (modeValue.getValue()) {
-            case "Solitude":
-                RenderUtil.drawRect(x, y, 120, 15 + 20 * effects.size(), new Color(255, 255, 255, 100).getRGB());
-                break;
             case "Custom":
                 int l = 32;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -157,43 +154,6 @@ public class EffectHUD extends ModuleWidget {
             animation.setDirection(Direction.BACKWARDS);
         }
         switch (modeValue.getValue()) {
-            case "Solitude":
-                RenderUtil.drawRect(x, y, 120, 15 + 20 * effects.size(), new Color(255, 255, 255, 100).getRGB());
-                RenderUtil.drawRect(x, y, 120, 15, new Color(255, 255, 255, 100).getRGB());
-                int l1 = 20;
-                for (PotionEffect potioneffect : effects) {
-                    RenderUtil.drawRect(x, y + i2 - 1, (float) ((potioneffect.getDuration() / (1.0f * this.potionMaxDurations.get(potioneffect.getPotionID()))) * 120), 20, new Color(255, 255, 255, 50));
-                    Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
-                    String s1 = get(potioneffect);
-                    if (potion.hasStatusIcon()) {
-                        GL11.glPushMatrix();
-                        final boolean is2949 = GL11.glIsEnabled(2929);
-                        final boolean is3042 = GL11.glIsEnabled(3042);
-                        if (is2949)
-                            GL11.glDisable(2929);
-                        if (!is3042)
-                            GL11.glEnable(3042);
-                        GL11.glDepthMask(false);
-                        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-                        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                        final int statusIconIndex = potion.getStatusIconIndex();
-                        mc.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
-                        Gui.drawTexturedModalRect3(x + 5, y + i2, statusIconIndex % 8 * 18, 198 + statusIconIndex / 8 * 18, 18, 18);
-                        GL11.glDepthMask(true);
-                        if (!is3042)
-                            GL11.glDisable(3042);
-                        if (is2949)
-                            GL11.glEnable(2929);
-                        GL11.glPopMatrix();
-                    }
-                    FontManager.Bold.get(18).drawString(s1, x + offsetX + 8, (y + i2) - offsetY + 18, -1);
-
-                    i2 += l1;
-                }
-                Bold.get(18).drawCenteredString("Effects", x + 60, y + 6, -1);
-                setWidth(100);
-                setHeight(22 + i2);
-                break;
             case "Custom":
                 int l = 32;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

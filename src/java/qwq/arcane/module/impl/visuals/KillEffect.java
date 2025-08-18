@@ -82,7 +82,7 @@ public class KillEffect extends Module {
             }
             if (target.getHealth() <= 0){
                 if (this.soundEffect.getValue()) {
-                    playSound(-8);
+                    playSound(1);
                 }
             }
             if (this.explosion.getValue()) {
@@ -119,7 +119,7 @@ public class KillEffect extends Module {
             AudioInputStream as;
             try {
                 as = AudioSystem.getAudioInputStream(new BufferedInputStream(Objects.requireNonNull(Mine.getMinecraft().getResourceManager()
-                        .getResource(new ResourceLocation("solitude/sound/sb.wav"))
+                        .getResource(new ResourceLocation("nothing/sounds/sb.wav"))
                         .getInputStream())));
                 Clip clip = AudioSystem.getClip();
                 clip.open(as);

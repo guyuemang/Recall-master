@@ -1,23 +1,15 @@
 package qwq.arcane.gui;
 
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import org.bytedeco.javacv.FrameGrabber;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import qwq.arcane.Client;
 import qwq.arcane.gui.alt.GuiAccountManager;
-import qwq.arcane.module.impl.visuals.InterFace;
+import qwq.arcane.gui.mcgui.GuiMultiplayer;
+import qwq.arcane.module.ClientApplication;
 import qwq.arcane.utils.animations.Animation;
-import qwq.arcane.utils.animations.AnimationUtils;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
 import qwq.arcane.utils.animations.impl.LayeringAnimation;
-import qwq.arcane.utils.animations.impl.RippleAnimation;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
@@ -27,8 +19,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,7 +42,7 @@ public class MainMenu extends GuiScreen {
             new Button2("YouTube","Y"),
             new Button2("Shop","Z")
     );
-    private Animation fadeInAnimation = new DecelerateAnimation(1000, 1).setDirection(Direction.FORWARDS);
+    private Animation fadeInAnimation = new DecelerateAnimation(3000, 1).setDirection(Direction.FORWARDS);
     private static Animation progress4Anim;
     int alpha = 0;
     @Override
@@ -66,14 +56,11 @@ public class MainMenu extends GuiScreen {
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-
         ScaledResolution sr = new ScaledResolution(mc);
-        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
-        RoundedUtil.drawRound(width / 2 - 90, height - 50 , 180, 30, 5, new Color(35, 37, 43, 150));
-        RoundedUtil.drawRound(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0, new Color(0, 0, 0,50));
-        FontManager.Icon.get(100).drawString("I", sr.getScaledWidth() / 2 - FontManager.Icon.get(100).getStringWidth("I") / 2 + 8, sr.getScaledHeight() / 2 - 130, new Color(109, 213, 250).getRGB());
-        FontManager.Bold.get(50).drawCenteredString(Client.name, sr.getScaledWidth() / 2, sr.getScaledHeight() / 2 - 90, new Color(109, 213, 250).getRGB());
-        FontManager.Regular.get(20).drawString("New NextGen? 8.20!",0,5, new Color(255, 255, 255).getRGB());
+        qwq.arcane.utils.render.shader.MainMenu.drawBackground(width, height, mouseX, mouseY);
+        RoundedUtil.drawRound(width / 2 - 90, height - 120, 180, 30, 11, new Color(0, 0, 0, 120));
+        FontManager.Bold.get(80).drawCenteredString(Client.name, sr.getScaledWidth() / 2, sr.getScaledHeight() / 2 - 110, new Color(127, 127, 213).getRGB());
+        FontManager.Bold.get(22).drawCenteredString(Client.version, sr.getScaledWidth() / 2 + 35, sr.getScaledHeight() / 2 - 110, new Color(127, 127, 213).getRGB());
 //        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 130, sr.getScaledHeight() - 45, 260, 40, 6, new Color(0, 0, 0, 120));
 //        FontManager.Bold.get(18).drawCenteredString(Client.name + " " + Client.version, sr.getScaledWidth() / 2, sr.getScaledHeight() - 38, new Color(255, 255, 255).getRGB());
 //        FontManager.Bold.get(18).drawCenteredString("OptiFine_1.8.9_HD_U_M6_pre2", sr.getScaledWidth() / 2, sr.getScaledHeight() - 28, new Color(255, 255, 255).getRGB());
@@ -93,7 +80,7 @@ public class MainMenu extends GuiScreen {
                     }
                     break;
                     case "Multi Player": {
-                        LayeringAnimation.play(new GuiMultiplayer(this));
+                        LayeringAnimation.play(new GuiMultiplayer());
                     }
                     break;
                     case "Alt Manager": {
@@ -116,11 +103,11 @@ public class MainMenu extends GuiScreen {
         float count2 = 0;
         for (Button2 buttons2 : buttons2) {
             buttons2.x = width / 2 - 90 + count2;
-            buttons2.y = height - 42;
+            buttons2.y = height - 112;
             buttons2.width = FontManager.Icon.get(40).getStringWidth(buttons2.icon);
             buttons2.height = 15;
             buttons2.clickAction = () -> {
-                switch (buttons2.name){
+                switch (buttons2.name) {
                     case "Discord": {
                         URI uri = null;
                         try {
@@ -135,7 +122,7 @@ public class MainMenu extends GuiScreen {
                         }
                     }
                     break;
-                    case "Kook":{
+                    case "Kook": {
                         URI uri = null;
                         try {
                             uri = new URI("https://kook.vip/Adb58B");
@@ -149,7 +136,7 @@ public class MainMenu extends GuiScreen {
                         }
                     }
                     break;
-                    case "Bilibili":{
+                    case "Bilibili": {
                         URI uri = null;
                         try {
                             uri = new URI("https://space.bilibili.com/1068486349?spm_id_from=333.1007.0.0");
@@ -163,8 +150,7 @@ public class MainMenu extends GuiScreen {
                         }
                     }
                     break;
-                    case "YouTube":
-                    {
+                    case "YouTube": {
                         URI uri = null;
                         try {
                             uri = new URI("https://www.youtube.com/channel/UCZCkwH9GU1u-t34jma9XrlA");
@@ -178,7 +164,7 @@ public class MainMenu extends GuiScreen {
                         }
                     }
                     break;
-                    case "Shop":{
+                    case "Shop": {
                         URI uri = null;
                         try {
                             uri = new URI("https://guyuem.xyz/");
@@ -198,9 +184,13 @@ public class MainMenu extends GuiScreen {
         }
 
         float progress = fadeInAnimation.getOutput().floatValue();
-        alpha = (int)(255 * (1 - progress)); // 从完全不透明到完全透明
+        alpha = (int) (255 * (1 - progress)); // 从完全不透明到完全透明
 
         RenderUtil.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(0, 0, 0, alpha).getRGB());
+        if (fadeInAnimation.getOutput() <= 0.9) {
+            FontManager.Bold.get(60).drawString("Arcane " + Client.version, sr.getScaledWidth() / 2 - FontManager.Bold.get(60).getStringWidth("Arcane " + Client.version) / 2, sr.getScaledHeight() / 2 - 20, ColorUtil.applyOpacity(-1,fadeInAnimation.getOutput().floatValue()));
+            FontManager.Bold.get(30).drawString("Welcome!! " + ClientApplication.usernameField.getText(), sr.getScaledWidth() / 2 - FontManager.Bold.get(30).getStringWidth("Welcome!! " + ClientApplication.usernameField.getText()) / 2, sr.getScaledHeight() / 2 + 20, ColorUtil.applyOpacity(-1,fadeInAnimation.getOutput().floatValue()));
+        }
     }
 
     @Override
@@ -229,8 +219,8 @@ public class MainMenu extends GuiScreen {
             if (hovered) {
                 RoundedUtil.drawRound(x - 80, y - 15, width, 35, 14, rectColor);
             }
-            FontManager.Bold.get(20).drawCenteredString(name,x + 5,y,new Color(89, 139, 184).getRGB());
-            FontManager.Icon.get(30).drawCenteredString(icon,x - 5 - FontManager.Bold.get(20).getStringWidth(name) / 2  ,y,new Color(89, 139, 184).getRGB());
+            FontManager.Bold.get(20).drawCenteredString(name,x + 5,y,new Color(134, 168, 231).getRGB());
+            FontManager.Icon.get(30).drawCenteredString(icon,x - 5 - FontManager.Bold.get(20).getStringWidth(name) / 2  ,y,new Color(134, 168, 231).getRGB());
         }
 
         public void mouseClicked(int mouseX, int mouseY, int button) {

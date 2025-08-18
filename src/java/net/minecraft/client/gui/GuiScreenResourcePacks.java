@@ -15,6 +15,7 @@ import net.minecraft.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.Sys;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiScreenResourcePacks extends GuiScreen
 {

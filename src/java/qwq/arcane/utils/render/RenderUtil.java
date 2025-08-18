@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_NICEST;
@@ -54,6 +54,38 @@ public class RenderUtil {
     private static final Frustum FRUSTUM = new Frustum();
     public static Framebuffer createFrameBuffer(Framebuffer framebuffer) {
         return createFrameBuffer(framebuffer, false);
+    }
+    public static void drawLoadingCircle(float x, float y) {
+        for (int i = 0; i < 2; i++) {
+            int rot = (int) ((System.nanoTime() / 5000000 * i) % 360);
+            drawCircle(x, y, i * 6, rot - 220, rot);
+        }
+    }
+
+    public static void drawCircle(float x, float y, float radius, int start, int end) {
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        glColor(Color.WHITE.getRGB());
+
+        glEnable(GL_LINE_SMOOTH);
+        glLineWidth(3F);
+        glBegin(GL_LINE_STRIP);
+        for (float i = end; i >= start; i -= (360 / 90.0f)) {
+            glVertex2f((float) (x + (cos(i * PI / 180) * (radius * 1.001F))), (float) (y + (sin(i * PI / 180) * (radius * 1.001F))));
+        }
+        glEnd();
+        glDisable(GL_LINE_SMOOTH);
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+    public static int limit(double i) {
+        if (i > 255)
+            return 255;
+        if (i < 0)
+            return 0;
+        return (int) i;
     }
     public static void drawImage(ResourceLocation image, float x, float y, int width, int height) {
         glDisable(GL_DEPTH_TEST);
@@ -1473,6 +1505,22 @@ public class RenderUtil {
         GL11.glScissor((int) (x * scaleFactor),
                 (int) (Mine.getMinecraft().displayHeight - (y + height) * scaleFactor),
                 (int) (width * scaleFactor), (int) (height * scaleFactor));
+    }
+    public static void scissor(float x, float y, float width, float height, float scale) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        int scaleFactor = sr.getScaleFactor();
+
+        float scaledX = (x - sr.getScaledWidth() / 2f) * scale + sr.getScaledWidth() / 2f;
+        float scaledY = (y - sr.getScaledHeight() / 2f) * scale + sr.getScaledHeight() / 2f;
+        float scaledW = width * scale;
+        float scaledH = height * scale;
+
+        GL11.glScissor(
+                (int) (scaledX * scaleFactor),
+                (int) ((sr.getScaledHeight() - (scaledY + scaledH)) * scaleFactor),
+                (int) (scaledW * scaleFactor),
+                (int) (scaledH * scaleFactor)
+        );
     }
     public static void setAlphaLimit(float limit) {
         GlStateManager.enableAlpha();

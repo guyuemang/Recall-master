@@ -3,6 +3,8 @@ package qwq.arcane.module;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.Client;
 import qwq.arcane.gui.notification.Notification;
@@ -12,6 +14,7 @@ import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
+import qwq.arcane.utils.render.SoundUtil;
 import qwq.arcane.value.Value;
 
 import java.util.ArrayList;
@@ -77,7 +80,21 @@ public class Module implements Instance {
                     default:
                         suffix = "";
                 }
-            }else {
+            } if (getModule(qwq.arcane.module.impl.display.ArrayList.class).style.is("Suffix")){
+                switch (tagStyle) {
+                    case "simple":
+                        suffix = "§9 " + tag;
+                        break;
+                    case "dash":
+                        suffix = "§9 - " + tag;
+                        break;
+                    case "bracket":
+                        suffix = "§9 [" + tag + "]";
+                        break;
+                    default:
+                        suffix = "";
+                }
+            } else {
                 switch (tagStyle) {
                     case "simple":
                         suffix = "§f " + tag;
@@ -99,11 +116,31 @@ public class Module implements Instance {
     public boolean isEnabled() {
         return State;
     }
+    private void playClickSound(float volume) {
+        if (mc.thePlayer != null) {
+            switch (Client.INSTANCE.getModuleManager().getModule(InterFace.class).soundMode.getValue()) {
+                case "Default":
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("random.click"), volume));
+                    break;
+                case "Sigma":
+                    if (State) {
+                        SoundUtil.playSound(new ResourceLocation("nothing/sounds/jello/activate.wav"), 1);
+                    } else {
+                        SoundUtil.playSound(new ResourceLocation("nothing/sounds/jello/deactivate.wav"), 1);
+                    }
+                    break;
+                case "Augustus":
+                    if (State) {
+                        SoundUtil.playSound(new ResourceLocation("nothing/sounds/augustus/enable.wav"), 1);
+                    } else {
+                        SoundUtil.playSound(new ResourceLocation("nothing/sounds/augustus/disable.wav"), 1);
+                    }
+                    break;
+            }
+        }
+    }
 
     public void setState(boolean state) {
-        if (mc.theWorld != null) {
-            mc.theWorld.playSound(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, "random.click", 0.5f, state ? 0.6f : 0.5f, false);
-        }
         if (this.State != state) {
             this.State = state;
             if (state) {
@@ -112,6 +149,7 @@ public class Module implements Instance {
                 if (notificationModule != null) {
                     Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Enabled", Notification.Type.SUCCESS);
                 }
+                playClickSound(1.0F);
                 onEnable();
             } else {
                 Client.Instance.getEventManager().unregister(this);
@@ -119,6 +157,7 @@ public class Module implements Instance {
                 if (notificationModule != null) {
                     Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Disabled", Notification.Type.ERROR);
                 }
+                playClickSound(1.0F);
                 onDisable();
             }
         }

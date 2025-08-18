@@ -6,6 +6,7 @@ import java.net.IDN;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiScreenAddServer extends GuiScreen
 {

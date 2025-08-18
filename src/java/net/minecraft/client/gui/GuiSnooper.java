@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiSnooper extends GuiScreen
 {

@@ -1,10 +1,11 @@
 package qwq.arcane.utils.animations.impl;
 
+import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.AnimationUtils;
 
 import java.awt.*;
 
-public class ColorAnimation2 {
+public class ColorAnimation2 extends AnimationUtils {
     private Color color;
 
     private float r;

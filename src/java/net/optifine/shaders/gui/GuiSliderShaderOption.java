@@ -17,7 +17,7 @@ public class GuiSliderShaderOption extends GuiButtonShaderOption
         super(buttonId, x, y, w, h, shaderOption, text);
         this.shaderOption = shaderOption;
         this.sliderValue = shaderOption.getIndexNormalized();
-        this.displayString = GuiShaderOptions.getButtonText(shaderOption, this.width);
+        this.displayString = GuiShaderOptions.getButtonText(shaderOption, (int) this.width);
     }
 
     /**
@@ -42,7 +42,7 @@ public class GuiSliderShaderOption extends GuiButtonShaderOption
                 this.sliderValue = MathHelper.clamp_float(this.sliderValue, 0.0F, 1.0F);
                 this.shaderOption.setIndexNormalized(this.sliderValue);
                 this.sliderValue = this.shaderOption.getIndexNormalized();
-                this.displayString = GuiShaderOptions.getButtonText(this.shaderOption, this.width);
+                this.displayString = GuiShaderOptions.getButtonText(this.shaderOption, (int) this.width);
             }
 
             mc.getTextureManager().bindTexture(buttonTextures);
@@ -63,7 +63,7 @@ public class GuiSliderShaderOption extends GuiButtonShaderOption
             this.sliderValue = (float)(mouseX - (this.xPosition + 4)) / (float)(this.width - 8);
             this.sliderValue = MathHelper.clamp_float(this.sliderValue, 0.0F, 1.0F);
             this.shaderOption.setIndexNormalized(this.sliderValue);
-            this.displayString = GuiShaderOptions.getButtonText(this.shaderOption, this.width);
+            this.displayString = GuiShaderOptions.getButtonText(this.shaderOption, (int) this.width);
             this.dragging = true;
             return true;
         }

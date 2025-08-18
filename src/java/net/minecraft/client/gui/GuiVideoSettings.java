@@ -16,6 +16,7 @@ import net.optifine.gui.GuiScreenOF;
 import net.optifine.gui.TooltipManager;
 import net.optifine.gui.TooltipProviderOptions;
 import net.optifine.shaders.gui.GuiShaders;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiVideoSettings extends GuiScreenOF
 {
@@ -227,12 +228,12 @@ public class GuiVideoSettings extends GuiScreenOF
 
     public static int getButtonWidth(GuiButton p_getButtonWidth_0_)
     {
-        return p_getButtonWidth_0_.width;
+        return (int) p_getButtonWidth_0_.width;
     }
 
     public static int getButtonHeight(GuiButton p_getButtonHeight_0_)
     {
-        return p_getButtonHeight_0_.height;
+        return (int) p_getButtonHeight_0_.height;
     }
 
     public static void drawGradientRect(GuiScreen p_drawGradientRect_0_, int p_drawGradientRect_1_, int p_drawGradientRect_2_, int p_drawGradientRect_3_, int p_drawGradientRect_4_, int p_drawGradientRect_5_, int p_drawGradientRect_6_)

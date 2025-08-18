@@ -3,6 +3,7 @@ package net.minecraft.client.gui;
 import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.gui.GuiButton;
 
 public class ScreenChatOptions extends GuiScreen
 {

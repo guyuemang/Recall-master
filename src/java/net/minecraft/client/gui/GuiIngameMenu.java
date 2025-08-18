@@ -5,7 +5,7 @@ import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.realms.RealmsBridge;
+import qwq.arcane.gui.mcgui.GuiMultiplayer;
 import qwq.arcane.gui.MainMenu;
 
 public class GuiIngameMenu extends GuiScreen
@@ -42,33 +42,22 @@ public class GuiIngameMenu extends GuiScreen
     /**
      * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
      */
-    protected void actionPerformed(GuiButton button) throws IOException
-    {
-        switch (button.id)
-        {
+    protected void actionPerformed(GuiButton button) throws IOException {
+        switch (button.id) {
             case 0:
-                this.mc.displayGuiScreen(new GuiOptions(this, this.mc.gameSettings));
+                mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings));
                 break;
 
             case 1:
-                boolean flag = this.mc.isIntegratedServerRunning();
-                boolean flag1 = this.mc.isConnectedToRealms();
+                boolean flag = mc.isIntegratedServerRunning();
                 button.enabled = false;
-                this.mc.theWorld.sendQuittingDisconnectingPacket();
-                this.mc.loadWorld((WorldClient)null);
+                mc.theWorld.sendQuittingDisconnectingPacket();
+                mc.loadWorld(null);
 
-                if (flag)
-                {
-                    this.mc.displayGuiScreen(new MainMenu());
-                }
-                else if (flag1)
-                {
-                    RealmsBridge realmsbridge = new RealmsBridge();
-                    realmsbridge.switchToRealms(new MainMenu());
-                }
-                else
-                {
-                    this.mc.displayGuiScreen(new GuiMultiplayer(new MainMenu()));
+                if (flag) {
+                    mc.displayGuiScreen(new MainMenu());
+                } else {
+                    mc.displayGuiScreen(new GuiMultiplayer());
                 }
 
             case 2:
@@ -77,20 +66,20 @@ public class GuiIngameMenu extends GuiScreen
                 break;
 
             case 4:
-                this.mc.displayGuiScreen((GuiScreen)null);
-                this.mc.setIngameFocus();
+                mc.displayGuiScreen(null);
+                mc.setIngameFocus();
                 break;
 
             case 5:
-                this.mc.displayGuiScreen(new GuiAchievements(this, this.mc.thePlayer.getStatFileWriter()));
+                mc.displayGuiScreen(new GuiAchievements(this, mc.thePlayer.getStatFileWriter()));
                 break;
 
             case 6:
-                this.mc.displayGuiScreen(new GuiStats(this, this.mc.thePlayer.getStatFileWriter()));
+                mc.displayGuiScreen(new GuiStats(this, mc.thePlayer.getStatFileWriter()));
                 break;
 
             case 7:
-                this.mc.displayGuiScreen(new GuiShareToLan(this));
+                mc.displayGuiScreen(new GuiShareToLan(this));
         }
     }
 

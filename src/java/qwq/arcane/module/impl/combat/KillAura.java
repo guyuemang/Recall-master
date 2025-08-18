@@ -105,6 +105,9 @@ public class KillAura extends Module {
     public boolean blinkab = false;
     private boolean swapped = false;
     private int serverSlot = -1;
+    public static Vector2f externalRotation = null;
+    public static boolean useExternalRotation = false;
+
     @Override
     public void onEnable() {
         StopAutoBlock();
@@ -212,6 +215,7 @@ public class KillAura extends Module {
                 onRotation(rotationTarget);
             }
         }
+        KillAura.useExternalRotation = false;
     }
 
     @EventTarget
@@ -277,6 +281,13 @@ public class KillAura extends Module {
     }
 
     public void onRotation(Entity entity){
+        if (useExternalRotation && externalRotation != null) {
+            float[] rotaiton = new float[]{externalRotation.x, Client.Instance.getRotationManager().rotation.getY()};
+            Client.Instance.getRotationManager().setRotation(new Vector2f(rotaiton[0], rotaiton[1]),
+                    360, true, true);
+            return;
+        }
+
         float[] rotaiton = new float[0];
         if (shouldRotation(entity)){
             switch (rotationmode.get()){
@@ -291,7 +302,8 @@ public class KillAura extends Module {
                     rotaiton = RotationUtil.getHVHRotation(entity);
                     break;
             }
-            Client.Instance.getRotationManager().setRotation(new Vector2f(rotaiton[0],rotaiton[1]),rotationspeed.get().intValue(), movefix.get(),strictValue.getValue());
+            Client.Instance.getRotationManager().setRotation(new Vector2f(rotaiton[0],rotaiton[1]),
+                    rotationspeed.get().intValue(), movefix.get(),strictValue.getValue());
         }
     }
 

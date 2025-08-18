@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import net.minecraft.client.AnvilConverterException;
+import net.minecraft.client.gui.GuiButton;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.render.shader.MainMenu;
 
 public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
 {
@@ -237,7 +239,7 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         ScaledResolution sr = new ScaledResolution(mc);
-        RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
+        MainMenu.drawBackground(sr.getScaledWidth(), sr.getScaledHeight(), mouseX, mouseY);
 
         this.availableWorlds.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 20, 16777215);

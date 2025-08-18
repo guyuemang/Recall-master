@@ -10,6 +10,7 @@ import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.WorldInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiCreateWorld extends GuiScreen
 {
@@ -506,7 +507,7 @@ public class GuiCreateWorld extends GuiScreen
 
             if (WorldType.worldTypes[this.selectedIndex].showWorldInfoNotice())
             {
-                this.fontRendererObj.drawSplitString(I18n.format(WorldType.worldTypes[this.selectedIndex].getTranslatedInfo(), new Object[0]), this.btnMapType.xPosition + 2, this.btnMapType.yPosition + 22, this.btnMapType.getButtonWidth(), 10526880);
+                this.fontRendererObj.drawSplitString(I18n.format(WorldType.worldTypes[this.selectedIndex].getTranslatedInfo(), new Object[0]), (int) (this.btnMapType.xPosition + 2), (int) (this.btnMapType.yPosition + 22), (int) this.btnMapType.getButtonWidth(), 10526880);
             }
         }
         else

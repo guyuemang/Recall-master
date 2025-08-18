@@ -40,7 +40,7 @@ public class CategoryPanel implements IComponent, Instance {
     public void drawScreen(int mouseX, int mouseY) {
         update(mouseX, mouseY);
 
-        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19))), 6,new Color(1,1,1,120));
+        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19))), 6,new Color(30,30,30,255));
 
         FontManager.Bold.get(20).drawCenteredString(category.name(), x + width / 2, y + 4.5, -1);
 

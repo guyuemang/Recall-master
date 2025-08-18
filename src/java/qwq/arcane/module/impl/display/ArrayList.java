@@ -34,7 +34,7 @@ public class ArrayList extends ModuleWidget {
         super("ArrayList",Category.Display);
     }
 
-    public ModeValue style = new ModeValue("Style","Simple",new String[]{"HotKey","Simple","Icon"});
+    public ModeValue style = new ModeValue("Style","Simple",new String[]{"HotKey","Simple","Suffix","Icon"});
     public static BoolValue importantModules = new BoolValue("Important", false);
     public ModeValue fontmode = new ModeValue("FontMode","Custom",new String[]{"Custom","Bold","Semibold","Regular","Light"});
     public ModeValue textShadow = new ModeValue("Text Shadow","None", new String[]{"Black", "Colored", "None"});
@@ -129,6 +129,9 @@ public class ArrayList extends ModuleWidget {
             int textcolor = ColorUtil.swapAlpha(color(index), (int) 255);
             if (color.is("Tenacity")) {
                 textcolor = ColorUtil.interpolateColorsBackAndForth(colorspeed.getValue().intValue(), index, FirstColor.get(), SecondColor.get(), false).getRGB();
+            }
+            if (style.is("Suffix")){
+                textcolor = new Color(255,255,255).getRGB();
             }
             int w = fontmode.get().equals("Custom")? mc.fontRendererObj.getStringWidth(displayText) + 4 :fontManager.getStringWidth(displayText) + 6;
             switch (misc.getValue()) {

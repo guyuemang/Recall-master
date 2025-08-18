@@ -32,19 +32,6 @@ public class SplashScreen implements Instance {
     private static Animation progress3Anim;
     private static Animation progress4Anim;
 
-    private static int count;
-
-    public static void continueCount() {
-        continueCount(true);
-    }
-
-    public static void continueCount(boolean continueCount) {
-        drawScreen();
-        if(continueCount){
-            count++;
-        }
-    }
-
     public static void drawScreen() {
         ScaledResolution sr = new ScaledResolution(mc);
         int scaleFactor = sr.getScaleFactor();
@@ -92,10 +79,12 @@ public class SplashScreen implements Instance {
         }
     }
 
+    private static Animation fadeInAnimation = new DecelerateAnimation(3000, 1).setDirection(Direction.FORWARDS);
+    static int alpha = 0;
     private static void drawScreen(float width, float height) {
         animation.setDirection(progressAnim.getOutput().floatValue() >= 0.5 ? Direction.FORWARDS : Direction.BACKWARDS);
         float progress = progress2Anim.getOutput().floatValue();
-        RoundedUtil.drawGradientHorizontal(0,0,width,height,0,ColorUtil.applyOpacity(InterFace.mainColor.get(),0.2f + 0.2f * animation.getOutput().floatValue()),ColorUtil.applyOpacity(InterFace.secondColor.get(),0.2f + 0.2f * animation.getOutput().floatValue()));
+        RoundedUtil.drawGradientHorizontal(0,0,width,height,0,ColorUtil.applyOpacity(InterFace.secondColor.get().darker().darker().darker(),0.8f + 0.2f * animation.getOutput().floatValue()),ColorUtil.applyOpacity(InterFace.mainColor.get().darker().darker().darker(),0.8f + 0.2f * animation.getOutput().floatValue()));
 
         float aWidth = FontManager.Bold.get(80).getStringWidth("A");
 
@@ -111,5 +100,12 @@ public class SplashScreen implements Instance {
 
         RoundedUtil.drawRound(width / 2 - 170 / 2, height / 2 + 15, 170, 5, 3, new Color(221, 228, 255));
         RoundedUtil.drawGradientHorizontal(width / 2 - 170 / 2, height / 2 + 15, 170 * progress, 5, 3, InterFace.color(1),InterFace.color(7));
+        if (progressAnim.getOutput() > 0.95) {
+            fadeInAnimation.setDirection(Direction.BACKWARDS);
+            float progres2 = fadeInAnimation.getOutput().floatValue();
+            alpha = (int) (255 * (1 - progres2)); // 从完全不透明到完全透明
+
+            RenderUtil.drawRect(0, 0, width, height, new Color(0, 0, 0, alpha).getRGB());
+        }
     }
 }

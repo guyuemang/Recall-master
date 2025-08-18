@@ -4,6 +4,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -84,7 +85,7 @@ public class GuiAccountManager extends GuiScreen {
   @Override
   public void drawScreen(int mouseX, int mouseY, float renderPartialTicks) {
     ScaledResolution sr = new ScaledResolution(mc);
-    RenderUtil.drawImage(new ResourceLocation("nothing/background.jpg"),0,0,sr.getScaledWidth(),sr.getScaledHeight());
+    qwq.arcane.utils.render.shader.MainMenu.drawBackground(sr.getScaledWidth(), sr.getScaledHeight(), mouseX, mouseY);
 
     if (guiAccountList != null) {
       guiAccountList.drawScreen(mouseX, mouseY, renderPartialTicks);

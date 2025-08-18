@@ -247,7 +247,7 @@ public class GuiShaderOptions extends GuiScreenOF
                     shaderoptionprofile.updateProfile();
                 }
 
-                guibuttonshaderoption.displayString = getButtonText(shaderoption, guibuttonshaderoption.getButtonWidth());
+                guibuttonshaderoption.displayString = getButtonText(shaderoption, (int) guibuttonshaderoption.getButtonWidth());
                 guibuttonshaderoption.valueChanged();
             }
         }

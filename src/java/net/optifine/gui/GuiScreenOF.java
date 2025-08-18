@@ -1,49 +1,36 @@
 package net.optifine.gui;
 
-import java.io.IOException;
-import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiVideoSettings;
 
-public class GuiScreenOF extends GuiScreen
-{
-    protected void actionPerformedRightClick(GuiButton button) throws IOException
-    {
+import java.io.IOException;
+import java.util.List;
+
+public class GuiScreenOF extends GuiScreen {
+    protected void actionPerformedRightClick(GuiButton button) {
     }
 
-    /**
-     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
-     */
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
-        if (mouseButton == 1)
-        {
+        if (mouseButton == 1) {
             GuiButton guibutton = getSelectedButton(mouseX, mouseY, this.buttonList);
 
-            if (guibutton != null && guibutton.enabled)
-            {
-                guibutton.playPressSound(this.mc.getSoundHandler());
+            if (guibutton != null && guibutton.enabled) {
+                guibutton.playPressSound(mc.getSoundHandler());
                 this.actionPerformedRightClick(guibutton);
             }
         }
     }
 
-    public static GuiButton getSelectedButton(int x, int y, List<GuiButton> listButtons)
-    {
-        for (int i = 0; i < listButtons.size(); ++i)
-        {
-            GuiButton guibutton = (GuiButton)listButtons.get(i);
+    public static GuiButton getSelectedButton(int x, int y, List<GuiButton> listButtons) {
+        for (GuiButton guibutton : listButtons) {
+            if (guibutton.visible) {
+                float j = GuiVideoSettings.getButtonWidth(guibutton);
+                float k = GuiVideoSettings.getButtonHeight(guibutton);
 
-            if (guibutton.visible)
-            {
-                int j = GuiVideoSettings.getButtonWidth(guibutton);
-                int k = GuiVideoSettings.getButtonHeight(guibutton);
-
-                if (x >= guibutton.xPosition && y >= guibutton.yPosition && x < guibutton.xPosition + j && y < guibutton.yPosition + k)
-                {
+                if (x >= guibutton.xPosition && y >= guibutton.yPosition && x < guibutton.xPosition + j && y < guibutton.yPosition + k) {
                     return guibutton;
                 }
             }

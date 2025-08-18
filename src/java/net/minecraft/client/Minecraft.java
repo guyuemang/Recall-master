@@ -101,7 +101,6 @@ import qwq.arcane.gui.MainMenu;
 import qwq.arcane.module.ClientApplication;
 import qwq.arcane.module.impl.combat.TickBase;
 import qwq.arcane.module.impl.visuals.Animations;
-import qwq.arcane.module.impl.visuals.MotionBlur;
 import qwq.arcane.module.impl.world.Disabler;
 import qwq.jnic.JNICInclude;
 import qwq.arcane.utils.animations.AnimationUtils;

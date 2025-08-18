@@ -37,7 +37,7 @@ public class ModeComponent extends Component {
             }
 
             if (text.equals(setting.get())) {
-                FontManager.Bold.get(13).drawString(text, getX() + offset + 8, getY() + FontManager.Bold.get(15).getHeight() + heightoff, InterFace.mainColor.get().brighter().brighter().getRGB());
+                FontManager.Bold.get(13).drawString(text, getX() + offset + 8, getY() + FontManager.Bold.get(15).getHeight() + heightoff, -1);
             } else {
                 FontManager.Bold.get(13).drawString(text, getX() + offset + 8, getY() + FontManager.Bold.get(15).getHeight() + heightoff,
                         InterFace.mainColor.get().brighter().getRGB());

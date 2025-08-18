@@ -11,6 +11,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.ChunkProviderSettings;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiScreenCustomizePresets extends GuiScreen
 {

@@ -2,6 +2,7 @@ package net.minecraft.client.gui;
 
 import java.io.IOException;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiErrorScreen extends GuiScreen
 {

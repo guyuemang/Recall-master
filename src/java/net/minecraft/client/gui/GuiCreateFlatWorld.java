@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.gen.FlatGeneratorInfo;
 import net.minecraft.world.gen.FlatLayerInfo;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiCreateFlatWorld extends GuiScreen
 {

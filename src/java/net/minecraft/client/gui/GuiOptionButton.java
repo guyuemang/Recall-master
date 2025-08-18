@@ -1,6 +1,7 @@
 package net.minecraft.client.gui;
 
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.gui.GuiButton;
 
 public class GuiOptionButton extends GuiButton
 {

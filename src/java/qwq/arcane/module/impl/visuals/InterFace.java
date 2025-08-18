@@ -46,10 +46,11 @@ public class InterFace extends Module {
         super("InterFace", Category.Visuals);
         setState(true);
     }
+    public ModeValue soundMode = new ModeValue("Sound Mode", "Augustus", new String[]{"None", "Default", "Sigma", "Augustus"});
     public static ModeValue colorMode = new ModeValue("Color Mode", "Fade", new String[]{"Fade", "Rainbow", "Astolfo", "Dynamic","Tenacity", "Static", "Double"});
     public static final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> colorMode.is("Tenacity"), 4, 1, 10, 1);
-    public static ColorValue mainColor = new ColorValue("MainColor", new Color(41, 128, 185));
-    public static ColorValue secondColor = new ColorValue("SecondColor", new Color(109, 213, 250));
+    public static ColorValue mainColor = new ColorValue("MainColor", new Color(127, 127, 213));
+    public static ColorValue secondColor = new ColorValue("SecondColor", new Color(134, 168, 231));
     public static BoolValue waterMark = new BoolValue("WaterMark",true);
     public static ModeValue waterMarkmode = new ModeValue("WaterMarkMode",()-> waterMark.get(),"Exhi",new String[]{"Exhi","Arcane","Exhibition","Sigma"});
     public static BoolValue info = new BoolValue("Info",true);

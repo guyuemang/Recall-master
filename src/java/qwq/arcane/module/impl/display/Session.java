@@ -73,7 +73,7 @@ public class Session extends ModuleWidget {
         int y = (int) renderY;
         switch (modeValue.getValue()) {
             case "Solitude":
-                RenderUtil.drawRect(x, y, 52 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, new Color(255, 255, 255 ,255));
+                RoundedUtil.drawRound(x, y, 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 58, 10, new Color(0, 0, 0, 255));
                 break;
             case "Normal":
                 RoundedUtil.drawRound(x, y, 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, INTERFACE.radius.get().intValue(), new Color(0, 0, 0, 255));
@@ -91,17 +91,12 @@ public class Session extends ModuleWidget {
         int y = (int) renderY;
         switch (modeValue.getValue()) {
             case "Solitude":
-                RenderUtil.drawRect(x, y, 52 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 65, new Color(255, 255, 255 ,100));
-                RenderUtil.drawRect(x, y, 52 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 15, new Color(255, 255, 255 ,100));
-                RenderUtil.renderPlayer2D(mc.thePlayer, x + 5, y + 19, 35,0, -1);
-                FontManager.Bold.get(18).drawCenteredString("Session", x + (48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime())) / 2, y + 5, -1);
-                FontManager.Bold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 44, y + 21, -1);
-                FontManager.Bold.get(18).drawString("kill:" + killed, x + 44, y + 33, -1);
-                FontManager.Bold.get(18).drawString("win:" + won, x + 44, y + 45, -1);
-                FontManager.Bold.get(18).drawString("FPS:" + mc.getDebugFPS(), x + 82, y + 33, -1);
-                FontManager.Bold.get(18).drawString("BPS:" + bpsFormat.format(INTERFACE.getBPS()), x + 82, y + 45, -1);
-                RenderUtil.drawRect(x + 5, y + 57, 40 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 5, new Color(100, 100, 100,190));
-                RenderUtil.drawRect(x + 5, y + 57, 40 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()) * MathHelper.clamp_float(mc.thePlayer.getHealth() / mc.thePlayer.getMaxHealth(), 0, 1), 5, new Color(255, 255, 255 ,100));
+                RoundedUtil.drawRound(x, y, 48 + Bold.get(18).getStringWidth("Played Time:" + RenderUtil.sessionTime()), 58, 10, new Color(0, 0, 0, 190));
+                RenderUtil.renderPlayer2D(mc.thePlayer, x + 5, y + 17, 35, 12, -1);
+                FontManager.Bold.get(20).drawString("Session Info", x + 5, y + 5, -1);
+                FontManager.Bold.get(18).drawString("Played Time:" + RenderUtil.sessionTime(), x + 44, y + 20, Color.GRAY.getRGB());
+                FontManager.Bold.get(18).drawString("kill:" + killed, x + 44, y + 32, -1);
+                FontManager.Bold.get(18).drawString("win:" + won, x + 44, y + 44, -1);
                 break;
             case "Custom":
                 RoundedUtil.drawRound(x, y, 130, 56,6, new Color(255, 255, 255, 80));

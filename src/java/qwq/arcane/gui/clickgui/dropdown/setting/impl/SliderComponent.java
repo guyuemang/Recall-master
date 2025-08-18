@@ -36,7 +36,7 @@ public class SliderComponent extends Component {
 
         RoundedUtil.drawRound(getX() + 4, getY() + FontManager.Bold.get(15).getHeight() + 2, getWidth() - 8, 2, 2,new Color(1,1,1));
         RoundedUtil.drawGradientHorizontal(getX() + 4, getY() + FontManager.Bold.get(15).getHeight() + 2, sliderWidth, 2, 2, InterFace.mainColor.get(), InterFace.mainColor.get().brighter());
-        RenderUtil.drawCircleCGUI(getX() + 4 + sliderWidth, getY() + FontManager.Bold.get(15).getHeight() + 3, 6, -1);
+        RenderUtil.drawCircleCGUI(getX() + 4 + sliderWidth, getY() + FontManager.Bold.get(15).getHeight() + 3, 6, InterFace.mainColor.get().darker().darker().getRGB());
 
         FontManager.Bold.get(15).drawString(setting.getMin() + "", getX() + 2, getY() + FontManager.Bold.get(15).getHeight() * 2 + 2, new Color(160, 160, 160).getRGB());
         FontManager.Bold.get(15).drawCenteredString(setting.get() + "", getX() + getWidth() / 2, getY() + FontManager.Bold.get(15).getHeight() * 2 + 2, -1);

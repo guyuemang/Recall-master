@@ -16,11 +16,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import qwq.arcane.gui.MainMenu;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDownloadTerrain;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.MapItemRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.EffectRenderer;
@@ -1931,11 +1931,6 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
         Client.Instance.getEventManager().call(new Render3DEvent(partialTicks,new ScaledResolution(mc)));
 
-        MotionBlur motionBlur = Client.Instance.getModuleManager().getModule(MotionBlur.class);
-        if (motionBlur.getState()) {
-            motionBlur.onBlurScreen();
-        }
-
         if (this.renderHand && !Shaders.isShadowPass)
         {
             if (flag)
@@ -2726,9 +2721,9 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
         }
 
-        if (this.mc.currentScreen instanceof GuiMainMenu)
+        if (this.mc.currentScreen instanceof MainMenu)
         {
-            this.updateMainMenu((GuiMainMenu)this.mc.currentScreen);
+            this.updateMainMenu((MainMenu)this.mc.currentScreen);
         }
 
         if (this.updatedWorld != world)
@@ -2766,7 +2761,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
     }
 
-    private void updateMainMenu(GuiMainMenu p_updateMainMenu_1_)
+    private void updateMainMenu(MainMenu p_updateMainMenu_1_)
     {
         try
         {
