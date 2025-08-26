@@ -42,7 +42,7 @@ public class EntityArrow extends Entity implements IProjectile
 
     /** The owner of this arrow. */
     public Entity shootingEntity;
-    private int ticksInGround;
+    public int ticksInGround;
     private int ticksInAir;
     private double damage = 2.0D;
 

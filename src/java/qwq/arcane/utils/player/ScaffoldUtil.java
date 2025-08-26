@@ -28,7 +28,53 @@ public class ScaffoldUtil implements Instance {
         Vec3 eyes = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
         return MathUtils.closestPointOnFace(new AxisAlignedBB(blockPos, blockPos.add(1, 1, 1)), facing, eyes);
     }
+    public static int getBlockSlot() {
+        int slot = -1;
+        int size = 0;
+        final int minSwitchThreshold = 4;
 
+        if (ScaffoldUtil.getBlockCount() == 0) {
+            return -1;
+        }
+
+        if (!Client.INSTANCE.getModuleManager().getModule(Scaffold.class).biggestStack.get()) {
+            for (int i = 36; i < 45; i++) {
+                Slot s = mc.thePlayer.inventoryContainer.getSlot(i);
+                if (s.getHasStack() && ScaffoldUtil.isBlockValid(s.getStack())) {
+                    return i - 36;
+                }
+            }
+            return -1;
+        }
+
+        for (int i = 36; i < 45; i++) {
+            Slot s = mc.thePlayer.inventoryContainer.getSlot(i);
+            if (!s.getHasStack()) continue;
+
+            ItemStack stack = s.getStack();
+            if (!ScaffoldUtil.isBlockValid(stack)) continue;
+
+            int stackSize = stack.stackSize;
+
+            if (i - 36 == lastSelectedSlot && stackSize > minSwitchThreshold) {
+                return lastSelectedSlot;
+            }
+
+            if (stackSize > size && (size <= minSwitchThreshold || lastSelectedSlot == -1)) {
+                size = stackSize;
+                slot = i;
+            }
+        }
+
+        long currentTime = System.currentTimeMillis();
+        if (slot != -1 && (currentTime - lastSwitchTime > 200 || lastSelectedSlot == -1)) {
+            lastSelectedSlot = slot - 36;
+            lastSwitchTime = currentTime;
+            return lastSelectedSlot;
+        } else {
+            return lastSelectedSlot != -1 ? lastSelectedSlot : 0;
+        }
+    }
     private static boolean isBlockValid(ItemStack stack) {
         if (!(stack.getItem() instanceof ItemBlock)) return false;
         Block block = ((ItemBlock) stack.getItem()).getBlock();

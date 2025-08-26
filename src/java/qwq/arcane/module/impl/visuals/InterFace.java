@@ -231,7 +231,7 @@ public class InterFace extends Module {
                 }
             }
         } else {
-            return "SinglePlayer";
+            return "0";
         }
 
         return latency == 0 ? "?" : String.valueOf(latency);

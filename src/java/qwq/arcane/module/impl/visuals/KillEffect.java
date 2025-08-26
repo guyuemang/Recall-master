@@ -1,6 +1,10 @@
 package qwq.arcane.module.impl.visuals;
 
 import net.minecraft.block.Block;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.network.play.server.S45PacketTitle;
+import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.module.Mine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -81,9 +85,7 @@ public class KillEffect extends Module {
                 SoundUtil.playSound("ambient.weather.thunder");
             }
             if (target.getHealth() <= 0){
-                if (this.soundEffect.getValue()) {
-                    playSound(1);
-                }
+
             }
             if (this.explosion.getValue()) {
                 for (int i = 0; i <= 8; i++) {
@@ -112,6 +114,33 @@ public class KillEffect extends Module {
             }
 
             this.target = null;
+        }
+    }
+    @EventTarget
+    public void onPacket(PacketReceiveEvent event) {
+        Packet<?> packet = event.getPacket();
+
+        if (packet instanceof S02PacketChat) {
+            S02PacketChat s02 = (S02PacketChat) event.getPacket();
+            String xd = s02.getChatComponent().getUnformattedText();
+            if (xd.contains("was killed by " + mc.thePlayer.getName())) {
+                if (this.soundEffect.getValue()) {
+                  playSound(1);
+
+                }
+            }
+
+            if (xd.contains("You Died! Want to play again?")) {
+            }
+        }
+
+        if (packet instanceof S45PacketTitle && ((S45PacketTitle) packet).getType().equals(S45PacketTitle.Type.TITLE)) {
+            String unformattedText = ((S45PacketTitle) packet).getMessage().getUnformattedText();
+            if (unformattedText.contains("VICTORY!")) {
+                playSound(1);
+            }
+            if (unformattedText.contains("GAME OVER!") || unformattedText.contains("DEFEAT!") || unformattedText.contains("YOU DIED!")) {
+            }
         }
     }
     public void playSound(float volume) {

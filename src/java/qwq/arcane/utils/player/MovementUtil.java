@@ -2,6 +2,7 @@ package qwq.arcane.utils.player;
 
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
 import qwq.arcane.event.impl.events.player.MoveEvent;
@@ -30,6 +31,12 @@ public class MovementUtil implements Instance {
         }
 
         return predicted;
+    }
+    public static double getSpeed() {
+        return getSpeed(mc.thePlayer);
+    }
+    public static double getSpeed(EntityPlayer player) {
+        return Math.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ);
     }
     public static float getDirection() {
         if (MovementUtil.mc.thePlayer == null) {

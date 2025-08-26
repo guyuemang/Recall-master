@@ -3,6 +3,7 @@ package qwq.arcane.module.impl.visuals;
 
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -13,14 +14,18 @@ import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
+import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.color.ColorUtil;
+import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.render.GLUtil;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
+import qwq.arcane.value.impl.NumberValue;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -45,6 +50,7 @@ public final class ESP extends Module {
         super("ESP",Category.Visuals);
     }
     public static final BoolValue fontTags = new BoolValue("TagsName", true);
+    public static final NumberValue scale = new NumberValue("TagsScale", 1,0.1,1,0.1);
     public static final BoolValue fonttagsBackground = new BoolValue("TagsBackground", fontTags::get, true);
     public static final BoolValue fonttagsHealth = new BoolValue("TagsHealth", fontTags::get, true);
     public static final BoolValue esp2d = new BoolValue("2DESP", true);
@@ -70,7 +76,260 @@ public final class ESP extends Module {
         entityPosMap.clear();
         playerRotationMap.clear();
     }
+    public static String getPing(EntityPlayer entityPlayer) {
+        int latency = 0;
+        if (!mc.isSingleplayer()) {
+            NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(entityPlayer.getUniqueID());
+            if (info != null) latency = info.getResponseTime();
 
+            if (isOnHypixel() && latency == 1) {
+                int temp = Client.INSTANCE.getPingerUtils().getServerPing().intValue();
+                if (temp != -1) {
+                    latency = temp;
+                }
+            }
+        } else {
+            return "0";
+        }
+
+        return latency == 0 ? "?" : String.valueOf(latency);
+    }
+    public static boolean isOnHypixel() {
+        if (mc.isSingleplayer() || mc.getCurrentServerData() == null || mc.getCurrentServerData().serverIP == null)
+            return false;
+        String ip = mc.getCurrentServerData().serverIP.toLowerCase();
+        if (ip.contains("hypixel")) {
+            if (mc.thePlayer == null) return true;
+            String brand = mc.thePlayer.getClientBrand();
+            return brand != null && brand.startsWith("Hypixel BungeeCord");
+        }
+        return false;
+    }
+    @EventTarget
+    public void onShader2D(Shader2DEvent event){
+        for (EntityPlayer player : entityPosMap.keySet()) {
+            if ((player.getDistanceToEntity(mc.thePlayer) < 1.0F && mc.gameSettings.thirdPersonView == 0) ||
+                    !RenderUtil.isInViewFrustum(player))
+                continue;
+            final float[] positions = entityPosMap.get(player);
+            final float x = positions[0];
+            final float y = positions[1];
+            final float x2 = positions[2];
+            final float y2 = positions[3];
+
+            final float health = player.getHealth();
+            final float maxHealth = player.getMaxHealth();
+            final float healthPercentage = health / maxHealth;
+
+            if (fontTags.get()) {
+                final String name = player.getDisplayName().getFormattedText() + " - " + "§c" + player.getHealth() + "HP" + " - " + "§a" + getPing(player) + "ms";
+                float halfWidth = FontManager.Bold.get(20).getStringWidth(name) + 8;
+                final float xDif = x2 - x;
+                final float middle = x + (xDif / 2);
+                final float textHeight = 15;
+                float renderY = y - textHeight - 2;
+
+                final float left = middle - halfWidth / 2;
+                final float left2 = middle - halfWidth / 2 + FontManager.Icon.get(35).getStringWidth("SBSBS") / 2;
+
+                if (fonttagsBackground.get()) {
+                    RoundedUtil.drawRound(left, renderY - 6, halfWidth, textHeight + 1,5, new Color(0, 0, 0, 255));
+                }
+                RenderUtil.renderItemStack(player,left2,renderY - 25,1,false,0,false,false);
+                FontManager.Bold.get(20).drawString(name, left + 4, renderY - 2f, -1);
+            }
+
+            if (esp2d.get()) {
+                glDisable(GL_TEXTURE_2D);
+                GLUtil.startBlend();
+
+                if (armorBar.get()) {
+                    final float armorPercentage = player.getTotalArmorValue() / 20.0F;
+                    final float armorBarWidth = (x2 - x) * armorPercentage;
+
+                    glColor4ub((byte) 0, (byte) 0, (byte) 0, (byte) 0x96);
+                    glBegin(GL_QUADS);
+
+                    // Background
+                    {
+                        glVertex2f(x, y2 + 0.5F);
+                        glVertex2f(x, y2 + 2.5F);
+
+                        glVertex2f(x2, y2 + 2.5F);
+                        glVertex2f(x2, y2 + 0.5F);
+                    }
+
+                    if (armorPercentage > 0) {
+                        color(armorBarColor.get().getRGB());
+
+                        // Bar
+                        {
+                            glVertex2f(x + 0.5F, y2 + 1);
+                            glVertex2f(x + 0.5F, y2 + 2);
+
+                            glVertex2f(x + armorBarWidth - 0.5F, y2 + 2);
+                            glVertex2f(x + armorBarWidth - 0.5F, y2 + 1);
+                        }
+                        resetColor();
+                    }
+
+                    if (!healthBar.get())
+                        glEnd();
+                }
+
+                if (healthBar.get()) {
+                    float healthBarLeft = x - 2.5F;
+                    float healthBarRight = x - 0.5F;
+
+                    glColor4ub((byte) 0, (byte) 0, (byte) 0, (byte) 0x96);
+
+                    if (!armorBar.get())
+                        glBegin(GL_QUADS);
+
+                    // Background
+                    {
+                        glVertex2f(healthBarLeft, y);
+                        glVertex2f(healthBarLeft, y2);
+
+                        glVertex2f(healthBarRight, y2);
+                        glVertex2f(healthBarRight, y);
+                    }
+
+                    healthBarLeft += 0.5F;
+                    healthBarRight -= 0.5F;
+
+                    final float heightDif = y - y2;
+                    final float healthBarHeight = heightDif * healthPercentage;
+
+                    final float topOfHealthBar = y2 + 0.5F + healthBarHeight;
+
+                    if (healthBarSyncColor.get()) {
+                        final int syncedcolor = Client.Instance.getModuleManager().getModule(InterFace.class).color(0).getRGB();
+
+                        color(syncedcolor);
+                    } else {
+                        final int color = ColorUtil.getColorFromPercentage(healthPercentage);
+
+                        color(color);
+                    }
+                    // Bar
+                    {
+                        glVertex2f(healthBarLeft, topOfHealthBar);
+                        glVertex2f(healthBarLeft, y2 - 0.5F);
+
+                        glVertex2f(healthBarRight, y2 - 0.5F);
+                        glVertex2f(healthBarRight, topOfHealthBar);
+                    }
+
+                    resetColor();
+
+
+                    final float absorption = player.getAbsorptionAmount();
+
+                    final float absorptionPercentage = Math.min(1.0F, absorption / 20.0F);
+
+                    final int absorptionColor = this.absorptionColor.get().getRGB();
+
+                    final float absorptionHeight = heightDif * absorptionPercentage;
+
+                    final float topOfAbsorptionBar = y2 + 0.5F + absorptionHeight;
+
+                    if (healthBarSyncColor.get()) {
+                        color(Client.Instance.getModuleManager().getModule(InterFace.class).color(1).getRGB());
+                    } else {
+                        color(absorptionColor);
+                    }
+
+                    // Absorption Bar
+                    {
+                        glVertex2f(healthBarLeft, topOfAbsorptionBar);
+                        glVertex2f(healthBarLeft, y2 - 0.5F);
+
+                        glVertex2f(healthBarRight, y2 - 0.5F);
+                        glVertex2f(healthBarRight, topOfAbsorptionBar);
+                    }
+
+                    resetColor();
+
+                    if (!box.get())
+                        glEnd();
+                }
+
+                if (box.get()) {
+                    glColor4ub((byte) 0, (byte) 0, (byte) 0, (byte) 0x96);
+                    if (!healthBar.get())
+                        glBegin(GL_QUADS);
+
+                    // Background
+                    {
+                        // Left
+                        glVertex2f(x, y);
+                        glVertex2f(x, y2);
+                        glVertex2f(x + 1.5F, y2);
+                        glVertex2f(x + 1.5F, y);
+
+                        // Right
+                        glVertex2f(x2 - 1.5F, y);
+                        glVertex2f(x2 - 1.5F, y2);
+                        glVertex2f(x2, y2);
+                        glVertex2f(x2, y);
+
+                        // Top
+                        glVertex2f(x + 1.5F, y);
+                        glVertex2f(x + 1.5F, y + 1.5F);
+                        glVertex2f(x2 - 1.5F, y + 1.5F);
+                        glVertex2f(x2 - 1.5F, y);
+
+                        // Bottom
+                        glVertex2f(x + 1.5F, y2 - 1.5F);
+                        glVertex2f(x + 1.5F, y2);
+                        glVertex2f(x2 - 1.5F, y2);
+                        glVertex2f(x2 - 1.5F, y2 - 1.5F);
+                    }
+
+                    if (boxSyncColor.get()) {
+                        color(Client.Instance.getModuleManager().getModule(InterFace.class).color(7).getRGB());
+                    } else {
+                        color(boxColor.get().getRGB());
+                    }
+
+                    // Box
+                    {
+                        // Left
+                        glVertex2f(x + 0.5F, y + 0.5F);
+                        glVertex2f(x + 0.5F, y2 - 0.5F);
+                        glVertex2f(x + 1, y2 - 0.5F);
+                        glVertex2f(x + 1, y + 0.5F);
+
+                        // Right
+                        glVertex2f(x2 - 1, y + 0.5F);
+                        glVertex2f(x2 - 1, y2 - 0.5F);
+                        glVertex2f(x2 - 0.5F, y2 - 0.5F);
+                        glVertex2f(x2 - 0.5F, y + 0.5F);
+
+                        // Top
+                        glVertex2f(x + 0.5F, y + 0.5F);
+                        glVertex2f(x + 0.5F, y + 1);
+                        glVertex2f(x2 - 0.5F, y + 1);
+                        glVertex2f(x2 - 0.5F, y + 0.5F);
+
+                        // Bottom
+                        glVertex2f(x + 0.5F, y2 - 1);
+                        glVertex2f(x + 0.5F, y2 - 0.5F);
+                        glVertex2f(x2 - 0.5F, y2 - 0.5F);
+                        glVertex2f(x2 - 0.5F, y2 - 1);
+                    }
+
+                    resetColor();
+
+                    glEnd();
+                }
+
+                glEnable(GL_TEXTURE_2D);
+                GLUtil.endBlend();
+            }
+        }
+    }
     @EventTarget
     public void onRender2D(Render2DEvent event) {
         for (EntityPlayer player : entityPosMap.keySet()) {
@@ -88,22 +347,21 @@ public final class ESP extends Module {
             final float healthPercentage = health / maxHealth;
 
             if (fontTags.get()) {
-                final String healthString = fonttagsHealth.get() ? " |" + EnumChatFormatting.RED + "" + EnumChatFormatting.BOLD + " " + (MathUtils.roundToHalf(player.getHealth())) + "❤" + EnumChatFormatting.RESET + "" : "";
-                final String name = player.getDisplayName().getFormattedText() + healthString;
-                float halfWidth = (float) mc.fontRendererObj.getStringWidth(name) * 0.5f;
+                final String name = player.getDisplayName().getFormattedText() + " - " + "§c" + player.getHealth() + "HP" + " - " + "§a" + getPing(player) + "ms";
+                float halfWidth = FontManager.Bold.get(20).getStringWidth(name) + 8;
                 final float xDif = x2 - x;
                 final float middle = x + (xDif / 2);
-                final float textHeight = mc.fontRendererObj.FONT_HEIGHT * 0.5f;
+                final float textHeight = 15;
                 float renderY = y - textHeight - 2;
 
-                final float left = middle - halfWidth - 1;
-                final float right = middle + halfWidth + 1;
+                final float left = middle - halfWidth / 2;
+                final float left2 = middle - halfWidth / 2 + FontManager.Icon.get(35).getStringWidth("SBSBS") / 2;
 
                 if (fonttagsBackground.get()) {
-                    Gui.drawRect(left, renderY - 6, right, renderY + textHeight + 1, new Color(0, 0, 0, 50).getRGB());
+                    RoundedUtil.drawRound(left, renderY - 6, halfWidth, textHeight + 1,5, new Color(0, 0, 0, 190));
                 }
-
-                mc.fontRendererObj.drawStringWithShadow(name, middle - halfWidth, renderY - 4f, -1);
+                RenderUtil.renderItemStack(player,left2,renderY - 25,1,false,0,false,false);
+                FontManager.Bold.get(20).drawString(name, left + 4, renderY - 2f, -1);
             }
 
             if (esp2d.get()) {

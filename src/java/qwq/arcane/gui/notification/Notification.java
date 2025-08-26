@@ -1,6 +1,8 @@
 package qwq.arcane.gui.notification;
 
 
+import qwq.arcane.Client;
+import qwq.arcane.module.impl.display.IsLand;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Animation;

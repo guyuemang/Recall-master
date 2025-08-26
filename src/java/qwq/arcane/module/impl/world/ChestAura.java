@@ -156,7 +156,9 @@ public class ChestAura extends Module {
         if (mc.thePlayer.isOnLadder()) {
             return;
         }
-
+        if (KillAura.target != null || mc.thePlayer.isUsingItem() || getModule(Scaffold.class).getState() || getModule(Blink.class).getState() || Gapple.eating) {
+            return;
+        }
         if (guiScreen instanceof GuiChest) {
             int a = 66;
         } else {

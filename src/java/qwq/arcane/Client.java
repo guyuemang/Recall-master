@@ -15,6 +15,7 @@ import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.pack.BlinkComponent;
 import qwq.arcane.utils.player.PingerUtils;
+import qwq.arcane.utils.player.SelectorDetectionComponent;
 import qwq.arcane.utils.player.SlotSpoofComponent;
 import qwq.arcane.utils.rotation.RotationManager;
 
@@ -28,7 +29,7 @@ import qwq.arcane.utils.rotation.RotationManager;
 public class Client implements Instance {
     public static Client Instance = new Client();
     public static String name = "Arcane";
-    public static String version = " Release 3.4";
+    public static String version = "Official 1.0";
 
     private EventManager eventManager;
     private ModuleManager moduleManager;
@@ -39,6 +40,7 @@ public class Client implements Instance {
     private CommandManager commandManager;
     private RotationManager rotationManager;
     private PingerUtils pingerUtils;
+    private SelectorDetectionComponent selectorDetectionComponent;
     public static boolean debug = true;
     int startTime;
 
@@ -60,6 +62,9 @@ public class Client implements Instance {
 
         rotationManager = new RotationManager();
         eventManager.register(rotationManager);
+
+        selectorDetectionComponent = new SelectorDetectionComponent();
+        eventManager.register(selectorDetectionComponent);
 
         pingerUtils = new PingerUtils();
         eventManager.register(pingerUtils);

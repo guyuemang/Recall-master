@@ -46,6 +46,7 @@ import net.optifine.CustomColors;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
 import qwq.arcane.module.impl.visuals.InterFace;
+import qwq.arcane.utils.render.RenderUtil;
 
 public class GuiIngame extends Gui
 {
@@ -368,6 +369,7 @@ public class GuiIngame extends Gui
         Client.Instance.getModuleManager().getModule(InterFace.class).renderShaders();
         Client.Instance.getEventManager().call(new Render2DEvent(scaledresolution,partialTicks));
 
+
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableLighting();
         GlStateManager.enableAlpha();
@@ -567,6 +569,7 @@ public class GuiIngame extends Gui
 
     private void renderScoreboard(ScoreObjective objective, ScaledResolution scaledRes)
     {
+        if (Client.Instance.getModuleManager().getModule(qwq.arcane.module.impl.display.Scoreboard.class).getState()) return;
         Scoreboard scoreboard = objective.getScoreboard();
         Collection<Score> collection = scoreboard.getSortedScores(objective);
         List<Score> list = Lists.newArrayList(Iterables.filter(collection, new Predicate<Score>()

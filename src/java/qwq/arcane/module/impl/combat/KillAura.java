@@ -102,7 +102,7 @@ public class KillAura extends Module {
     private int cps;
     private Entity auraESPTarget;
     public boolean blink;
-    public boolean blinkab = false;
+    public static boolean blinkab = false;
     private boolean swapped = false;
     private int serverSlot = -1;
     public static Vector2f externalRotation = null;
@@ -126,6 +126,7 @@ public class KillAura extends Module {
     @Override
     public void onDisable() {
         StopAutoBlock();
+        blinkab = false;
         blocking = false;
         index = 0;
         cps = 0;
@@ -144,6 +145,9 @@ public class KillAura extends Module {
     }
 
     public void Attack(){
+        if (isEnabled(Scaffold.class)){
+            return;
+        }
         if (!targets.isEmpty()) {
             if (switchTimer.hasTimeElapsed((long) (switchdelay.get() * 100L)) && targets.size() > 1) {
                 ++index;
@@ -188,6 +192,9 @@ public class KillAura extends Module {
      */
     @EventTarget
     public void PreUpdate(PreUpdateEvent e){
+        if (isEnabled(Scaffold.class)){
+            return;
+        }
         if (!targets.isEmpty()) {
             switch (modeValue.get()) {
                 case "Single":
@@ -207,6 +214,9 @@ public class KillAura extends Module {
     }
     @EventTarget
     public void UpdateEvent(UpdateEvent event){
+        if (isEnabled(Scaffold.class)){
+            return;
+        }
         setsuffix(modeValue.get());
         targets = setTargets();
         if (rotation.get()) {
@@ -220,6 +230,9 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onPostMotion(MotionEvent event){
+        if (isEnabled(Scaffold.class)){
+            return;
+        }
         if (event.isPre()){
             return;
         }
@@ -340,40 +353,47 @@ public class KillAura extends Module {
     @EventTarget
     public void onSlow(SlowDownEvent e){
         if (blocking && blockmode.is("Blink") && !mc.thePlayer.isInWeb){
-            mc.thePlayer.movementInput.moveStrafe *= 0.2f;
-            mc.thePlayer.movementInput.moveForward *= 0.2f;
+            //mc.thePlayer.movementInput.moveStrafe *= 0.2f;
+            //mc.thePlayer.movementInput.moveForward *= 0.2f;
         }
     }
 
-    private boolean preTickBlock() {
-        if (this.blinkab) {
+    public void preTickBlock() {
+        int newSlot;
+        if (blinkab) {
             BlinkComponent.blinking = true;
-            this.blink = true;
+            blink = true;
+            newSlot = mc.thePlayer.inventory.currentItem % 8 + 1;
             if (blocking) {
-                mc.playerController.onStoppedUsingItem(mc.thePlayer);
+                if (this.serverSlot != newSlot) {
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
+                    this.swapped = true;
+                }
                 blocking = false;
             }
-            this.blinkab = false;
+            qwq.arcane.utils.pack.PacketUtil.sendPacket(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
+            blinkab = false;
         } else {
+            newSlot = mc.thePlayer.inventory.currentItem;
+            if (this.serverSlot != newSlot) {
+                qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
+                this.swapped = false;
+            }
             Attack();
-            if(mc.thePlayer.inventory.getCurrentItem() != null && mc.thePlayer.inventory.getCurrentItem().getItem() instanceof ItemSword) {
-                MovingObjectPosition result = RayCastUtil.rayCast(new Vector2f(Client.Instance.getRotationManager().rotation.getX(), Client.Instance.getRotationManager().rotation.getY()), range.getValue().floatValue());
-                if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
-                    if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, result.entityHit, result)) {
-                        mc.playerController.interactWithEntitySendPacket(mc.thePlayer, result.entityHit);
-                    }
-                    if (!blocking) {
-                        blocking = true;
-                        sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
-                    }
+            MovingObjectPosition result = RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation ,range.getValue().floatValue());
+            if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
+                if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, result.entityHit, result)) {
+                    mc.playerController.interactWithEntitySendPacket(mc.thePlayer, result.entityHit);
+                }
+                if (!blocking) {
+                    blocking = true;
+                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
                 }
             }
-
+            blinkab = true;
             BlinkComponent.dispatch();
-            this.blink = false;
-            this.blinkab = true;
+            blink = false;
         }
-        return true;
     }
 
     public void StopAutoBlock(){

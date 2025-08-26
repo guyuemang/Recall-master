@@ -152,7 +152,7 @@ public class GuiMove extends Module {
             c16 = false;
             c0d = false;
             OpenInventory = false;
-            if (mc.currentScreen instanceof GuiInventory ||(isEnabled(InvManager.class) && getModule(InvManager.class).clientOpen)) {
+            if (mc.currentScreen instanceof GuiInventory ||(isEnabled(InvManager.class) && getModule(InvManager.class).isOpen())) {
                 double xDist = mc.thePlayer.posX - mc.thePlayer.prevPosX;
                 double zDist = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
                 double lastDist = Math.sqrt(xDist * xDist + zDist * zDist);

@@ -6,6 +6,7 @@ import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.render.RenderUtil;
+import qwq.arcane.utils.render.RoundedUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ColorValue;
 import net.minecraft.tileentity.*;

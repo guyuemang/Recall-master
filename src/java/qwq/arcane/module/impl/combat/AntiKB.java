@@ -5,6 +5,7 @@ import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSoulSand;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.network.handshake.client.C00Handshake;
 import net.minecraft.network.login.client.C00PacketLoginStart;
@@ -34,10 +35,12 @@ import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.world.Scaffold;
+import qwq.arcane.utils.chats.ChatUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
+import qwq.arcane.utils.rotation.RayCastUtil;
 import qwq.arcane.utils.rotation.RotationManager;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
@@ -102,26 +105,6 @@ public class AntiKB extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.setsuffix(mode.is("Grim") ? (ViaLoadingBase.getInstance().getTargetVersion().getVersion() >= 755 ? "Grim1.17+" : "Reduce") : mode.getValue());
-        if (mode.is("Prediction")) {
-            while (mc.thePlayer.hurtTime >= 8) {
-                mc.gameSettings.keyBindJump.pressed = true;
-                break;
-            }
-
-            while (mc.thePlayer.hurtTime >= 7 && !mc.gameSettings.keyBindForward.pressed) {
-                mc.gameSettings.keyBindForward.pressed = true;
-                start = 1;
-                break;
-            }
-
-            if (mc.thePlayer.hurtTime < 7 && mc.thePlayer.hurtTime > 0) {
-                mc.gameSettings.keyBindJump.pressed = false;
-                if (start == 1) {
-                    mc.gameSettings.keyBindForward.pressed = false;
-                    start = 0;
-                }
-            }
-        }
         switch (mode.get()) {
             case "Watchdog":
                 if (mc.thePlayer.onGround) {
@@ -238,23 +221,29 @@ public class AntiKB extends Module {
                         break;
                     }
                     case "Prediction":
+                        double velX = s12.getMotionX() / 8000.0D;
+                        double velZ = s12.getMotionZ() / 8000.0D;
+                        float desiredYaw = (float) Math.toDegrees(Math.atan2(velZ, velX));
+                        if (desiredYaw < -180) desiredYaw += 360;
+                        if (desiredYaw > 180) desiredYaw -= 360;
+                        //mc.thePlayer.rotationYaw = desiredYaw + 90F;
+                        Client.Instance.getRotationManager().setRotation(
+                                new Vector2f(desiredYaw + 90F, 180),
+                                180,
+                                true,
+                                true
+                        );
                         if(s12.getEntityID()== mc.thePlayer.getEntityId()) {
-                            double velX = s12.getMotionX() / 8000.0D;
-                            double velZ = s12.getMotionZ() / 8000.0D;
-                            float desiredYaw = (float) Math.toDegrees(Math.atan2(velZ, velX));
-                            if (desiredYaw < -180) desiredYaw += 360;
-                            if (desiredYaw > 180) desiredYaw -= 360;
-
-                            KillAura.externalRotation = new Vector2f(desiredYaw + 90F, mc.thePlayer.rotationPitch);
-                            KillAura.useExternalRotation = true;
-
-                            Client.Instance.getRotationManager().setRotation(
-                                    new Vector2f(desiredYaw + 90F, mc.thePlayer.rotationPitch),
-                                    360,
-                                    true,
-                                    true
-                            );
+                            final MovingObjectPosition movingObjectPosition = mc.objectMouseOver;
+                            if (KillAura.target instanceof AbstractClientPlayer && (mc.thePlayer.getClosestDistanceToEntity(KillAura.target) <= 3.5) && (movingObjectPosition != null && movingObjectPosition.entityHit == KillAura.target)) {
+                                ChatUtils.sendMessage("[" + "Velocity Reduce 0.4" + "]" + " - Distance: " + mc.thePlayer.getClosestDistanceToEntity(KillAura.target));
+                                AttackOrder.sendFixedAttack(mc.thePlayer, KillAura.target);
+                                mc.thePlayer.setSprinting(false);
+                                mc.thePlayer.setVelocity(mc.thePlayer.motionX * 0.6f, mc.thePlayer.motionY, mc.thePlayer.motionZ * 0.6f);
+                            }
                         }
+                        KillAura.externalRotation = new Vector2f(desiredYaw + 90F, mc.thePlayer.rotationPitch);
+                        KillAura.useExternalRotation = true;
                         break;
                 }
             }

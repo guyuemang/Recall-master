@@ -2,6 +2,7 @@ package qwq.arcane.gui.notification;
 
 
 import qwq.arcane.Client;
+import qwq.arcane.module.impl.display.IsLand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,9 @@ public class NotificationManager {
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
             notifications.removeIf(Notification::shouldDelete);
-
-            notification.render(startY, lastY);
+            if (!Client.INSTANCE.getModuleManager().getModule(IsLand.class).getState()) {
+                notification.render(startY, lastY);
+            }
             startY -= notification.getHeight() + 3;
         }
     }
@@ -39,8 +41,9 @@ public class NotificationManager {
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
             notifications.removeIf(Notification::shouldDelete);
-
-            notification.shader(startY, lastY);
+            if (!Client.INSTANCE.getModuleManager().getModule(IsLand.class).getState()) {
+                notification.shader(startY, lastY);
+            }
             startY -= notification.getHeight() + 3;
         }
     }
@@ -54,8 +57,9 @@ public class NotificationManager {
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
             notifications.removeIf(Notification::shouldDelete);
-
-            notification.custom(startY, lastY);
+            if (!Client.INSTANCE.getModuleManager().getModule(IsLand.class).getState()) {
+                notification.custom(startY, lastY);
+            }
             startY -= 25;
         }
     }
@@ -69,8 +73,9 @@ public class NotificationManager {
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
             notifications.removeIf(Notification::shouldDelete);
-
-            notification.customshader(startY, lastY);
+            if (!Client.INSTANCE.getModuleManager().getModule(IsLand.class).getState()) {
+                notification.customshader(startY, lastY);
+            }
             startY -= 25;
         }
     }
@@ -84,8 +89,9 @@ public class NotificationManager {
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
             notifications.removeIf(Notification::shouldDelete);
-
-            notification.render1(startY, lastY);
+            if (!Client.INSTANCE.getModuleManager().getModule(IsLand.class).getState()) {
+                notification.render1(startY, lastY);
+            }
             startY += 18;
         }
     }
@@ -99,8 +105,9 @@ public class NotificationManager {
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
             notifications.removeIf(Notification::shouldDelete);
-
-            notification.shader1(startY, lastY);
+            if (!Client.INSTANCE.getModuleManager().getModule(IsLand.class).getState()) {
+                notification.shader1(startY, lastY);
+            }
             startY += 18;
         }
     }

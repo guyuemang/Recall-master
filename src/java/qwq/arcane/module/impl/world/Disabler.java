@@ -3,7 +3,9 @@ package qwq.arcane.module.impl.world;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
@@ -17,6 +19,7 @@ import qwq.arcane.event.impl.events.packet.HigherPacketEvent;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.module.Category;
+import qwq.arcane.module.Mine;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Noslow;
 import qwq.arcane.module.impl.player.InvManager;
@@ -24,6 +27,7 @@ import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,7 +40,8 @@ import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
  */
 
 public class Disabler extends Module {
-    public static final BoolValue invmove = new BoolValue("Dog Invmove", true);
+    public static final BoolValue invmove = new BoolValue("Watchdog", true);
+    public static final BoolValue inv = new BoolValue("Watchdog Inventory", false);
     public static final BoolValue postValue = new BoolValue("Post", true);
     public final BoolValue oldPostValue = new BoolValue("OldPost", false);
     public final BoolValue digValue = new BoolValue("Digging", true);
@@ -58,6 +63,18 @@ public class Disabler extends Module {
         super("Disabler", Category.World);
         INSTANCE = this;
     }
+
+    @Override
+    public void onDisable() {
+        if(!packetsQueue.isEmpty()) {
+            for(Packet<?> packet : packetsQueue) {
+                PacketUtil.sendPacketNoEvent(packet);
+            }
+
+            packetsQueue.clear();
+        }
+    }
+
     @EventTarget
     @EventPriority(value=9)
     public void onupdate(UpdateEvent event) {
@@ -65,7 +82,7 @@ public class Disabler extends Module {
         if (invmove.get()) {
             c16 = false;
             c0d = false;
-            if (mc.currentScreen instanceof GuiInventory || getModule(InvManager.class).isEnabled() && getModule(InvManager.class).clientOpen) {
+            if (mc.currentScreen instanceof GuiInventory || getModule(InvManager.class).isEnabled() && getModule(InvManager.class).isOpen()) {
                 if (mc.thePlayer.ticksExisted % (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 3 : 4) == 0) {
                     sendPacketNoEvent(new C0DPacketCloseWindow());
                 } else if (mc.thePlayer.ticksExisted % (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 3 : 4) == 1) {
@@ -143,11 +160,42 @@ public class Disabler extends Module {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
+    public static boolean isHypixelLobby() {
+
+        String[] strings = new String[]{"CLICK TO PLAY"};
+        for (Entity entity : Mine.getMinecraft().theWorld.playerEntities) {
+            if (entity.getName().startsWith("§e§l")) {
+                for (String string : strings) {
+                    if (entity.getName().equals("§e§l" + string)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    private final ArrayList<Packet<?>> packetsQueue = new ArrayList<>();
     @EventTarget
     public void onPacket(PacketSendEvent event) {
         Packet packet = event.getPacket();
-        if (invmove.get()){
+        if (mc.theWorld == null){
+            return;
+        }
+        if (!isHypixelLobby()) return;
 
+        if(packet instanceof C16PacketClientStatus || packet instanceof C0EPacketClickWindow) {
+            event.setCancelled(true);
+            packetsQueue.add(packet);
+        } else if(packet instanceof C0DPacketCloseWindow) {
+            if(!packetsQueue.isEmpty()) {
+                for(Packet<?> i : packetsQueue) {
+                    PacketUtil.sendPacketNoEvent(i);
+                }
+
+                packetsQueue.clear();
+            }
+        }
+        if (invmove.get()){
             if (event.getPacket() instanceof C16PacketClientStatus) {
                 if (c16) {
                     event.setCancelled(true);

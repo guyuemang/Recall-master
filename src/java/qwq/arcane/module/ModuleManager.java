@@ -20,7 +20,6 @@ import qwq.arcane.value.Value;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +95,9 @@ public class ModuleManager {
 
         registerModule(new ArrayList());
         registerModule(new Notification());
+        registerModule(new IsLand());
         registerModule(new EffectHUD());
+        registerModule(new Scoreboard());
         registerModule(new Inventory());
         registerModule(new TargetRender());
         registerModule(new Session());
@@ -130,7 +131,6 @@ public class ModuleManager {
     public <T extends Module> T getModule(Class<T> cls) {
         return cls.cast(modules.get(cls));
     }
-
     public <T extends ModuleWidget> T getModuleW(Class<T> cls) {
         return cls.cast(modules.get(cls));
     }

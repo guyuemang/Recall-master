@@ -42,6 +42,7 @@ public class Scaffold extends Module {
     public ModeValue mode = new ModeValue("Mode","Normal",new String[]{"Normal","Telly"});
     private final NumberValue minTellyTicks = new NumberValue("Min Telly Ticks", () -> mode.is("Telly"), 2, 1, 5,1);
     private final NumberValue maxTellyTicks = new NumberValue("Max Telly Ticks", () -> mode.is("Telly"), 4, 1, 5,1);
+    public final BoolValue biggestStack = new BoolValue("Biggest Stack", false);
     public final BoolValue swing = new BoolValue("Swing", true);
     public final BoolValue sprint = new BoolValue("sprint", true);
     public BoolValue rotation = new BoolValue("Rotation",true);
@@ -56,7 +57,6 @@ public class Scaffold extends Module {
     private int prevItem = 0;
     private TimerUtil timerUtil = new TimerUtil();
     private double onGroundY;
-    private float[] smoothRotation = new float[]{0, 85F};
     private boolean canPlace = true;
     private int tellyTicks;
     private float[] previousRotation;
@@ -71,9 +71,6 @@ public class Scaffold extends Module {
             previousRotation = new float[]{mc.thePlayer.rotationYaw + 180, 82};
         }
         this.slot = -1;
-        if (mode.is("Telly")) {
-            smoothRotation = new float[]{mc.thePlayer.rotationYaw, 85F};
-        }
         canPlace = true;
     }
     @Override
@@ -86,11 +83,16 @@ public class Scaffold extends Module {
     }
     @EventTarget
     public void Tickevent(UpdateEvent event){
+        SlotSpoofComponent.startSpoofing(prevItem);
+        mc.thePlayer.inventory.currentItem = this.slot;
         this.slot = getBlockSlot();
     }
 
     @EventTarget
     public void onStrafe(StrafeEvent event){
+        if (this.slot < 0) return;
+        if (ScaffoldUtil.getBlockSlot() == -1)
+            return;
         if (mc.thePlayer.onGround && mode.is("Telly") && !mc.thePlayer.isJumping && MovementUtil.isMoving()) {
            tellyStage = !tellyStage;
            mc.thePlayer.jump();
@@ -100,9 +102,12 @@ public class Scaffold extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         this.slot = getBlockSlot();
-        if (this.slot < 0) return;
-        mc.thePlayer.inventory.currentItem = this.slot;
         SlotSpoofComponent.startSpoofing(prevItem);
+        mc.thePlayer.inventory.currentItem = this.slot;
+        if (ScaffoldUtil.getBlockSlot() == -1)
+            return;
+        if (this.slot < 0) return;
+
         if (sprint.get()) {
             Sprint.keepSprinting = true;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
@@ -141,21 +146,26 @@ public class Scaffold extends Module {
     @EventTarget
     public void onMotion(UpdateEvent event){
         setsuffix(String.valueOf(this.mode.get()));
+        if (ScaffoldUtil.getBlockSlot() == -1)
+            return;
+        if (this.slot < 0) return;
         if (data != null && rotation.get() && mode.is("Normal") || mode.is("Telly") && canPlace && rotation.get()) {
             switch (modeValue.get()){
                 case "Normal":
                     rotations = RotationUtil.getRotations(getVec3(data));
                     break;
                 case "Telly2":
-                    rotations[1] = 82;
-                    float yaw2 = 120;
-                    if (GameSettings.isKeyDown(mc.gameSettings.keyBindRight))
-                        yaw2 = - yaw2;
-
-                    rotations[0] = mc.thePlayer.rotationYaw + yaw2;
+                    float yaw2 = MovementUtil.getRawDirection() - 125;
+                    float pitch2 = RotationUtil.getRotations(getVec3(data))[1];
+                    rotations = new float[]{yaw2, pitch2};
                     break;
                 case "Telly":
-                    float yaw = MovementUtil.getRawDirection() - 125;
+                    float yaw = MovementUtil.getRawDirection() - 127;
+                    if (GameSettings.isKeyDown(mc.gameSettings.keyBindJump)){
+                        yaw = MovementUtil.getRawDirection() - 125;
+                    }
+                    if (GameSettings.isKeyDown(mc.gameSettings.keyBindLeft))
+                        yaw = MovementUtil.getRawDirection() + 120;
                     float pitch = RotationUtil.getRotations(getVec3(data))[1];
                     rotations = new float[]{yaw, pitch};
                     break;

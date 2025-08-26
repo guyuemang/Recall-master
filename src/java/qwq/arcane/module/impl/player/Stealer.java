@@ -19,6 +19,7 @@ import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.packet.PacketReceiveSyncEvent;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.MotionEvent;
+import qwq.arcane.event.impl.events.render.Render2DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.combat.KillAura;
@@ -52,7 +53,7 @@ public class Stealer extends Module {
     private final LinkedBlockingQueue<Packet<?>> packets = new LinkedBlockingQueue<>();
     public static final TimerUtil timer = new TimerUtil();
     private int nextDelay = 0;
-    private boolean hasItems = false;
+    public boolean hasItems = false;
     @EventTarget
     public void onWorld(WorldLoadEvent e){
         this.setState(false);

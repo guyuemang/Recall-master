@@ -47,7 +47,7 @@ public class Module implements Instance {
     public void onDisable(){
     }
 
-    public <M extends Module> M getModule(Class<M> clazz) {
+    public static <M extends Module> M getModule(Class<M> clazz) {
         return Client.Instance.getModuleManager().getModule(clazz);
     }
     public boolean isGapple() {
@@ -147,7 +147,7 @@ public class Module implements Instance {
                 Client.Instance.getEventManager().register(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Enabled", Notification.Type.SUCCESS);
+                    Client.Instance.getNotification().add("Module Toggle", "Module " + "§2" + this.name + "§r" + " Enabled", Notification.Type.SUCCESS);
                 }
                 playClickSound(1.0F);
                 onEnable();
@@ -155,7 +155,7 @@ public class Module implements Instance {
                 Client.Instance.getEventManager().unregister(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + " Disabled", Notification.Type.ERROR);
+                    Client.Instance.getNotification().add("Module Toggle", "Module " + "§c" + this.name + "§r" + " Disabled", Notification.Type.ERROR);
                 }
                 playClickSound(1.0F);
                 onDisable();

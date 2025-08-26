@@ -6,8 +6,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.*;
 import net.minecraft.network.play.client.C02PacketUseEntity;
+import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
+import qwq.arcane.gui.notification.Notification;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.utils.player.InventoryUtil;
@@ -40,7 +42,10 @@ public class AutoWeapon extends Module {
                     }
                 }
             }
-
+            if (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword){
+            }else {
+                Client.Instance.getNotification().add("Module Info", "Successfully switch weapons", Notification.Type.INFO);
+            }
             if (slot == -1 || slot == mc.thePlayer.inventory.currentItem)
                 return;
 
