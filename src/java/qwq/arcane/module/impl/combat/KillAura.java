@@ -102,7 +102,10 @@ public class KillAura extends Module {
     private int cps;
     private Entity auraESPTarget;
     public boolean blink;
-    public static boolean blinkab = false;
+
+    public boolean tick1;
+    public boolean tick2;
+    public boolean tick3;
     private boolean swapped = false;
     private int serverSlot = -1;
     public static Vector2f externalRotation = null;
@@ -112,6 +115,9 @@ public class KillAura extends Module {
     public void onEnable() {
         StopAutoBlock();
         blocking = false;
+        tick1 = true;
+        tick2 = false;
+        tick3 = false;
         index = 0;
         cps = 0;
         switchTimer.reset();
@@ -126,7 +132,9 @@ public class KillAura extends Module {
     @Override
     public void onDisable() {
         StopAutoBlock();
-        blinkab = false;
+        tick1 = false;
+        tick2 = false;
+        tick3 = false;
         blocking = false;
         index = 0;
         cps = 0;
@@ -359,26 +367,24 @@ public class KillAura extends Module {
     }
 
     public void preTickBlock() {
-        int newSlot;
-        if (blinkab) {
+        if (this.tick1) {
             BlinkComponent.blinking = true;
-            blink = true;
-            newSlot = mc.thePlayer.inventory.currentItem % 8 + 1;
-            if (blocking) {
-                if (this.serverSlot != newSlot) {
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
-                    this.swapped = true;
-                }
+            if (blocking && !swapped) {
+                mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem % 8 + 1));
+                mc.getNetHandler().addToSendQueue(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
                 blocking = false;
+                swapped = true;
             }
-            qwq.arcane.utils.pack.PacketUtil.sendPacket(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
-            blinkab = false;
-        } else {
-            newSlot = mc.thePlayer.inventory.currentItem;
-            if (this.serverSlot != newSlot) {
-                qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = newSlot));
-                this.swapped = false;
+            tick1 = false;
+            tick2 = true;
+        } else if (tick2) {
+            if (swapped){
+                mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+                swapped = false;
             }
+            tick2 = false;
+            tick3 = true;
+        } else if(tick3) {
             Attack();
             MovingObjectPosition result = RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation ,range.getValue().floatValue());
             if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
@@ -390,7 +396,8 @@ public class KillAura extends Module {
                     qwq.arcane.utils.pack.PacketUtil.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
                 }
             }
-            blinkab = true;
+            tick3 = false;
+            tick1 = true;
             BlinkComponent.dispatch();
             blink = false;
         }
