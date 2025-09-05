@@ -15,7 +15,7 @@ import qwq.arcane.value.impl.ModeValue;
  */
 
 public class Notification extends ModuleWidget {
-    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Type1"});
+    public ModeValue modeValue = new ModeValue("Mode", "Type1",new String[]{"Type1","Custom","Normal"});
 
     public Notification() {
         super("Notification", Category.Display);

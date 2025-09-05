@@ -15,6 +15,7 @@ import qwq.arcane.event.annotations.EventTarget;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.utils.render.RenderUtil;
 
 import java.awt.*;
 
@@ -65,7 +66,7 @@ public class ItemESP extends Module {
             double dist = MathHelper.sqrt_double(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
             GlStateManager.pushMatrix();
-            drawText(entityItem.getEntityItem().getDisplayName() + var3 + enhancement, -1, interpolatedX, interpolatedY, interpolatedZ, dist);
+            drawText(entityItem.getEntityItem().getDisplayName() + var3 + enhancement,-1, interpolatedX, interpolatedY,interpolatedZ,dist);
             GlStateManager.popMatrix();
         }
     }

@@ -17,6 +17,7 @@ import qwq.arcane.event.impl.events.render.Render3DEvent;
 import qwq.arcane.event.impl.events.render.Shader2DEvent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.utils.chats.IRC;
 import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.math.MathUtils;
@@ -39,6 +40,7 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex2f;
+import static qwq.arcane.utils.chats.IRC.getIRCUserDisplayName;
 
 /**
  * @Author：Guyuemang
@@ -122,7 +124,8 @@ public final class ESP extends Module {
             final float healthPercentage = health / maxHealth;
 
             if (fontTags.get()) {
-                final String name = player.getDisplayName().getFormattedText() + " - " + "§c" + player.getHealth() + "HP" + " - " + "§a" + getPing(player) + "ms";
+                final String displayName = getPlayerDisplayName(player);
+                final String name = displayName + " - " + "§c" + player.getHealth() + "HP" + " - " + "§a" + getPing(player) + "ms";
                 float halfWidth = FontManager.Bold.get(20).getStringWidth(name) + 8;
                 final float xDif = x2 - x;
                 final float middle = x + (xDif / 2);
@@ -133,7 +136,7 @@ public final class ESP extends Module {
                 final float left2 = middle - halfWidth / 2 + FontManager.Icon.get(35).getStringWidth("SBSBS") / 2;
 
                 if (fonttagsBackground.get()) {
-                    RoundedUtil.drawRound(left, renderY - 6, halfWidth, textHeight + 1,5, new Color(0, 0, 0, 255));
+                    RoundedUtil.drawRound(left, renderY - 6, halfWidth, textHeight + 1,5, new Color(255, 255, 255, 255));
                 }
                 RenderUtil.renderItemStack(player,left2,renderY - 25,1,false,0,false,false);
                 FontManager.Bold.get(20).drawString(name, left + 4, renderY - 2f, -1);
@@ -330,6 +333,11 @@ public final class ESP extends Module {
             }
         }
     }
+    private String getPlayerDisplayName(EntityPlayer player) {
+        String name = player.getName();
+        // 使用IRC专用方法获取显示名
+        return IRC.getIRCUserDisplayName(name);
+    }
     @EventTarget
     public void onRender2D(Render2DEvent event) {
         for (EntityPlayer player : entityPosMap.keySet()) {
@@ -347,8 +355,9 @@ public final class ESP extends Module {
             final float healthPercentage = health / maxHealth;
 
             if (fontTags.get()) {
-                final String name = player.getDisplayName().getFormattedText() + " - " + "§c" + player.getHealth() + "HP" + " - " + "§a" + getPing(player) + "ms";
-                float halfWidth = FontManager.Bold.get(20).getStringWidth(name) + 8;
+                final String displayName = getPlayerDisplayName(player);
+                final String name = displayName + " - " + "§c" + player.getHealth() + "HP" + " - " + "§a" + getPing(player) + "ms";
+                 float halfWidth = FontManager.Bold.get(20).getStringWidth(name) + 8;
                 final float xDif = x2 - x;
                 final float middle = x + (xDif / 2);
                 final float textHeight = 15;
@@ -358,7 +367,7 @@ public final class ESP extends Module {
                 final float left2 = middle - halfWidth / 2 + FontManager.Icon.get(35).getStringWidth("SBSBS") / 2;
 
                 if (fonttagsBackground.get()) {
-                    RoundedUtil.drawRound(left, renderY - 6, halfWidth, textHeight + 1,5, new Color(0, 0, 0, 190));
+                    RoundedUtil.drawRound(left, renderY - 6, halfWidth, textHeight + 1,5, new Color(255, 255, 255, 120));
                 }
                 RenderUtil.renderItemStack(player,left2,renderY - 25,1,false,0,false,false);
                 FontManager.Bold.get(20).drawString(name, left + 4, renderY - 2f, -1);

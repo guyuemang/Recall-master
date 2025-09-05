@@ -4,6 +4,7 @@ package qwq.arcane.module;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import qwq.arcane.Client;
@@ -147,7 +148,7 @@ public class Module implements Instance {
                 Client.Instance.getEventManager().register(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Module Toggle", "Module " + "§2" + this.name + "§r" + " Enabled", Notification.Type.SUCCESS);
+                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + "§2 Enabled", Notification.Type.SUCCESS);
                 }
                 playClickSound(1.0F);
                 onEnable();
@@ -155,7 +156,7 @@ public class Module implements Instance {
                 Client.Instance.getEventManager().unregister(this);
                 qwq.arcane.module.impl.display.Notification notificationModule = Client.Instance.getModuleManager().getModuleW(qwq.arcane.module.impl.display.Notification.class);
                 if (notificationModule != null) {
-                    Client.Instance.getNotification().add("Module Toggle", "Module " + "§c" + this.name + "§r" + " Disabled", Notification.Type.ERROR);
+                    Client.Instance.getNotification().add("Module Toggle", "Module " + this.name + "§c Disabled", Notification.Type.ERROR);
                 }
                 playClickSound(1.0F);
                 onDisable();

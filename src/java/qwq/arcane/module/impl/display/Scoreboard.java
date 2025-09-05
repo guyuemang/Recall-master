@@ -84,7 +84,7 @@ public class Scoreboard extends ModuleWidget {
 
                 int finalMaxWidth = maxWidth;
                 int finalX1 = x;
-                RoundedUtil.drawRound(x, y - 24, maxWidth, totalHeight + lineHeight + 29, InterFace.radius.get().floatValue(), new Color(1, 1, 1, 255));
+                RoundedUtil.drawRound(x, y - 24, maxWidth, totalHeight + lineHeight + 29, InterFace.radius.get().floatValue(), new Color(255, 255, 255, 255));
                 RenderUtil.startGlScissor((int) (x - 2), (int) (y - 28), 159, 24);
                 RoundedUtil.drawRound(x, y - 24, maxWidth, 29, InterFace.radius.get().floatValue(), ColorUtil.applyOpacity(new Color(INTERFACE.color(1).getRGB()), (float) 0.3f));
                 RenderUtil.stopGlScissor();
@@ -153,10 +153,7 @@ public class Scoreboard extends ModuleWidget {
 
                 int finalMaxWidth = maxWidth;
                 int finalX1 = x;
-                RoundedUtil.drawRound(x, y - 24, maxWidth, totalHeight + lineHeight + 29, InterFace.radius.get().floatValue(), new Color(1,1,1,255));
-                RenderUtil.startGlScissor((int) (x - 2), (int) (y - 28), 159, 24);
-                RoundedUtil.drawRound(x,y - 24, maxWidth, 29, InterFace.radius.get().floatValue(), ColorUtil.applyOpacity(new Color(INTERFACE.color(1).getRGB()), (float) 0.3f));
-                RenderUtil.stopGlScissor();
+                RoundedUtil.drawRound(x, y - 24, maxWidth, totalHeight + lineHeight + 29, InterFace.radius.get().floatValue(), new Color(255, 255, 255,255));
 
 
                 ShaderElement.addBlurTask(() -> RenderUtil.drawRectWH(finalX1, y, finalMaxWidth, totalHeight + lineHeight, -1));
@@ -233,9 +230,9 @@ public class Scoreboard extends ModuleWidget {
 
                 int finalMaxWidth = maxWidth;
                 int finalX1 = x;
-                RoundedUtil.drawRound(x, y - 24, maxWidth, totalHeight + lineHeight + 29, InterFace.radius.get().floatValue(), new Color(1,1,1,190));
-                RenderUtil.startGlScissor((int) (x - 2), (int) (y - 28), 159, 18);
-                RoundedUtil.drawRound(x,y - 24, maxWidth, 29, InterFace.radius.get().floatValue(), ColorUtil.applyOpacity(new Color(INTERFACE.color(1).darker().getRGB()), (float) 0.3f));
+                RoundedUtil.drawRound(x, y - 24, maxWidth, totalHeight + lineHeight + 29, InterFace.radius.get().floatValue(), new Color(255, 255, 255,120));
+                RenderUtil.startGlScissor((int) (x - 2), (int) (y - 28), 159, 22);
+                RoundedUtil.drawRound(x,y - 24, maxWidth, 40, InterFace.radius.get().floatValue(), ColorUtil.applyOpacity(new Color(INTERFACE.color(1).darker().getRGB()), (float) 0.3f));
                 RenderUtil.stopGlScissor();
                 Bold.get(18).drawString("ScoreBoard",x + maxWidth / 2 - font.getStringWidth("ScoreBoard") / 2,y - 20,-1);
 

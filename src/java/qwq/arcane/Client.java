@@ -11,6 +11,7 @@ import qwq.arcane.event.EventManager;
 import qwq.arcane.gui.clickgui.arcane.ArcaneClickGui;
 import qwq.arcane.gui.clickgui.dropdown.DropDownClickGui;
 import qwq.arcane.gui.notification.NotificationManager;
+import qwq.arcane.module.IRCClient;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.pack.BlinkComponent;
@@ -29,7 +30,7 @@ import qwq.arcane.utils.rotation.RotationManager;
 public class Client implements Instance {
     public static Client Instance = new Client();
     public static String name = "Arcane";
-    public static String version = "Official 1.0";
+    public static String version = "Official 2.2";
 
     private EventManager eventManager;
     private ModuleManager moduleManager;
@@ -42,6 +43,7 @@ public class Client implements Instance {
     private PingerUtils pingerUtils;
     private SelectorDetectionComponent selectorDetectionComponent;
     public static boolean debug = true;
+    private IRCClient ircClient;
     int startTime;
 
     public void Init(){
@@ -81,5 +83,9 @@ public class Client implements Instance {
 
         arcaneClickGui = new ArcaneClickGui();
         dropDownClickGui = new DropDownClickGui();
+        
+        ircClient = new IRCClient();
+        eventManager.register(ircClient);
+        IRCClient.connect();
     }
 }

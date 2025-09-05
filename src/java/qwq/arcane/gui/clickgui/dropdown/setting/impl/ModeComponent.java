@@ -2,6 +2,7 @@
 package qwq.arcane.gui.clickgui.dropdown.setting.impl;
 
 import qwq.arcane.gui.clickgui.Component;
+import qwq.arcane.module.impl.visuals.ClickGui;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
@@ -37,10 +38,10 @@ public class ModeComponent extends Component {
             }
 
             if (text.equals(setting.get())) {
-                FontManager.Bold.get(13).drawString(text, getX() + offset + 8, getY() + FontManager.Bold.get(15).getHeight() + heightoff, -1);
+                FontManager.Bold.get(13).drawString(text, getX() + offset + 8, getY() + FontManager.Bold.get(15).getHeight() + heightoff, ClickGui.colorValue.get().getRGB());
             } else {
                 FontManager.Bold.get(13).drawString(text, getX() + offset + 8, getY() + FontManager.Bold.get(15).getHeight() + heightoff,
-                        InterFace.mainColor.get().brighter().getRGB());
+                       -1 );
             }
 
             offset += off;

@@ -47,10 +47,10 @@ public class InterFace extends Module {
         setState(true);
     }
     public ModeValue soundMode = new ModeValue("Sound Mode", "Augustus", new String[]{"None", "Default", "Sigma", "Augustus"});
-    public static ModeValue colorMode = new ModeValue("Color Mode", "Fade", new String[]{"Fade", "Rainbow", "Astolfo", "Dynamic","Tenacity", "Static", "Double"});
+    public static ModeValue colorMode = new ModeValue("Color Mode", "Tenacity", new String[]{"Fade", "Rainbow", "Astolfo", "Dynamic","Tenacity", "Static", "Double"});
     public static final NumberValue colorspeed = new NumberValue("ColorSpeed", () -> colorMode.is("Tenacity"), 4, 1, 10, 1);
-    public static ColorValue mainColor = new ColorValue("MainColor", new Color(127, 127, 213));
-    public static ColorValue secondColor = new ColorValue("SecondColor", new Color(134, 168, 231));
+    public static ColorValue mainColor = new ColorValue("MainColor", new Color(198, 255, 221));
+    public static ColorValue secondColor = new ColorValue("SecondColor", new Color(247, 121, 125));
     public static BoolValue waterMark = new BoolValue("WaterMark",true);
     public static ModeValue waterMarkmode = new ModeValue("WaterMarkMode",()-> waterMark.get(),"Exhi",new String[]{"Exhi","Arcane","Exhibition","Sigma"});
     public static BoolValue info = new BoolValue("Info",true);
@@ -87,7 +87,7 @@ public class InterFace extends Module {
                     break;
                 case "Sigma":
                     Semibold.get(60).drawString(text3, 5, 5,new Color(255, 255, 255,190).getRGB());
-                    Semibold.get(20).drawString(Client.version, 0, 37,new Color(255, 255, 255,190).getRGB());
+                    Semibold.get(20).drawString(Client.version, 5, 37,new Color(255, 255, 255,190).getRGB());
                     break;
                 case "Exhibition":
                     String text2 = "§fArc§rance§f" + " - " + mc.thePlayer.getName() + " - " + " - " + PingerUtils.getPing() + "ms ";

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
@@ -46,17 +47,17 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     private final GuiButton join = new GuiButton(I18n.format("selectServer.select"), () -> {
         if (selectedServer == null) return;
         connectToSelected();
-    }, new Color(0, 0, 0, 120), new Color(127, 127, 213));
+    }, new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
 
     private final GuiButton connect = new GuiButton(I18n.format("selectServer.direct"), () -> {
         this.directConnect = true;
         this.mc.displayGuiScreen(new GuiScreenServerList(this, this.selectedServer = new ServerData(I18n.format("selectServer.defaultName"), "", false)));
-    }, new Color(0, 0, 0, 120), new Color(127, 127, 213));
+    }, new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
 
     private final GuiButton add = new GuiButton(I18n.format("selectServer.add"), () -> {
         this.addingServer = true;
         this.mc.displayGuiScreen(new GuiScreenAddServer(this, this.selectedServer = new ServerData(I18n.format("selectServer.defaultName"), "", false)));
-    }, new Color(0, 0, 0, 120), new Color(127, 127, 213));
+    }, new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
 
     private final GuiButton edit = new GuiButton(I18n.format("selectServer.edit"), () -> {
         if (selectedServer == null) return;
@@ -65,7 +66,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         this.selectedServer = new ServerData(serverdata.serverName, serverdata.serverIP, false);
         this.selectedServer.copyFrom(serverdata);
         mc.displayGuiScreen(new GuiScreenAddServer(this, this.selectedServer));
-    }, new Color(0, 0, 0, 120), new Color(127, 127, 213));
+    }, new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
 
     private final GuiButton remove = new GuiButton(I18n.format("selectServer.delete"), () -> {
         if (selectedServer == null) return;
@@ -79,11 +80,11 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
             GuiYesNo guiyesno = new GuiYesNo(this, s, s1, s2, s3, getSelectedServerIndex());
             this.mc.displayGuiScreen(guiyesno);
         }
-    }, new Color(0, 0, 0, 120), new Color(127, 127, 213));
+    }, new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
 
-    private final GuiButton refresh = new GuiButton(I18n.format("selectServer.refresh"), () -> mc.displayGuiScreen(new GuiMultiplayer()), new Color(0, 0, 0, 120), new Color(127, 127, 213));
-    private final GuiButton back = new GuiButton(I18n.format("gui.cancel"), () -> mc.displayGuiScreen(new qwq.arcane.gui.MainMenu()), new Color(0, 0, 0, 120), new Color(127, 127, 213));
-    private final GuiButton viaversion = new GuiButton("Via Version", () -> mc.displayGuiScreen(new GuiProtocolSelector(this)), new Color(0, 0, 0, 120), new Color(127, 127, 213));
+    private final GuiButton refresh = new GuiButton(I18n.format("selectServer.refresh"), () -> mc.displayGuiScreen(new GuiMultiplayer()), new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
+    private final GuiButton back = new GuiButton(I18n.format("gui.cancel"), () -> mc.displayGuiScreen(new qwq.arcane.gui.MainMenu()), new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
+    private final GuiButton viaversion = new GuiButton("Via Version", () -> mc.displayGuiScreen(new GuiProtocolSelector(this)), new Color(200, 200, 200, 120), new Color(InterFace.mainColor.get().darker().getRGB()));
 
     @Override
     public void initGui() {
@@ -108,12 +109,9 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         MainMenu.drawBackground(width, height, mouseX, mouseY);
         FontManager.Bold.get(34).drawCenteredString(I18n.format("selectServer.title"), width / 2f, 20, -1);
 
-            RoundedUtil.drawRound((float) ((width - 360) / 2f), 54f, 360, height - 120, 8, new Color(0, 0, 0, 120));
+            RoundedUtil.drawRound((float) ((width - 360) / 2f), 54f, 360, height - 120, 8, new Color(200, 200, 200, 120));
 
-            GL11.glPushMatrix();
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-
-            RenderUtil.scissor((float) ((width - 400) / 2f), 54f, 400f, height - 120, 1);
+            RenderUtil.startGlScissor((int) ((width - 360) / 2), 54, 380, height - 120);
             scrollContainer.draw((float) ((width - 390) / 2f), 60, 380, height - 128, mouseX, mouseY, () -> {
                 float y = 65 + scrollContainer.getScroll();
 
@@ -121,7 +119,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
                     ServerListEntry server = serverListDisplay.get(i);
                     if (server.getServerData() == null) continue;
 
-                    RoundedUtil.drawRound((float) ((width - 340) / 2f), y, 340, 48, 6, new Color(0, 0, 0, 80));
+                    RoundedUtil.drawRound((float) ((width - 340) / 2f), y, 340, 48, 6, new Color(190, 190, 190, 80));
 
                     if (RenderUtil.isHovering((float) ((width - 340) / 2f), y, 340, 50, mouseX, mouseY)) {
                         RoundedUtil.drawRound((float) ((width - 340) / 2f), y, 340, 48, 6, new Color(0, 0, 0, 90));
@@ -138,8 +136,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
                 scrollContainer.setHeight(y - 50 - scrollContainer.getScroll());
             });
 
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            GL11.glPopMatrix();
+            RenderUtil.stopGlScissor();
 
             float spacing = 4f;
             float buttonHeight = 23.5f;
@@ -179,24 +176,25 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         refresh.mouseClick(mouseX, mouseY, mouseButton);
         back.mouseClick(mouseX, mouseY, mouseButton);
         viaversion.mouseClick(mouseX, mouseY, mouseButton);
-
-        float y = 70 + scrollContainer.getScroll();
-        for (int i = 0; i < serverListDisplay.size(); i++) {
-            ServerListEntry server = serverListDisplay.get(i);
-            if (server.getServerData() == null) continue;
-            if (RenderUtil.isHovering((width - 340) / 2f, y, 340, 54, mouseX, mouseY)) {
-                if (selectedIndex != i) {
-                    selectServer(i);
-                    timer.reset();
-                } else {
-                    if (timer.hasTimeElapsed(200)) {
-                        selectServer(-1);
+        if (RenderUtil.isHovering((float) ((width - 360) / 2f), 54f, 360, height - 120,mouseX,mouseY)) {
+            float y = 70 + scrollContainer.getScroll();
+            for (int i = 0; i < serverListDisplay.size(); i++) {
+                ServerListEntry server = serverListDisplay.get(i);
+                if (server.getServerData() == null) continue;
+                if (RenderUtil.isHovering((width - 340) / 2f, y, 340, 54, mouseX, mouseY)) {
+                    if (selectedIndex != i) {
+                        selectServer(i);
+                        timer.reset();
                     } else {
-                        connectToServer(selectedServer);
+                        if (timer.hasTimeElapsed(200)) {
+                            selectServer(-1);
+                        } else {
+                            connectToServer(selectedServer);
+                        }
                     }
                 }
+                y += 58;
             }
-            y += 58;
         }
     }
 

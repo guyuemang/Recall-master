@@ -51,7 +51,26 @@ public class ServerListEntry {
         this.serverIcon = new ResourceLocation("servers/" + p_i45048_2_.serverIP + "/icon");
         this.field_148305_h = (DynamicTexture) mc.getTextureManager().getTexture(this.serverIcon);
     }
+    public void tryPing() {
+        if (!server.field_78841_f) {
+            server.field_78841_f = true;
+            server.pingToServer = -2L;
+            server.serverMOTD = "";
+            server.populationInfo = "";
 
+            field_148302_b.submit(() -> {
+                try {
+                    owner.getOldServerPinger().ping(server);
+                } catch (UnknownHostException e) {
+                    server.pingToServer = -1L;
+                    server.serverMOTD = EnumChatFormatting.DARK_RED + "Can't resolve hostname";
+                } catch (Exception e) {
+                    server.pingToServer = -1L;
+                    server.serverMOTD = EnumChatFormatting.DARK_RED + "Can't connect to server.";
+                }
+            });
+        }
+    }
     public void drawEntry(int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
         this.x = x;
         this.y = y;

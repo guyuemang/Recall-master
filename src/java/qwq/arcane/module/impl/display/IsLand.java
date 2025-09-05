@@ -6,6 +6,9 @@ import qwq.arcane.gui.notification.IslandRender;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.ModuleWidget;
 import qwq.arcane.value.impl.BoolValue;
+import qwq.arcane.value.impl.ColorValue;
+
+import java.awt.*;
 
 /**
  * @Author：Guyuemang
@@ -16,6 +19,7 @@ public class IsLand extends ModuleWidget {
         super("IsLand", Category.Display);
     }
     public static BoolValue island = new BoolValue("IP",true);
+    public static ColorValue colorValue = new ColorValue("Color",new Color(255,255,255));
     @Override
     public void onShader(Shader2DEvent event) {
         IslandRender.INSTANCE.rendershader(new ScaledResolution(mc));

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 
 public class EffectHUD extends ModuleWidget {
-    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom"});
+    public ModeValue modeValue = new ModeValue("Mode", "Custom",new String[]{"Custom","Solitude","Normal"});
 
     private final Map<Integer, Integer> potionMaxDurations = new HashMap<>();
     private final ContinualAnimation widthanimation = new ContinualAnimation();

@@ -45,6 +45,7 @@ public class ModuleManager {
         registerModule(new AutoPlay());
         registerModule(new ClientSpoofer());
         registerModule(new FakeLag());
+        registerModule(new KillSults());
         registerModule(new NoRotate());
         registerModule(new Timer());
         registerModule(new Teams());

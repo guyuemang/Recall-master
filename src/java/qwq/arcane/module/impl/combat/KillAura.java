@@ -35,6 +35,7 @@ import qwq.arcane.module.impl.world.Scaffold;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
+import qwq.arcane.utils.chats.IRC;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
 import qwq.arcane.utils.pack.BlinkComponent;
@@ -91,6 +92,7 @@ public class KillAura extends Module {
             new BoolValue("Box", false),
             new BoolValue("Custom Color", false)));
     private final ColorValue customColor = new ColorValue("Custom Color", Color.WHITE);
+    public BoolValue noAttackIRC = new BoolValue("NoAttackIRC", true);
     public List<EntityLivingBase> targets = new ArrayList<>();
     public static EntityLivingBase target;
     public EntityLivingBase blockTarget;
@@ -294,6 +296,10 @@ public class KillAura extends Module {
     }
 
     public void attack(Entity entity){
+        if (noAttackIRC.get() && entity instanceof EntityPlayer &&
+                IRC.isIRCUser((EntityPlayer) entity)) {
+            return;
+        }
         if (shouldAttack()){
             AttackEvent event = new AttackEvent(entity);
             Client.Instance.getEventManager().call(event);
@@ -479,6 +485,10 @@ public class KillAura extends Module {
     public boolean setTarget(Entity entity){
         if (Client.Instance.getModuleManager().getModule(Blink.class).getState()){
             return false;
+        }
+        if (noAttackIRC.get() && entity instanceof EntityPlayer &&
+                IRC.isIRCUser((EntityPlayer) entity)) {
+            return false; // 明确排除IRC用户
         }
         if ((sorttargets.isEnabled("Teams") && PlayerUtil.isInTeam(entity))) {
             return false;

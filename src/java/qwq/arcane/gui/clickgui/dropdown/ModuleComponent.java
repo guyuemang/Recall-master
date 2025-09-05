@@ -5,6 +5,7 @@ import qwq.arcane.gui.clickgui.Component;
 import qwq.arcane.gui.clickgui.IComponent;
 import qwq.arcane.gui.clickgui.dropdown.setting.impl.*;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.visuals.ClickGui;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.EaseInOutQuad;
@@ -65,9 +66,9 @@ public class ModuleComponent implements IComponent {
         toggleAnimation.setDirection(module.getState() ? Direction.FORWARDS : Direction.BACKWARDS);
         hoverAnimation.setDirection(isHovered(mouseX, mouseY) ? Direction.FORWARDS : Direction.BACKWARDS);
 
-        RenderUtil.drawRect(x,y,width,yOffset, ColorUtil.applyOpacity(new Color(50,50,50), (float) toggleAnimation.getOutput().floatValue()));
+        RenderUtil.drawRect(x,y,width,yOffset, ColorUtil.applyOpacity(ClickGui.colorValue.get(), (float) toggleAnimation.getOutput().floatValue()));
 
-        FontManager.Bold.get((float) (14 - 1 * hoverAnimation.getOutput())).drawCenteredString(module.getName(), x + getWidth() / 2, y + yOffset / 2 - 3 + 0.5 * hoverAnimation.getOutput(), new Color(234, 234, 234).getRGB());
+        FontManager.Bold.get((float) (14 - 1 * hoverAnimation.getOutput())).drawCenteredString(module.getName(), x + getWidth() / 2, y + yOffset / 2 - 3 + 0.5 * hoverAnimation.getOutput(), new Color(255, 255, 255).getRGB());
 
         for (Component component : settings) {
             if (!component.isVisible()) continue;

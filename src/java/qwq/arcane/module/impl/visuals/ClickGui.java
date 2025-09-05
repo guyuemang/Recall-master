@@ -5,7 +5,10 @@ import org.lwjgl.input.Keyboard;
 import qwq.arcane.Client;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.value.impl.ColorValue;
 import qwq.arcane.value.impl.ModeValue;
+
+import java.awt.*;
 
 /**
  * @Author：Guyuemang
@@ -16,7 +19,8 @@ public class ClickGui extends Module {
         super("ClickGui",Category.Visuals);
         this.setKey(Keyboard.KEY_RSHIFT);
     }
-    public static ModeValue modeValue = new ModeValue("Mode","Arcane",new String[]{"DropDown","Arcane"});
+    public static ModeValue modeValue = new ModeValue("Mode","DropDown",new String[]{"DropDown"});
+    public static ColorValue colorValue = new ColorValue("Color",new Color(255,255,255));
 
     @Override
     public void onEnable() {

@@ -4,6 +4,7 @@ package qwq.arcane.module.impl.world;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.util.*;
 import org.apache.commons.lang3.RandomUtils;
@@ -13,6 +14,7 @@ import qwq.arcane.event.impl.events.player.MotionEvent;
 import qwq.arcane.event.impl.events.player.StrafeEvent;
 import qwq.arcane.event.impl.events.player.UpdateEvent;
 import qwq.arcane.event.impl.events.render.Render3DEvent;
+import qwq.arcane.gui.notification.Notification;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
 import qwq.arcane.module.impl.movement.Sprint;
@@ -30,6 +32,8 @@ import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
 
+import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
+
 /**
  * @Author：Guyuemang
  * @Date：7/6/2025 11:54 PM
@@ -39,10 +43,14 @@ public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold",Category.World);
     }
+    private final ModeValue switchBlock = new ModeValue("Switch Block", "Spoof", new String[]{"Silent", "Switch", "Spoof"});
     public ModeValue mode = new ModeValue("Mode","Normal",new String[]{"Normal","Telly"});
     private final NumberValue minTellyTicks = new NumberValue("Min Telly Ticks", () -> mode.is("Telly"), 2, 1, 5,1);
     private final NumberValue maxTellyTicks = new NumberValue("Max Telly Ticks", () -> mode.is("Telly"), 4, 1, 5,1);
     public final BoolValue biggestStack = new BoolValue("Biggest Stack", false);
+    private final NumberValue yaws = new NumberValue("Telly yaw", () -> mode.is("Telly"), 125, 1, 360,0.1);
+    public final BoolValue pitchfix = new BoolValue("pitchfix", true);
+    private final NumberValue pitchs = new NumberValue("Telly pitch", () -> mode.is("Telly") && !pitchfix.get(), 85.5, 1, 360,0.1);
     public final BoolValue swing = new BoolValue("Swing", true);
     public final BoolValue sprint = new BoolValue("sprint", true);
     public BoolValue rotation = new BoolValue("Rotation",true);
@@ -53,61 +61,68 @@ public class Scaffold extends Module {
     public final BoolValue esp = new BoolValue("ESP", true);
     public PlaceData data;
     public BlockPos previousBlock;
-    public int slot;
-    private int prevItem = 0;
     private TimerUtil timerUtil = new TimerUtil();
     private double onGroundY;
     private boolean canPlace = true;
     private int tellyTicks;
-    private float[] previousRotation;
     private boolean tellyStage;
     private float[] rotations;
+    private int oloSlot = -1;
     @Override
     public void onEnable() {
+        if (ScaffoldUtil.getBlockSlot() == -1){
+            Client.Instance.getNotification().add("Module Info", "Block None!!", Notification.Type.INFO);
+        }
+        oloSlot = mc.thePlayer.inventory.currentItem;
         timerUtil.reset();
         if (mc.thePlayer != null) {
-            prevItem = mc.thePlayer.inventory.currentItem;
             onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
-            previousRotation = new float[]{mc.thePlayer.rotationYaw + 180, 82};
         }
-        this.slot = -1;
         canPlace = true;
     }
     @Override
     public void onDisable() {
         timerUtil.reset();
         tellyTicks = 0;
-        previousRotation = rotations = null;
-        mc.thePlayer.inventory.currentItem = prevItem;
-        SlotSpoofComponent.stopSpoofing();
-    }
-    @EventTarget
-    public void Tickevent(UpdateEvent event){
-        SlotSpoofComponent.startSpoofing(prevItem);
-        mc.thePlayer.inventory.currentItem = this.slot;
-        this.slot = getBlockSlot();
+        switch (switchBlock.getValue()) {
+            case "Silent":
+                sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+                break;
+            case "Switch":
+                mc.thePlayer.inventory.currentItem = oloSlot;
+                break;
+            case "Spoof":
+                mc.thePlayer.inventory.currentItem = oloSlot;
+                SlotSpoofComponent.stopSpoofing();
+                break;
+        }
     }
 
     @EventTarget
     public void onStrafe(StrafeEvent event){
-        if (this.slot < 0) return;
-        if (ScaffoldUtil.getBlockSlot() == -1)
-            return;
         if (mc.thePlayer.onGround && mode.is("Telly") && !mc.thePlayer.isJumping && MovementUtil.isMoving()) {
            tellyStage = !tellyStage;
            mc.thePlayer.jump();
         }
     }
-    private static final float NORMAL_PITCH = 82.5f;
     @EventTarget
     public void onUpdate(UpdateEvent event) {
-        this.slot = getBlockSlot();
-        SlotSpoofComponent.startSpoofing(prevItem);
-        mc.thePlayer.inventory.currentItem = this.slot;
+        data = null;
+
         if (ScaffoldUtil.getBlockSlot() == -1)
             return;
-        if (this.slot < 0) return;
-
+        switch (switchBlock.getValue()) {
+            case "Silent":
+                sendPacketNoEvent(new C09PacketHeldItemChange(ScaffoldUtil.getBlockSlot()));
+                break;
+            case "Switch":
+                mc.thePlayer.inventory.currentItem = ScaffoldUtil.getBlockSlot();
+                break;
+            case "Spoof":
+                mc.thePlayer.inventory.currentItem = ScaffoldUtil.getBlockSlot();
+                SlotSpoofComponent.startSpoofing(oloSlot);
+                break;
+        }
         if (sprint.get()) {
             Sprint.keepSprinting = true;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
@@ -119,7 +134,6 @@ public class Scaffold extends Module {
         if (mode.is("Telly") && mc.thePlayer.onGround) {
             tellyTicks = MathUtils.randomizeInt(minTellyTicks.getValue().intValue(), maxTellyTicks.getValue().intValue());
         }
-        data = null;
         if (mc.thePlayer.onGround) {
             onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
         }
@@ -146,9 +160,6 @@ public class Scaffold extends Module {
     @EventTarget
     public void onMotion(UpdateEvent event){
         setsuffix(String.valueOf(this.mode.get()));
-        if (ScaffoldUtil.getBlockSlot() == -1)
-            return;
-        if (this.slot < 0) return;
         if (data != null && rotation.get() && mode.is("Normal") || mode.is("Telly") && canPlace && rotation.get()) {
             switch (modeValue.get()){
                 case "Normal":
@@ -160,13 +171,11 @@ public class Scaffold extends Module {
                     rotations = new float[]{yaw2, pitch2};
                     break;
                 case "Telly":
-                    float yaw = MovementUtil.getRawDirection() - 127;
+                    float yaw = MovementUtil.getRawDirection() - yaws.get().floatValue();
                     if (GameSettings.isKeyDown(mc.gameSettings.keyBindJump)){
-                        yaw = MovementUtil.getRawDirection() - 125;
+                        yaw = MovementUtil.getRawDirection() - yaws.get().floatValue();
                     }
-                    if (GameSettings.isKeyDown(mc.gameSettings.keyBindLeft))
-                        yaw = MovementUtil.getRawDirection() + 120;
-                    float pitch = RotationUtil.getRotations(getVec3(data))[1];
+                    float pitch = pitchfix.get()? RotationUtil.getRotations(getVec3(data))[1] : pitchs.get().floatValue();
                     rotations = new float[]{yaw, pitch};
                     break;
             }
@@ -176,7 +185,6 @@ public class Scaffold extends Module {
         }
     }
     private void place(){
-        if (this.slot < 0) return;
         if (data != null) {
             if (rayCastValue.get()) {
                 MovingObjectPosition ray = Client.Instance.getRotationManager().rayTrace(mc.playerController.getBlockReachDistance(), 1);

@@ -23,7 +23,7 @@ public class Inventory extends ModuleWidget {
     public Inventory() {
         super("Inventory",Category.Display);
     }
-    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
+    public ModeValue modeValue = new ModeValue("Mode", "Custom",new String[]{"Custom","Solitude","Normal"});
 
     @Override
     public void onShader(Shader2DEvent event) {

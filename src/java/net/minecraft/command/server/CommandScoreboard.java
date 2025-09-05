@@ -30,6 +30,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import qwq.arcane.Client;
+import qwq.arcane.module.impl.display.IsLand;
 
 public class CommandScoreboard extends CommandBase
 {
@@ -863,6 +865,7 @@ public class CommandScoreboard extends CommandBase
 
     protected void listPlayers(ICommandSender p_147195_1_, String[] p_147195_2_, int p_147195_3_) throws CommandException
     {
+
         Scoreboard scoreboard = this.getScoreboard();
 
         if (p_147195_2_.length > p_147195_3_)

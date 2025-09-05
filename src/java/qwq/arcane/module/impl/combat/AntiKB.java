@@ -1,356 +1,601 @@
 package qwq.arcane.module.impl.combat;
 
-
-import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.fixes.AttackOrder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSoulSand;
-import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.network.handshake.client.C00Handshake;
-import net.minecraft.network.login.client.C00PacketLoginStart;
-import net.minecraft.network.login.client.C01PacketEncryptionResponse;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityEgg;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.network.INetHandler;
 import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.S32PacketConfirmTransaction;
-import net.minecraft.network.status.client.C00PacketServerQuery;
-import net.minecraft.network.status.client.C01PacketPing;
-import net.minecraft.world.World;
-import qwq.arcane.event.impl.events.misc.TickEvent;
+import net.minecraft.network.play.server.*;
+import org.lwjgl.input.Keyboard;
 import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
+import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.event.impl.events.packet.PacketSendEvent;
 import qwq.arcane.event.impl.events.player.*;
-import qwq.arcane.module.Mine;
-import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import net.minecraft.network.play.server.S27PacketExplosion;
 import net.minecraft.util.*;
-import net.minecraft.world.WorldSettings;
 import qwq.arcane.Client;
 import qwq.arcane.event.annotations.EventTarget;
-import qwq.arcane.event.impl.events.packet.PacketReceiveEvent;
 import qwq.arcane.module.Category;
+import qwq.arcane.module.Mine;
 import qwq.arcane.module.Module;
-import qwq.arcane.module.impl.world.Scaffold;
+import qwq.arcane.module.impl.movement.LongJump;
+import qwq.arcane.module.impl.movement.Sprint;
 import qwq.arcane.utils.chats.ChatUtils;
 import qwq.arcane.utils.math.Vector2f;
+import qwq.arcane.utils.math.Vector3d;
 import qwq.arcane.utils.pack.PacketUtil;
 import qwq.arcane.utils.player.MovementUtil;
 import qwq.arcane.utils.player.PlayerUtil;
 import qwq.arcane.utils.rotation.RayCastUtil;
-import qwq.arcane.utils.rotation.RotationManager;
 import qwq.arcane.utils.rotation.RotationUtil;
 import qwq.arcane.utils.time.TimerUtil;
 import qwq.arcane.value.impl.BoolValue;
 import qwq.arcane.value.impl.ModeValue;
 import qwq.arcane.value.impl.NumberValue;
-import qwq.jnic.JNICInclude;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static qwq.arcane.utils.pack.PacketUtil.sendPacket;
+import static qwq.arcane.utils.pack.PacketUtil.sendPacketNoEvent;
 
 /**
  * @Author：Guyuemang
  * @Date：7/7/2025 12:05 AM
  */
-@JNICInclude
 public class AntiKB extends Module {
     public AntiKB() {
         super("AntiKB",Category.Combat);
     }
+    public final ModeValue mode = new ModeValue("Mode", "Reduce",
+            new String[]{"Grim", "Legit", "Legit 2", "Polar", "Intave", "Reduce", "Boost", "Skip Tick","Prediction", "Jump Reset", "Matrix Semi", "Matrix Reverse", "Polar Under-Block"});
 
-    private final ModeValue mode = new ModeValue("Mode","Prediction", new String[]{"Watchdog","Grim", "Delay","Prediction","Jump Reset"});
-    private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset"), "Packet", new String[]{"Hurt Time", "Packet", "Advanced"});
-    private final NumberValue delayValue = new NumberValue("Packet Delay", 0, 1.0, 1000, 50);
-    private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
-    private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 100, 0, 100, 1);
-    private final NumberValue hitsUntilJump = new NumberValue("Hits Until Jump", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 2, 1, 10, 1);
-    private final NumberValue ticksUntilJump = new NumberValue("Ticks Until Jump", () -> mode.is("Jump Reset") && jumpResetMode.is("Advanced"), 2, 1, 20, 1);
-    private final BoolValue flagCheckValue = new BoolValue("Flag Check", false);
-    public NumberValue flagTicksValue = new NumberValue("Flag Ticks", 6.0, 0.0, 30.0, 1.0);
-    public NumberValue attackCountValue = new NumberValue("Attack Counts", 12.0, 1.0, 16.0, 1.0);
-    public final NumberValue chance = new NumberValue("Prediction Chance", 1D, 0D, 1D, 0.01D);
+    private final ModeValue grimMode = new ModeValue("Grim Mode", () -> mode.is("Grim"), "Reduce", new String[]{"Reduce", "1.17"});
+    private final BoolValue invalidEntity = new BoolValue("Attack Invalid Entity", () -> mode.is("Grim") && grimMode.is("Reduce"), true);
 
-    private final BoolValue fireCheckValue = new BoolValue("FireCheck", false);
-    private final BoolValue waterCheckValue = new BoolValue("WaterCheck", false);
-    private final BoolValue fallCheckValue = new BoolValue("FallCheck", false);
-    private final BoolValue consumecheck = new BoolValue("ConsumableCheck", false);
-    private final BoolValue raycastValue = new BoolValue("Ray cast", false);
-    private boolean state;
+    private final NumberValue reverseTick = new NumberValue("Boost Tick", () -> mode.is("Boost"), 1, 1, 5, 1);
+    private final NumberValue reverseStrength = new NumberValue("Boost Strength", () -> mode.is("Boost"), 1, 0.1f, 1, 0.01f);
+
+    private final NumberValue skipTicks = new NumberValue("Skip Ticks", () -> mode.is("Skip Tick"), 1, 1, 20, 1);
+    private final NumberValue skipChance = new NumberValue("Skip Chance", () -> mode.is("Skip Tick"), 100, 0, 100, 1);
+
+    private final ModeValue jumpResetMode = new ModeValue("Jump Reset Mode", () -> mode.is("Jump Reset") || mode.is("Reduce"), "Packet", new String[]{"Legit", "Packet", "Advanced", "Hurt Time"});
+    private final NumberValue jumpResetHurtTime = new NumberValue("Jump Reset Hurt Time", () -> mode.is("Jump Reset") || mode.is("Reduce") && (jumpResetMode.is("Hurt Time") || jumpResetMode.is("Advanced")), 9, 1, 10, 1);
+    private final NumberValue jumpResetChance = new NumberValue("Jump Reset Chance", () -> mode.is("Jump Reset") || mode.is("Reduce") &&
+            (jumpResetMode.is("Legit") || jumpResetMode.is("Advanced")), 100, 0, 100, 1);
+    private final NumberValue hitsUntilJump = new NumberValue("Hits Until Jump", () -> mode.is("Jump Reset") || mode.is("Reduce") && jumpResetMode.is("Advanced"), 2, 1, 10, 1);
+    private final NumberValue ticksUntilJump = new NumberValue("Ticks Until Jump", () -> mode.is("Jump Reset") || mode.is("Reduce") && jumpResetMode.is("Advanced"), 2, 1, 20, 1);
+
+    private final BoolValue debugMessage = new BoolValue("Verbose Output", () -> mode.is("Prediction"), false);
+    public final NumberValue chance = new NumberValue("Prediction Chance",()->mode.is("Prediction"), 1.0F, 0.0F, 1.0F, 0.01);
+    private final BoolValue onlySprint = new BoolValue("Sprint Only", () -> mode.is("Prediction"), false);
+    private final BoolValue hypixelPrediction = new BoolValue("Hypixel Prediction", () -> mode.is("Prediction"), false);
+    private final BoolValue jumpRotate = new BoolValue("Prediction Rotation", () -> mode.is("Prediction") && hypixelPrediction.getValue(), false);
+    private final NumberValue jumpDelay = new NumberValue("Jump Delay", () -> mode.is("Prediction") && hypixelPrediction.getValue(), 5, 0, 20, 1);
+
+    private Entity target;
+    private long lastAttackTime;
+    private final TimerUtil velocityTimer = new TimerUtil();
+
+    private int idk = 0;
     private int hitsCount = 0;
     private int ticksCount = 0;
-    private boolean veloPacket = false;
-    private boolean isFallDamage;
-    private final Random random = new Random();
-    private TimerUtil flagtimer = new TimerUtil();
-    private boolean absorbedVelocity;
-    private final ArrayList<Packet<?>> delayedPackets = new ArrayList<>();
-    boolean delay;
-    private int velocityTicks;
-    private final TimerUtil timerUtil = new TimerUtil();
-    int start;
-    public boolean velocityInput;
-    private boolean grim_1_17Velocity;
+    private int skipTickCounter = 0;
+    private int reduceTick, reduceDamageTick;
+    private boolean sb = false;
+
+    boolean enable;
     private boolean attacked;
-    private double reduceXZ;
-    private int flags;
+    private boolean reducing;
+    private boolean isFallDamage;
+    public boolean shouldVelocity;
+    private boolean veloPacket = false;
+    public static boolean jump = false;
+    private boolean canSpoof, canCancel;
+
+    private final Random random = new Random();
+    public static List<Packet<INetHandler>> storedPackets = new CopyOnWriteArrayList<>();
+
     @Override
     public void onEnable() {
-        velocityInput = false;
-        attacked = false;
+        ticksCount = 0;
+        reducing = false;
+        veloPacket = false;
+        skipTickCounter = 0;
+
+        storedPackets.clear();
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        ticksCount = 0;
+        veloPacket = false;
+        skipTickCounter = 0;
+        if (this.mode.is("Prediction")) {
+            mc.gameSettings.keyBindJump.pressed = false;
+            mc.gameSettings.keyBindForward.pressed = false;
+        }
+        if (mode.is("Jump Reset") || mode.is("Reduce") && jumpResetMode.is("Legit")) {
+            mc.gameSettings.keyBindJump.setPressed(false);
+            mc.gameSettings.keyBindForward.setPressed(false);
+        }
+
+        storedPackets.clear();
+        super.onDisable();
     }
 
     @EventTarget
+    public void onWorld(WorldLoadEvent event) {
+        if (mode.is("Grim") && grimMode.is("Reduce")) {
+            this.reset();
+        }
+        if (this.mode.is("Prediction")) {
+            mc.gameSettings.keyBindJump.pressed = false;
+            mc.gameSettings.keyBindForward.pressed = false;
+        }
+        if (mode.is("Jump Reset") || mode.is("Reduce") && jumpResetMode.is("Legit")) {
+            mc.gameSettings.keyBindJump.setPressed(false);
+            mc.gameSettings.keyBindForward.setPressed(false);
+        }
+    }
+
+    private void reset() {
+        this.shouldVelocity = false;
+        this.target = null;
+    }
+    public static boolean hasReceivedVelocity;
+
+    @EventTarget
     public void onUpdate(UpdateEvent event) {
-        this.setsuffix(mode.is("Grim") ? (ViaLoadingBase.getInstance().getTargetVersion().getVersion() >= 755 ? "Grim1.17+" : "Reduce") : mode.getValue());
-        switch (mode.get()) {
-            case "Watchdog":
-                if (mc.thePlayer.onGround) {
-                    state = false;
-                }
-                break;
-            case "Grim": {
-                if (grim_1_17Velocity) {
-                    PacketUtil.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, mc.thePlayer.onGround));
-                    PacketUtil.sendPacketNoEvent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, new BlockPos(mc.thePlayer).up(), EnumFacing.DOWN));
-                    PacketUtil.sendPacketNoEvent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, new BlockPos(mc.thePlayer).up(), EnumFacing.DOWN));
-                    grim_1_17Velocity = false;
-                }
-                if (flagCheckValue.getValue()) {
-                    if (flags > 0)
-                        flags--;
-                }
-                if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() > 47) {
-                    if (velocityInput) {
+        setsuffix(mode.getValue());
 
-                        if (attacked) {
-                            mc.thePlayer.motionX *= reduceXZ;
-                            mc.thePlayer.motionZ *= reduceXZ;
-                            attacked = false;
+        if (getModule(LongJump.class).isEnabled()) return;
+
+        if (mode.is("Skip Tick")) {
+            if (skipTickCounter > 0) {
+                skipTickCounter--;
+                return;
+            }
+        }
+
+        if (mode.is("Grim")) {
+            if (grimMode.is("1.17")) {
+                if (canSpoof) {
+                    sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, mc.thePlayer.onGround));
+                    sendPacketNoEvent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, new BlockPos(mc.thePlayer).down(), EnumFacing.DOWN));
+                    canSpoof = false;
+                }
+            }
+        }
+
+        if (mode.is("Reduce")) {
+            if (mc.thePlayer == null || mc.gameSettings == null) return;
+            Vector2f rotation = Client.Instance.getRotationManager().getRotation();
+            Entity target = RayCastUtil.raycastEntity(KillAura.range.get(),rotation.x,rotation.y, (input) -> true);
+            if (hasReceivedVelocity) {
+                if (MovementUtil.isMoving() && mc.thePlayer.isSprinting()) {
+                    if (target != mc.thePlayer && target instanceof EntityPlayer || KillAura.target instanceof EntityPlayer) {
+                        if (target != null && target != mc.thePlayer) {
+                            Client.Instance.getEventManager().call(new AttackEvent(target));
+                        } else {
+                            Client.Instance.getEventManager().call(new AttackEvent(KillAura.target));
                         }
-                        if (mc.thePlayer.hurtTime == 0) {
-                            velocityInput = false;
+                        mc.getNetHandler().addToSendQueue(new C0APacketAnimation());
+                        ChatUtils.sendMessage("Attack!");
+                        if (target != null && target != mc.thePlayer) {
+                            mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
+                        } else {
+                            mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(Objects.requireNonNull(KillAura.target), C02PacketUseEntity.Action.ATTACK));
                         }
-
-                    }
-
-
-                } else {
-                    //The velocity mode 1.8.9 ok!
-                    if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
-                        mc.thePlayer.addVelocity(-1.3E-10, -1.3E-10, -1.3E-10);
+                        ChatUtils.sendMessage("Reduce!");
+                        mc.thePlayer.motionX *= 0.6;
+                        mc.thePlayer.motionZ *= 0.6;
                         mc.thePlayer.setSprinting(false);
+                        hasReceivedVelocity = false;
                     }
                 }
             }
-            break;
-            case "Delay":
-                if (delay) {
-                    velocityTicks++;
-                    if (timerUtil.reached(delayValue.getValue().intValue())) {
-                        if (mc.thePlayer.onGround && isPlayerValid()) {
-                            for (Packet<?> packet : delayedPackets) {
-                                mc.thePlayer.sendQueue.getNetworkManager().sendPacket(packet);
-                            }
-                            delayedPackets.clear();
-                            mc.thePlayer.jump();
-                            delay = false;
-                            velocityTicks = 0;
-                        } else if (!isPlayerValid() || velocityTicks > 40) {
-                            for (Packet<?> packet : delayedPackets) {
-                                mc.thePlayer.sendQueue.getNetworkManager().sendPacket(packet);
-                            }
-                            delayedPackets.clear();
-                            delay = false;
-                            velocityTicks = 0;
-                        }
-                        timerUtil.reset();
-                    }
-                }
+        }
 
-                break;
-            case "Jump Reset":
-                if (jumpResetMode.is("Advanced")) {
-                    if (mc.thePlayer.hurtTime == 9) {
-                        hitsCount++;
-                    }
-                    ticksCount++;
+        if (mode.is("Jump Reset") || mode.is("Reduce")) {
+            if (jumpResetMode.is("Advanced")) {
+                if (mc.thePlayer.hurtTime == 9) {
+                    hitsCount++;
                 }
-                break;
+                ticksCount++;
+            }
+
+            if (jumpResetMode.is("Legit")) {
+                if (mc.currentScreen == null && Client.INSTANCE.getModuleManager().getModule(KillAura.class).target != null) {
+                    if (mc.thePlayer.hurtTime == 10) {
+                        this.enable = MathHelper.getRandomDoubleInRange(new Random(), 0.0d, 1.0d) <= jumpResetChance.getValue().doubleValue();
+                    }
+
+                    if (this.enable && getModule(KillAura.class).isEnabled()) {
+                        if (mc.thePlayer.hurtTime >= 8) {
+                            mc.gameSettings.keyBindJump.setPressed(true);
+                        }
+                        if (mc.thePlayer.hurtTime >= 7) {
+                            mc.gameSettings.keyBindForward.setPressed(true);
+                            return;
+                        }
+                        if (mc.thePlayer.hurtTime >= 4) {
+                            mc.gameSettings.keyBindJump.setPressed(false);
+                            mc.gameSettings.keyBindForward.setPressed(false);
+                        } else if (mc.thePlayer.hurtTime > 1) {
+                            mc.gameSettings.keyBindForward.setPressed(GameSettings.isKeyDown(mc.gameSettings.keyBindForward));
+                            mc.gameSettings.keyBindJump.setPressed(GameSettings.isKeyDown(mc.gameSettings.keyBindJump));
+                        }
+                    }
+                }
+            }
         }
     }
 
     @EventTarget
     public void onPacket(PacketReceiveEvent event) {
         Packet<?> packet = event.getPacket();
-        if (!mode.is("Grim")) {
-            if (packet instanceof S12PacketEntityVelocity s12 && s12.getEntityID() == mc.thePlayer.getEntityId()) {
-                switch (mode.get()) {
-                    case "Jump Reset":
-                        if (jumpResetMode.is("Packet")) {
-                            veloPacket = true;
-                        } else if (jumpResetMode.is("Advanced")) {
-                            double velocityX = s12.getMotionX() / 8000.0;
-                            double velocityY = s12.getMotionY() / 8000.0;
-                            double velocityZ = s12.getMotionZ() / 8000.0;
 
-                            isFallDamage = velocityX == 0.0 && velocityZ == 0.0 && velocityY < 0;
-                        }
-                        break;
-                    case "Watchdog":
-                        if (!mc.thePlayer.onGround) {
-                            if (!state) {
-                                event.setCancelled(true);
-                                state = true;
-                                return;
-                            }
-                        }
-                        s12.motionX = (int) (mc.thePlayer.motionX * 8000);
-                        s12.motionZ = (int) (mc.thePlayer.motionZ * 8000);
-                        break;
-                    case "Delay": {
-                        if (isPlayerValid()) {
-                            velocityTicks = 0;
-                            if (!delay) {
-                                delayedPackets.clear();
-                                delay = true;
-                            }
-                        }
-                        break;
+        if (getModule(LongJump.class).isEnabled()) return;
+
+        if (packet instanceof S12PacketEntityVelocity velocity && velocity.getEntityID() == mc.thePlayer.getEntityId()) {
+            if (mode.is("Prediction")) {
+                handlePredictionVelocity(velocity, event);
+                return;
+            }
+
+            switch (mode.getValue()) {
+                case "Skip Tick": {
+                    if (random.nextInt(100) < skipChance.getValue()) {
+                        skipTickCounter = skipTicks.getValue().intValue();
                     }
-                    case "Prediction":
-                        double velX = s12.getMotionX() / 8000.0D;
-                        double velZ = s12.getMotionZ() / 8000.0D;
+                    break;
+                }
+
+                case "Boost": {
+                    if (mc.thePlayer.onGround) {
+                        velocity.motionX = (int) (mc.thePlayer.motionX * 8000);
+                        velocity.motionZ = (int) (mc.thePlayer.motionZ * 8000);
+                    } else {
+                        veloPacket = true;
+                    }
+                    break;
+                }
+
+                case "Polar Under-Block": {
+                    AxisAlignedBB axisAlignedBB = mc.thePlayer.getEntityBoundingBox().offset(0.0, 1.0, 0.0);
+
+                    if (!mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, axisAlignedBB).isEmpty()) {
+                        event.setCancelled(true);
+                        mc.thePlayer.motionY = ((S12PacketEntityVelocity) packet).getMotionY() / 8000.0;
+                    }
+                    break;
+                }
+
+                case "Matrix Reverse": {
+                    if (mc.thePlayer.hurtTime > 0) {
+                        mc.thePlayer.motionX *= -0.3;
+                        mc.thePlayer.motionZ *= -0.3;
+                    }
+                    break;
+                }
+
+                case "Matrix Semi": {
+                    if (mc.thePlayer.hurtTime > 0) {
+                        mc.thePlayer.motionX *= 0.6;
+                        mc.thePlayer.motionZ *= 0.6;
+                    }
+                    break;
+                }
+
+                case "Legit": {
+                    if (mc.currentScreen == null) {
+                        mc.gameSettings.keyBindSprint.setPressed(true);
+                        mc.gameSettings.keyBindForward.setPressed(true);
+                        mc.gameSettings.keyBindJump.setPressed(true);
+                        mc.gameSettings.keyBindBack.setPressed(false);
+
+                        reducing = true;
+                    }
+                    break;
+                }
+
+                case "Polar": {
+                    if (mc.thePlayer.isSwingInProgress) {
+                        attacked = true;
+                    }
+
+                    if (mc.objectMouseOver.typeOfHit.equals(MovingObjectPosition.MovingObjectType.ENTITY) && mc.thePlayer.hurtTime > 0 && !attacked) {
+                        mc.thePlayer.motionX *= 0.45D;
+                        mc.thePlayer.motionZ *= 0.45D;
+                        mc.thePlayer.setSprinting(false);
+                    }
+
+                    attacked = false;
+                    break;
+                }
+
+                case "Intave": {
+                    if (mc.thePlayer.isSwingInProgress) {
+                        attacked = true;
+                    }
+
+                    if (mc.objectMouseOver.typeOfHit.equals(MovingObjectPosition.MovingObjectType.ENTITY) && mc.thePlayer.hurtTime > 0 && !attacked) {
+                        mc.thePlayer.motionX *= 0.6D;
+                        mc.thePlayer.motionZ *= 0.6D;
+                        mc.thePlayer.setSprinting(false);
+                    }
+
+                    attacked = false;
+                    break;
+                }
+                case "Reduce":{
+                    hasReceivedVelocity = true;
+                }
+                case "Jump Reset": {
+                    if (jumpResetMode.is("Packet")) {
+                        veloPacket = true;
+                    } else if (jumpResetMode.is("Advanced")) {
+                        double velocityX = velocity.getMotionX() / 8000.0;
+                        double velocityY = velocity.getMotionY() / 8000.0;
+                        double velocityZ = velocity.getMotionZ() / 8000.0;
+
+                        isFallDamage = velocityX == 0.0 && velocityZ == 0.0 && velocityY < 0;
+                    }
+                    if(velocity.getEntityID()== mc.thePlayer.getEntityId()) {
+                        double velX = velocity.getMotionX() / 8000.0D;
+                        double velZ = velocity.getMotionZ() / 8000.0D;
                         float desiredYaw = (float) Math.toDegrees(Math.atan2(velZ, velX));
                         if (desiredYaw < -180) desiredYaw += 360;
                         if (desiredYaw > 180) desiredYaw -= 360;
-                        //mc.thePlayer.rotationYaw = desiredYaw + 90F;
                         Client.Instance.getRotationManager().setRotation(
                                 new Vector2f(desiredYaw + 90F, 180),
                                 180,
                                 true,
                                 true
                         );
-                        if(s12.getEntityID()== mc.thePlayer.getEntityId()) {
-                            final MovingObjectPosition movingObjectPosition = mc.objectMouseOver;
-                            if (KillAura.target instanceof AbstractClientPlayer && (mc.thePlayer.getClosestDistanceToEntity(KillAura.target) <= 3.5) && (movingObjectPosition != null && movingObjectPosition.entityHit == KillAura.target)) {
-                                ChatUtils.sendMessage("[" + "Velocity Reduce 0.4" + "]" + " - Distance: " + mc.thePlayer.getClosestDistanceToEntity(KillAura.target));
-                                AttackOrder.sendFixedAttack(mc.thePlayer, KillAura.target);
-                                mc.thePlayer.setSprinting(false);
-                                mc.thePlayer.setVelocity(mc.thePlayer.motionX * 0.6f, mc.thePlayer.motionY, mc.thePlayer.motionZ * 0.6f);
-                            }
-                        }
-                        KillAura.externalRotation = new Vector2f(desiredYaw + 90F, mc.thePlayer.rotationPitch);
                         KillAura.useExternalRotation = true;
-                        break;
+                    }
+                    break;
                 }
-            }
-        }
-        if (event.getPacket() instanceof S08PacketPlayerPosLook) {
-            flagtimer.reset();
-            if (flagCheckValue.getValue()) {
-                flags = flagTicksValue.getValue().intValue();
-            }
-        }
-        if (event.getPacket() instanceof S12PacketEntityVelocity) {
-            if (mode.is("Grim")) {
-                if (flags != 0) return;
-                if (mc.thePlayer.isDead) return;
-                if (mc.currentScreen instanceof GuiGameOver) return;
-                if (mc.playerController.getCurrentGameType() == WorldSettings.GameType.SPECTATOR) return;
-                if (mc.thePlayer.isOnLadder()) return;
-                if (mc.thePlayer.isBurning() && fireCheckValue.getValue()) return;
-                if (mc.thePlayer.isInWater() && waterCheckValue.getValue()) return;
-                if (mc.thePlayer.fallDistance > 1.5 && fallCheckValue.getValue()) return;
-                if (flagCheckValue.getValue() && !flagtimer.hasTimeElapsed(1000)) return;
-                if (mc.thePlayer.isEatingOrDrinking() && consumecheck.getValue()) return;
-                if (soulSandCheck()) return;
-            }
-            if (((S12PacketEntityVelocity) event.getPacket()).getEntityID() == mc.thePlayer.getEntityId()) {
-                S12PacketEntityVelocity s12 = ((S12PacketEntityVelocity) event.getPacket());
-                attacked = false;
-                switch (mode.getValue()) {
-                    case "Grim": {
-                        if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() >= 755) {
-                            event.setCancelled(true);
-                            grim_1_17Velocity = true;
-                        } else {
-                            double horizontalStrength = new Vector2f(s12.getMotionX(), s12.getMotionZ()).length();
-                            if (horizontalStrength <= 1000) return;
-                            MovingObjectPosition mouse = mc.objectMouseOver;
-                            velocityInput = true;
-                            Entity entity = null;
-                            reduceXZ = 1;
 
-                            if (mouse.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mouse.entityHit instanceof EntityLivingBase && mc.thePlayer.getClosestDistanceToEntity(mouse.entityHit) <= 3) {
-                                entity = mouse.entityHit;
+                case "Grim": {
+                    switch (grimMode.getValue()) {
+                        case "Reduce": {
+                            double strength = new Vector3d(velocity.getMotionX(), velocity.getMotionY(), velocity.getMotionZ()).length();
+                            if (velocity.getEntityID() == mc.thePlayer.getEntityId() && !mc.thePlayer.isOnLadder() && !mc.thePlayer.isInWeb) {
+                                target = getNearTarget();
+                                if (target == null) return;
+
+                                if (mc.thePlayer.getDistanceToEntity(target) > 3.3F) {
+                                    reset();
+                                    return;
+                                }
+
+                                shouldVelocity = true;
+                                ChatUtils.sendMessage("[M]" + strength + " " + (mc.thePlayer.onGround ? "on Ground" : "on Air") + (target != null ? " - Distance: " + mc.thePlayer.getClosestDistanceToEntity(target) : ""));
                             }
+                            break;
+                        }
 
-                            if (entity == null && !raycastValue.getValue()) {
-                                Entity target = KillAura.target;
-                                if (target != null && KillAura.shouldAttack()) {
-                                    entity = KillAura.target;
-                                }
+                        case "1.17": {
+                            if (canCancel) {
+                                canCancel = false;
+                                canSpoof = true;
+                                event.setCancelled(true);
                             }
-
-                            boolean state = mc.thePlayer.serverSprintState;
-
-                            if (entity != null) {
-                                if (!state) {
-                                    PacketUtil.sendPacket(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
-                                }
-                                Client.Instance.getEventManager().call(new AttackEvent(entity));
-                                int count = attackCountValue.get().intValue();
-                                for (int i = 1; i <= count; i++) {
-                                    AttackOrder.sendFixedAttackByPacket(mc.thePlayer, entity);
-                                }
-                                if (!state) {
-                                    PacketUtil.sendPacket(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
-                                }
-                                attacked = true;
-                                reduceXZ = 0.07776;
-                            }
+                            break;
                         }
                     }
                     break;
                 }
             }
         }
-        if (packet instanceof S27PacketExplosion && ViaLoadingBase.getInstance().getTargetVersion().getVersion() >= 755) {
-            event.setCancelled(true);
-            grim_1_17Velocity = true;
-        }
-    }
 
-    public static boolean soulSandCheck() {
-        final AxisAlignedBB par1AxisAlignedBB = Mine.getMinecraft().thePlayer.getEntityBoundingBox().contract(0.001, 0.001,
-                0.001);
-        final int var4 = MathHelper.floor_double(par1AxisAlignedBB.minX);
-        final int var5 = MathHelper.floor_double(par1AxisAlignedBB.maxX + 1.0);
-        final int var6 = MathHelper.floor_double(par1AxisAlignedBB.minY);
-        final int var7 = MathHelper.floor_double(par1AxisAlignedBB.maxY + 1.0);
-        final int var8 = MathHelper.floor_double(par1AxisAlignedBB.minZ);
-        final int var9 = MathHelper.floor_double(par1AxisAlignedBB.maxZ + 1.0);
-        for (int var11 = var4; var11 < var5; ++var11) {
-            for (int var12 = var6; var12 < var7; ++var12) {
-                for (int var13 = var8; var13 < var9; ++var13) {
-                    final BlockPos pos = new BlockPos(var11, var12, var13);
-                    final Block var14 = Mine.getMinecraft().theWorld.getBlockState(pos).getBlock();
-                    if (var14 instanceof BlockSoulSand) {
-                        return true;
-                    }
+        if (mode.is("Grim") && grimMode.is("1.17")) {
+            if (event.getPacket() instanceof S19PacketEntityStatus s19PacketEntityStatus) {
+
+                if (s19PacketEntityStatus.getEntity(mc.theWorld) == mc.thePlayer) {
+                    canCancel = true;
                 }
             }
         }
-        return false;
+    }
+    private Optional<Entity> findEntity() {
+        if (mc.theWorld == null || mc.thePlayer == null) return Optional.empty();
+
+        return mc.theWorld.loadedEntityList.stream()
+                .filter(entity -> entity instanceof EntityLivingBase)
+                .filter(entity -> entity.getEntityId() != mc.thePlayer.getEntityId())
+                .filter(entity -> !entity.isDead && ((EntityLivingBase) entity).getHealth() > 0)
+
+                .findAny();
+    }
+
+    private final TimerUtil disableHelper = new TimerUtil();
+    private void handlePredictionVelocity(S12PacketEntityVelocity packet, PacketReceiveEvent e) {
+        double x = packet.motionX / 8000D;
+        double z = packet.motionZ / 8000D;
+        double speed = Math.sqrt(x * x + z * z);
+
+
+        if (mc.thePlayer.isInWeb || mc.thePlayer.isInWater() || mc.thePlayer.isInLava() || mc.thePlayer.isOnLadder()) {
+            if (debugMessage.getValue()) {
+
+            }
+            return;
+        }
+
+        if (!disableHelper.delay(1000)) {
+            if (debugMessage.getValue()) {
+
+            }
+            return;
+        }
+
+
+        if (speed < 0.1) {
+            if (debugMessage.getValue()) {
+
+            }
+            return;
+        }
+
+
+        if (onlySprint.getValue() && !mc.thePlayer.serverSprintState) {
+            if (debugMessage.getValue()) {
+
+            }
+            return;
+        }
+
+
+        if (hypixelPrediction.getValue()) {
+            double velocityX = packet.motionX / 8000.0;
+            double velocityY = packet.motionY / 8000.0;
+            double velocityZ = packet.motionZ / 8000.0;
+            isFallDamage = velocityX == 0.0 && velocityZ == 0.0 && velocityY < 0;
+        } else {
+
+            Optional<Entity> targetEntity = findEntity();
+            if (targetEntity.isPresent()) {
+                velocityTimer.reset();
+                Entity entity = targetEntity.get();
+                e.setCancelled(true);
+
+
+                boolean needSprint = !mc.thePlayer.serverSprintState;
+                if (needSprint) {
+                    mc.getNetHandler().getNetworkManager().sendPacket(
+                            new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING)
+                    );
+
+
+
+                }
+
+
+                for (int i = 0; i < 8; i++) {
+                    AttackOrder.sendFixedAttack(mc.thePlayer, entity);
+                }
+
+
+                x *= Math.pow(0.6, 5);
+                z *= Math.pow(0.6, 5);
+
+
+                if (needSprint) {
+                    mc.getNetHandler().getNetworkManager().sendPacket(
+                            new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING)
+                    );
+                }
+
+
+                packet.motionX = (int) (x * 8000);
+                packet.motionZ = (int) (z * 8000);
+                velocityPacket = packet;
+            }
+        }
+    }
+    public static S12PacketEntityVelocity velocityPacket;
+    @EventTarget
+    public void onAttack(AttackEvent event) {
+
+    }
+
+    @EventTarget
+    public void onMotion(MotionEvent event) {
+        if (getModule(LongJump.class).isEnabled()) return;
+
+        if (mode.is("Boost")) {
+            if (veloPacket) {
+                idk++;
+            }
+            if (idk == reverseTick.getValue()) {
+                MovementUtil.strafe(MovementUtil.getSpeed() * reverseStrength.getValue(), Client.Instance.getRotationManager().lastRotation != null ? Client.Instance.getRotationManager().lastRotation.x : MovementUtil.getDirection());
+                veloPacket = false;
+                idk = 0;
+            }
+        }
+
+        if (mode.is("Legit 2")) {
+            if (reducing) {
+                if (mc.currentScreen == null) {
+                    resetKeybindings(mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindForward,
+                            mc.gameSettings.keyBindJump, mc.gameSettings.keyBindBack);
+                }
+
+                reducing = false;
+            }
+        }
+    }
+
+    @EventTarget
+    public void onVelocity(VelocityEvent event) {
+        if (mc.thePlayer == null) return;
+
+        if (this.shouldVelocity) {
+            if (mc.thePlayer.getDistanceToEntity(target) > 3.0) {
+                this.reset();
+                return;
+            }
+
+            if (!mc.thePlayer.serverSprintState) {
+                mc.thePlayer.setSprinting(true);
+            }
+
+                PacketUtil.sendPacket(new C0APacketAnimation());
+                PacketUtil.sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
+
+            if (!mc.thePlayer.serverSprintState) {
+            }
+
+            event.setReduceAmount(0.07776D);
+            this.shouldVelocity = false;
+        }
+    }
+
+    private Entity getNearTarget() {
+        Entity target = null;
+        EntityLivingBase clientTarget = getModule(KillAura.class).target;
+        if (clientTarget != null) {
+            target = clientTarget;
+            return target;
+        } else {
+            for (Entity entity : mc.theWorld.loadedEntityList) {
+                if (!entity.equals(mc.thePlayer) && !entity.isDead && invalidEntity.get()) {
+                    if (entity instanceof EntityArrow entityArrow) {
+                        if (entityArrow.ticksInGround <= 0) target = entityArrow;
+                    }
+
+                    if (entity instanceof EntitySnowball) target = entity;
+
+                    if (entity instanceof EntityEgg) target = entity;
+
+                    if (entity instanceof EntityTNTPrimed) target = entity;
+
+                    if (entity instanceof EntityFishHook) target = entity;
+                }
+            }
+        }
+        return target;
     }
 
     @EventTarget
     public void onStrafe(StrafeEvent event) {
+        if (getModule(LongJump.class).isEnabled()) return;
 
-        if (mode.is("Jump Reset")) {
+        if (mode.is("Jump Reset") || mode.is("Reduce")) {
             boolean shouldJump = false;
 
             if (jumpResetMode.is("Packet") && veloPacket) {
@@ -377,25 +622,125 @@ public class AntiKB extends Module {
     }
 
     @EventTarget
-    public void onPacketSend(PacketSendEvent event){
-        final Packet<?> packet = event.getPacket();
-        if (mode.getValue().equals("Delay")) {
-            if (!mc.thePlayer.onGround) {
-                if (packet instanceof C00Handshake || packet instanceof C00PacketLoginStart || packet instanceof C00PacketServerQuery || packet instanceof C01PacketPing || packet instanceof C01PacketEncryptionResponse || packet instanceof C00PacketKeepAlive || packet instanceof C02PacketUseEntity || packet instanceof C0APacketAnimation || packet instanceof C0BPacketEntityAction) {
-                    return;
-                }
-                if (delay) {
-                    event.setCancelled(true);;
-                    delayedPackets.add(event.getPacket());
-                }
+    public void onMoveInput(MoveInputEvent event) {
+        if (getModule(LongJump.class).isEnabled()) return;
+
+        if (mode.is("Legit") && getModule(KillAura.class).target != null && mc.thePlayer.hurtTime > 0) {
+            ArrayList<Vec3> vec3s = new ArrayList<>();
+            HashMap<Vec3, Integer> map = new HashMap<>();
+            Vec3 playerPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+            Vec3 onlyForward = PlayerUtil.getPredictedPos(1.0F, 0.0F).add(playerPos);
+            Vec3 strafeLeft = PlayerUtil.getPredictedPos(1.0F, 1.0F).add(playerPos);
+            Vec3 strafeRight = PlayerUtil.getPredictedPos(1.0F, -1.0F).add(playerPos);
+            map.put(onlyForward, 0);
+            map.put(strafeLeft, 1);
+            map.put(strafeRight, -1);
+            vec3s.add(onlyForward);
+            vec3s.add(strafeLeft);
+            vec3s.add(strafeRight);
+            Vec3 targetVec = new Vec3(getModule(KillAura.class).target.posX, getModule(KillAura.class).target.posY, getModule(KillAura.class).target.posZ);
+            vec3s.sort(Comparator.comparingDouble(targetVec::distanceXZTo));
+            if (!mc.thePlayer.movementInput.sneak) {
+                System.out.println(map.get(vec3s.get(0)));
+                mc.thePlayer.movementInput.moveStrafe = map.get(vec3s.get(0));
             }
         }
-    }
-    private boolean isPlayerValid() {
-        return mc.thePlayer != null && !mc.thePlayer.isDead && !mc.thePlayer.isRiding() && mc.thePlayer.hurtResistantTime <= 10 && getModule(KillAura.class).getState() && KillAura.target != null;
     }
 
     private boolean checks() {
         return mc.thePlayer.isInWeb || mc.thePlayer.isInLava() || mc.thePlayer.isBurning() || mc.thePlayer.isInWater();
+    }
+
+    public static boolean isPressed(KeyBinding key) {
+        return Keyboard.isKeyDown(key.getKeyCode());
+    }
+
+    public static void resetKeybinding(KeyBinding key) {
+        if (mc.currentScreen != null) {
+            key.setPressed(false);
+        } else {
+            key.setPressed(isPressed(key));
+        }
+    }
+
+    public static void resetKeybindings(KeyBinding... keys) {
+        for (KeyBinding key : keys) {
+            resetKeybinding(key);
+        }
+    }
+
+    @EventTarget
+    public void onMotionEvent(MotionEvent e) {
+
+        if (mode.is("Prediction")) {
+            handlePredictionMotion();
+            return;
+        }
+
+
+        if (mode.getValue().equals("Prediction")) {
+            if (Mine.getCurrentScreen() != null) {
+                return;
+            }
+
+            if (KillAura.target == null) {
+                return;
+            }
+
+            if (mc.thePlayer.hurtTime == 10) {
+                this.enable = MathHelper.getRandomDoubleInRange(new Random(), 0.0, 1.0) <= chance.getValue();
+            }
+
+            if (!this.enable) {
+                return;
+            }
+
+            if (mc.thePlayer.hurtTime >= 8) {
+                mc.gameSettings.keyBindJump.pressed = true;
+            } else if (mc.thePlayer.hurtTime > 6) {
+                mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
+                mc.gameSettings.keyBindJump.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindJump);
+            }
+        }
+    }
+
+
+    private boolean needJump = false;
+    private final TimerUtil timerUtil = new TimerUtil();
+    private void handlePredictionMotion() {
+        if (!hypixelPrediction.getValue()) return;
+
+        needJump = false;
+        if (mc.thePlayer.hurtTime >= 9) {
+            needJump = true;
+        }
+
+        if (needJump && mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && !checks()) {
+
+
+            if (timerUtil.reached((long)(jumpDelay.getValue() * 50))) {
+                mc.thePlayer.jump();
+                timerUtil.reset();
+            }
+
+
+            if (jumpRotate.getValue() && KillAura.target != null) {
+                sendLookPacket();
+            }
+        }
+    }
+    public static int direction = 1;
+    private void sendLookPacket() {
+
+        direction *= -1;
+        float playerYaw = Client.Instance.getRotationManager().lastRotation.x + 0.0001f * direction;
+        mc.getNetHandler().getNetworkManager().sendPacket(
+                new C03PacketPlayer.C05PacketPlayerLook(playerYaw, Client.Instance.getRotationManager().lastRotation.y, mc.thePlayer.onGround)
+        );
+    }
+    private boolean isPlayerValid() {
+        return mc.thePlayer != null && !mc.thePlayer.isDead && !mc.thePlayer.isRiding() &&
+                mc.thePlayer.hurtResistantTime <= 10 && Client.Instance.getModuleManager().getModule(Sprint.class).isEnabled() &&
+                KillAura.target != null;
     }
 }

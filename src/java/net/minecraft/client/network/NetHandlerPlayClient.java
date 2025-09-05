@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
+import net.minecraft.client.Minecraft;
+import qwq.arcane.event.impl.events.player.VelocityEvent;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.audio.GuardianSound;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -501,9 +503,14 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
         Entity entity = this.clientWorldController.getEntityByID(packetIn.getEntityID());
 
-        if (entity != null)
-        {
-            entity.setVelocity((double)packetIn.getMotionX() / 8000.0D, (double)packetIn.getMotionY() / 8000.0D, (double)packetIn.getMotionZ() / 8000.0D);
+        if (entity != null) {
+            if (entity == Mine.getMinecraft().thePlayer) {
+                VelocityEvent event = new VelocityEvent(1D);
+                Client.INSTANCE.getEventManager().call(event);
+                entity.setVelocity((double)packetIn.getMotionX() / 8000.0D * event.getReduceAmount(), (double)packetIn.getMotionY() / 8000.0D, (double)packetIn.getMotionZ() / 8000.0D * event.getReduceAmount());
+            } else {
+                entity.setVelocity((double)packetIn.getMotionX() / 8000.0D, (double)packetIn.getMotionY() / 8000.0D, (double)packetIn.getMotionZ() / 8000.0D);
+            }
         }
     }
 

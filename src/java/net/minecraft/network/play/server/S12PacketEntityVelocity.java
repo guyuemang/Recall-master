@@ -13,7 +13,7 @@ public class S12PacketEntityVelocity implements Packet<INetHandlerPlayClient>
 {
     private int entityID;
     public int motionX;
-    private int motionY;
+    public int motionY;
     public int motionZ;
 
     public S12PacketEntityVelocity()

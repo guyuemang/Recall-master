@@ -6,6 +6,7 @@ import com.mojang.authlib.GameProfile;
 import java.util.Comparator;
 import java.util.List;
 
+import qwq.arcane.Client;
 import qwq.arcane.module.Mine;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -20,10 +21,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldSettings;
+import qwq.arcane.module.impl.display.IsLand;
 
 public class GuiPlayerTabOverlay extends Gui
 {
-    private static final Ordering<NetworkPlayerInfo> field_175252_a = Ordering.from(new GuiPlayerTabOverlay.PlayerComparator());
+    public static final Ordering<NetworkPlayerInfo> field_175252_a = Ordering.from(new GuiPlayerTabOverlay.PlayerComparator());
     private final Mine mc;
     private final GuiIngame guiIngame;
     private IChatComponent footer;
@@ -57,6 +59,7 @@ public class GuiPlayerTabOverlay extends Gui
      */
     public void updatePlayerList(boolean willBeRendered)
     {
+
         if (willBeRendered && !this.isBeingRendered)
         {
             this.lastTimeOpened = Mine.getSystemTime();
@@ -70,6 +73,9 @@ public class GuiPlayerTabOverlay extends Gui
      */
     public void renderPlayerlist(int width, Scoreboard scoreboardIn, ScoreObjective scoreObjectiveIn)
     {
+        if (Client.Instance.getModuleManager().getModule(IsLand.class).getState()){
+            return;
+        }
         NetHandlerPlayClient nethandlerplayclient = this.mc.thePlayer.sendQueue;
         List<NetworkPlayerInfo> list = field_175252_a.<NetworkPlayerInfo>sortedCopy(nethandlerplayclient.getPlayerInfoMap());
         int i = 0;

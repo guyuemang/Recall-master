@@ -45,6 +45,7 @@ import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
 import qwq.arcane.Client;
 import qwq.arcane.event.impl.events.render.Render2DEvent;
+import qwq.arcane.module.impl.display.IsLand;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.render.RenderUtil;
 
@@ -358,6 +359,7 @@ public class GuiIngame extends Gui
 
         if (this.mc.gameSettings.keyBindPlayerList.isKeyDown() && (!this.mc.isIntegratedServerRunning() || this.mc.thePlayer.sendQueue.getPlayerInfoMap().size() > 1 || scoreobjective1 != null))
         {
+
             this.overlayPlayerList.updatePlayerList(true);
             this.overlayPlayerList.renderPlayerlist(i, scoreboard, scoreobjective1);
         }

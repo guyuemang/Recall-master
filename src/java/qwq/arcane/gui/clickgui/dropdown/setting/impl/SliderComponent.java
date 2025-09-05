@@ -2,6 +2,7 @@
 package qwq.arcane.gui.clickgui.dropdown.setting.impl;
 
 import qwq.arcane.gui.clickgui.Component;
+import qwq.arcane.module.impl.visuals.ClickGui;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.math.MathUtils;
@@ -34,9 +35,9 @@ public class SliderComponent extends Component {
         anim = RenderUtil.animate(anim, (float) ((getWidth() - 8) * (setting.get() - setting.getMin()) / (setting.getMax() - setting.getMin())), 15);
         float sliderWidth = anim;
 
-        RoundedUtil.drawRound(getX() + 4, getY() + FontManager.Bold.get(15).getHeight() + 2, getWidth() - 8, 2, 2,new Color(1,1,1));
-        RoundedUtil.drawGradientHorizontal(getX() + 4, getY() + FontManager.Bold.get(15).getHeight() + 2, sliderWidth, 2, 2, InterFace.mainColor.get(), InterFace.mainColor.get().brighter());
-        RenderUtil.drawCircleCGUI(getX() + 4 + sliderWidth, getY() + FontManager.Bold.get(15).getHeight() + 3, 6, InterFace.mainColor.get().darker().darker().getRGB());
+        RoundedUtil.drawRound(getX() + 4, getY() + FontManager.Bold.get(15).getHeight() + 2, getWidth() - 8, 2, 2,new Color(255,255,255));
+        RoundedUtil.drawGradientHorizontal(getX() + 4, getY() + FontManager.Bold.get(15).getHeight() + 2, sliderWidth, 2, 2, InterFace.mainColor.get(), InterFace.secondColor.get());
+        RenderUtil.drawCircleCGUI(getX() + 4 + sliderWidth, getY() + FontManager.Bold.get(15).getHeight() + 3, 6, ClickGui.colorValue.get().brighter().getRGB());
 
         FontManager.Bold.get(15).drawString(setting.getMin() + "", getX() + 2, getY() + FontManager.Bold.get(15).getHeight() * 2 + 2, new Color(160, 160, 160).getRGB());
         FontManager.Bold.get(15).drawCenteredString(setting.get() + "", getX() + getWidth() / 2, getY() + FontManager.Bold.get(15).getHeight() * 2 + 2, -1);

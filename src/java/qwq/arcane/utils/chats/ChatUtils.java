@@ -15,4 +15,13 @@ public class ChatUtils {
             mc.thePlayer.addChatMessage(new net.minecraft.util.ChatComponentText(EnumChatFormatting.RED + "[Arcane] " + EnumChatFormatting.RESET + message));
         }
     }
+
+    public static void sendIRCMessage(String username, String message) {
+        if (mc.thePlayer != null) {
+            String formatted = EnumChatFormatting.GOLD + "[user]" +
+                    EnumChatFormatting.AQUA + "[" + username + "]" +
+                    EnumChatFormatting.RESET + ": " + message;
+            mc.thePlayer.addChatMessage(new net.minecraft.util.ChatComponentText(formatted));
+        }
+    }
 }

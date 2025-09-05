@@ -4,9 +4,11 @@ import qwq.arcane.Client;
 import qwq.arcane.gui.clickgui.IComponent;
 import qwq.arcane.module.Category;
 import qwq.arcane.module.Module;
+import qwq.arcane.module.impl.visuals.ClickGui;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.EaseInOutQuad;
+import qwq.arcane.utils.color.ColorUtil;
 import qwq.arcane.utils.fontrender.FontManager;
 import qwq.arcane.utils.render.RenderUtil;
 import qwq.arcane.utils.render.RoundedUtil;
@@ -40,7 +42,7 @@ public class CategoryPanel implements IComponent, Instance {
     public void drawScreen(int mouseX, int mouseY) {
         update(mouseX, mouseY);
 
-        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19))), 6,new Color(30,30,30,255));
+        RoundedUtil.drawRound(x, y - 2, width, (float) (19 + ((height - 19))), 6, ColorUtil.applyOpacity3(ClickGui.colorValue.get().getRGB(),0.6f));
 
         FontManager.Bold.get(20).drawCenteredString(category.name(), x + width / 2, y + 4.5, -1);
 

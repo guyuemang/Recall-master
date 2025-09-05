@@ -43,7 +43,7 @@ import java.util.Objects;
 
 public class ThrowableAura extends Module {
     private final NumberValue dealy = new NumberValue("Delay", 8, 0, 1000, 1);
-    private final NumberValue range = new NumberValue("Range", 5, 1, 8, 1);
+    private final NumberValue range = new NumberValue("Range", 5, 1, 18, 1);
     private final NumberValue Fov = new NumberValue("Fov", 90, 0, 360, 1);
     public BoolValue playersValue = new BoolValue("Players", true);
     public BoolValue animalsValue = new BoolValue("Animals", true);

@@ -6,6 +6,7 @@ import qwq.arcane.Client;
 import qwq.arcane.gui.alt.GuiAccountManager;
 import qwq.arcane.gui.mcgui.GuiMultiplayer;
 import qwq.arcane.module.ClientApplication;
+import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.DecelerateAnimation;
@@ -58,15 +59,15 @@ public class MainMenu extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
         qwq.arcane.utils.render.shader.MainMenu.drawBackground(width, height, mouseX, mouseY);
-        RoundedUtil.drawRound(width / 2 - 90, height - 120, 180, 30, 11, new Color(0, 0, 0, 120));
-        FontManager.Bold.get(80).drawCenteredString(Client.name, sr.getScaledWidth() / 2, sr.getScaledHeight() / 2 - 110, new Color(127, 127, 213).getRGB());
-        FontManager.Bold.get(22).drawCenteredString(Client.version, sr.getScaledWidth() / 2 + 35, sr.getScaledHeight() / 2 - 110, new Color(127, 127, 213).getRGB());
+        FontManager.Bold.get(80).drawStringDynamic(Client.name, sr.getScaledWidth() / 2 - FontManager.Bold.get(80).getStringWidth(Client.name) / 2, sr.getScaledHeight() / 2 - 110, InterFace.mainColor.get().getRGB(), InterFace.secondColor.get().getRGB());
+        FontManager.Bold.get(22).drawStringDynamic(Client.version, sr.getScaledWidth() / 2 + 38 - FontManager.Bold.get(22).getStringWidth(Client.version) / 2, sr.getScaledHeight() / 2 - 110, InterFace.mainColor.get().getRGB(), InterFace.secondColor.get().getRGB());
 //        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 130, sr.getScaledHeight() - 45, 260, 40, 6, new Color(0, 0, 0, 120));
 //        FontManager.Bold.get(18).drawCenteredString(Client.name + " " + Client.version, sr.getScaledWidth() / 2, sr.getScaledHeight() - 38, new Color(255, 255, 255).getRGB());
 //        FontManager.Bold.get(18).drawCenteredString("OptiFine_1.8.9_HD_U_M6_pre2", sr.getScaledWidth() / 2, sr.getScaledHeight() - 28, new Color(255, 255, 255).getRGB());
 //        FontManager.Bold.get(18).drawCenteredString("Made by Guyuemang", sr.getScaledWidth() / 2, sr.getScaledHeight() - 18, new Color(255, 255, 255).getRGB());
 //        //按钮专属背景
-        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 80, sr.getScaledHeight() / 2 - 55, 160, 175, 14, new Color(0, 0, 0, 120));
+        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 80, sr.getScaledHeight() / 2 - 55, 160, 175, 14, new Color(255, 255, 255, 120));
+        RoundedUtil.drawRound(width / 2 - 90, height - 120, 180, 30, 11, new Color(255, 255, 255, 120));
         float count = 0;
         for (Button button : buttons) {
             button.x = sr.getScaledWidth() / 2;
@@ -188,8 +189,8 @@ public class MainMenu extends GuiScreen {
 
         RenderUtil.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(0, 0, 0, alpha).getRGB());
         if (fadeInAnimation.getOutput() <= 0.9) {
-            FontManager.Bold.get(60).drawString("Arcane " + Client.version, sr.getScaledWidth() / 2 - FontManager.Bold.get(60).getStringWidth("Arcane " + Client.version) / 2, sr.getScaledHeight() / 2 - 20, ColorUtil.applyOpacity(-1,fadeInAnimation.getOutput().floatValue()));
-            FontManager.Bold.get(30).drawString("Welcome!! " + ClientApplication.usernameField.getText(), sr.getScaledWidth() / 2 - FontManager.Bold.get(30).getStringWidth("Welcome!! " + ClientApplication.usernameField.getText()) / 2, sr.getScaledHeight() / 2 + 20, ColorUtil.applyOpacity(-1,fadeInAnimation.getOutput().floatValue()));
+            FontManager.Bold.get(60).drawString("Arcane " + Client.version, sr.getScaledWidth() / 2 - FontManager.Bold.get(60).getStringWidth("Arcane " + Client.version) / 2, sr.getScaledHeight() / 2 - 20, ColorUtil.applyOpacity(InterFace.color(1).getRGB(),fadeInAnimation.getOutput().floatValue()));
+            FontManager.Bold.get(30).drawString("Welcome!! " + ClientApplication.usernameField.getText(), sr.getScaledWidth() / 2 - FontManager.Bold.get(30).getStringWidth("Welcome!! " + ClientApplication.usernameField.getText()) / 2, sr.getScaledHeight() / 2 + 20, ColorUtil.applyOpacity(InterFace.color(17).getRGB(),fadeInAnimation.getOutput().floatValue()));
         }
     }
 
@@ -213,14 +214,14 @@ public class MainMenu extends GuiScreen {
 
         public void drawScreen(int mouseX, int mouseY) {
             boolean hovered = RenderUtil.isHovering(x - 80,y - 15,width,35, mouseX, mouseY);
-            Color rectColor = new Color(35, 37, 43, 100);
+            Color rectColor = new Color(200, 200, 200, 100);
             rectColor = ColorUtil.interpolateColorC(rectColor, ColorUtil.brighter(rectColor, 0.4f),this.hoverAnimation.getOutput().floatValue());
             hoverAnimation.setDirection(hovered ? Direction.BACKWARDS : Direction.FORWARDS);
             if (hovered) {
                 RoundedUtil.drawRound(x - 80, y - 15, width, 35, 14, rectColor);
             }
-            FontManager.Bold.get(20).drawCenteredString(name,x + 5,y,new Color(134, 168, 231).getRGB());
-            FontManager.Icon.get(30).drawCenteredString(icon,x - 5 - FontManager.Bold.get(20).getStringWidth(name) / 2  ,y,new Color(134, 168, 231).getRGB());
+            FontManager.Bold.get(20).drawCenteredString(name,x + 5,y,InterFace.color(1).getRGB());
+            FontManager.Icon.get(30).drawCenteredString(icon,x - 5 - FontManager.Bold.get(20).getStringWidth(name) / 2  ,y,InterFace.color(1).getRGB());
         }
 
         public void mouseClicked(int mouseX, int mouseY, int button) {
@@ -242,7 +243,7 @@ public class MainMenu extends GuiScreen {
 
         public void drawScreen(int mouseX, int mouseY) {
             boolean hovered = RenderUtil.isHovering(x + 11 - FontManager.Icon.get(40).getStringWidth(icon) / 2 + width / 2, y - 1, width, height, mouseX, mouseY);
-            Color rectColor = new Color(35, 37, 43, 150);
+            Color rectColor = new Color(190, 190, 190, 150);
             rectColor = ColorUtil.interpolateColorC(rectColor, ColorUtil.brighter(rectColor, 0.4f), this.hoverAnimation.getOutput().floatValue());
             hoverAnimation.setDirection(hovered ? Direction.BACKWARDS : Direction.FORWARDS);
             if (hovered){

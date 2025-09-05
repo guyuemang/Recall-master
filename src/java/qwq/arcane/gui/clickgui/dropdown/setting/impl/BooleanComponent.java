@@ -2,6 +2,7 @@
 package qwq.arcane.gui.clickgui.dropdown.setting.impl;
 
 import qwq.arcane.gui.clickgui.Component;
+import qwq.arcane.module.impl.visuals.ClickGui;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Direction;
 import qwq.arcane.utils.animations.impl.SmoothStepAnimation;
@@ -31,8 +32,8 @@ public class BooleanComponent extends Component {
         this.toggleAnimation.setDirection(setting.getValue() ? Direction.FORWARDS : Direction.BACKWARDS);
         FontManager.Bold.get(15).drawString(setting.getName(), getX() + 4, getY() + 2.5f, new Color(234, 234, 234).getRGB());
 
-        RoundedUtil.drawRound(getX() + getWidth() - 15.5f, getY() + 2.5f, 13f, 6, 2.7f, InterFace.mainColor.get().brighter());
-        RenderUtil.drawCircleCGUI(getX() + getWidth() - 12.5f + 7 * (float) toggleAnimation.getOutput().floatValue(), getY() + 5.5f, 7f,InterFace.mainColor.get().darker().darker().getRGB());
+        RoundedUtil.drawRound(getX() + getWidth() - 15.5f, getY() + 2.5f, 13f, 6, 2.7f, ClickGui.colorValue.get().brighter());
+        RenderUtil.drawCircleCGUI(getX() + getWidth() - 12.5f + 7 * (float) toggleAnimation.getOutput().floatValue(), getY() + 5.5f, 7f, ClickGui.colorValue.get().darker().getRGB());
         super.drawScreen(mouseX, mouseY);
     }
 

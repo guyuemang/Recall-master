@@ -82,6 +82,9 @@ public class ScaffoldUtil implements Instance {
     }
 
     public static int getBlockCount() {
+        if (mc.thePlayer == null){
+            return 0;
+        }
         int blockCount = 0;
 
         for (int i = 36; i < 45; ++i) {

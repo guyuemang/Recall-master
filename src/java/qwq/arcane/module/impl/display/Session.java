@@ -26,7 +26,7 @@ import java.text.DecimalFormat;
  */
 
 public class Session extends ModuleWidget {
-    public ModeValue modeValue = new ModeValue("Mode", "Normal",new String[]{"Normal","Custom","Solitude"});
+    public ModeValue modeValue = new ModeValue("Mode", "Custom",new String[]{"Custom","Solitude","Normal"});
 
     public Session() {
         super("Session",Category.Display);
