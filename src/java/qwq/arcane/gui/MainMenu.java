@@ -58,7 +58,7 @@ public class MainMenu extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
-        qwq.arcane.utils.render.shader.MainMenu.drawBackground(width, height, mouseX, mouseY);
+        qwq.arcane.utils.render.shader.MainMenu.drawBackground(sr.getScaledWidth(), sr.getScaledHeight(), mouseX, mouseY);
         FontManager.Bold.get(80).drawStringDynamic(Client.name, sr.getScaledWidth() / 2 - FontManager.Bold.get(80).getStringWidth(Client.name) / 2, sr.getScaledHeight() / 2 - 110, InterFace.mainColor.get().getRGB(), InterFace.secondColor.get().getRGB());
         FontManager.Bold.get(22).drawStringDynamic(Client.version, sr.getScaledWidth() / 2 + 38 - FontManager.Bold.get(22).getStringWidth(Client.version) / 2, sr.getScaledHeight() / 2 - 110, InterFace.mainColor.get().getRGB(), InterFace.secondColor.get().getRGB());
 //        RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 130, sr.getScaledHeight() - 45, 260, 40, 6, new Color(0, 0, 0, 120));
@@ -66,6 +66,7 @@ public class MainMenu extends GuiScreen {
 //        FontManager.Bold.get(18).drawCenteredString("OptiFine_1.8.9_HD_U_M6_pre2", sr.getScaledWidth() / 2, sr.getScaledHeight() - 28, new Color(255, 255, 255).getRGB());
 //        FontManager.Bold.get(18).drawCenteredString("Made by Guyuemang", sr.getScaledWidth() / 2, sr.getScaledHeight() - 18, new Color(255, 255, 255).getRGB());
 //        //按钮专属背景
+
         RoundedUtil.drawRound(sr.getScaledWidth() / 2 - 80, sr.getScaledHeight() / 2 - 55, 160, 175, 14, new Color(255, 255, 255, 120));
         RoundedUtil.drawRound(width / 2 - 90, height - 120, 180, 30, 11, new Color(255, 255, 255, 120));
         float count = 0;

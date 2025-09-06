@@ -49,7 +49,7 @@ public class MainMenu implements Instance {
             }
 
             GlStateManager.disableCull();
-            shader.useShader(guiWidth, guiHeight, mouseX, mouseY, (System.currentTimeMillis() - initTime) / 1000f, animation);
+            shader.useShader(guiWidth * 2, guiHeight * 2, mouseX, mouseY, (System.currentTimeMillis() - initTime) / 1000f, animation);
             GL11.glBegin(GL11.GL_QUADS);
 
             GL11.glVertex2f(-1f, -1f);
@@ -63,7 +63,7 @@ public class MainMenu implements Instance {
 
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
-            RoundedUtil.drawRound(0f, 0f, guiWidth, guiHeight, 0, new Color(26, 59, 109, 60));
+            RoundedUtil.drawRound(0f, 0f, guiWidth * 2, guiHeight * 2, 0, new Color(26, 59, 109, 60));
         }
 
         particle.render(0, 0);

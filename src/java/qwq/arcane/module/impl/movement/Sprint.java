@@ -36,7 +36,7 @@ public class Sprint extends Module {
         if (!keepSprinting) {
             if (!isEnabled(Scaffold.class))
                 KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
-        }else {
+        } else {
             keepSprinting = false;
         }
 

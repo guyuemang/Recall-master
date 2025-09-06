@@ -70,7 +70,7 @@ public class AutoPlay extends Module {
             String m = s02PacketChat.getChatComponent().toString();
             if (m.contains("ClickEvent{action=RUN_COMMAND, value='/play ")) {
                 if (autoGG.get() && !strippedMessage.startsWith("You died!")) {
-                    ChatUtils.sendMessage("/ac " + autoGGMessage.getValue());
+                    mc.thePlayer.sendChatMessage("/ac " + autoGGMessage.getValue());
                 }
                 if (autoPlay.get()) {
                     sendToGame(m.split("action=RUN_COMMAND, value='")[1].split("'}")[0]);
@@ -101,6 +101,6 @@ public class AutoPlay extends Module {
         float delay = autoPlayDelay.get().floatValue();
         String delayText = delay > 0 ? String.format("in %.1f s", delay) : "immediately";
         Client.Instance.getNotification().add("Playing Again!", "Playing again " + delayText + ".", Notification.Type.INFO);
-        Multithreading.schedule(() -> ChatUtils.sendMessage(mode), (long) delay, TimeUnit.SECONDS);
+        Multithreading.schedule(() -> mc.thePlayer.sendChatMessage(mode), (long) delay, TimeUnit.SECONDS);
     }
 }

@@ -83,6 +83,9 @@ public class ThrowableAura extends Module {
     @EventTarget
     public void onUpdateEvent(MotionEvent e) {
         setsuffix(dealy.get().toString());
+        if (KillAura.target != null || target.getDistanceToEntity(mc.thePlayer) <= KillAura.range.get()){
+            return;
+        }
         if (e.isPost()) {
             if (Objects.requireNonNull(Client.Instance.getModuleManager().getModule(Scaffold.class).getState() ||
                     isGapple()
@@ -112,11 +115,12 @@ public class ThrowableAura extends Module {
             target = targets.get(index);
 
             if (target == null) return;
+
             if (!mc.thePlayer.canEntityBeSeen(target)) return;
 
-            float[] rotation = RotationUtil.getRotationsNeededBall(target);
+            float[] rotation = RotationUtil.getHVHRotation(target);
 
-            Client.Instance.getRotationManager().setRotation(new Vector2f(rotation[0], rotation[1]), 360f, true);
+            Client.Instance.getRotationManager().setRotation(new Vector2f(rotation[0], rotation[1]), 180, true);
 
             if (RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation, range.getValue()).entityHit == null || !attackTimer.hasTimeElapsed(100, true))
                 return;

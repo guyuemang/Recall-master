@@ -45,8 +45,8 @@ public class Scaffold extends Module {
     }
     private final ModeValue switchBlock = new ModeValue("Switch Block", "Spoof", new String[]{"Silent", "Switch", "Spoof"});
     public ModeValue mode = new ModeValue("Mode","Normal",new String[]{"Normal","Telly"});
-    private final NumberValue minTellyTicks = new NumberValue("Min Telly Ticks", () -> mode.is("Telly"), 2, 1, 5,1);
-    private final NumberValue maxTellyTicks = new NumberValue("Max Telly Ticks", () -> mode.is("Telly"), 4, 1, 5,1);
+    private final NumberValue minTellyTicks = new NumberValue("Min Telly Ticks", () -> mode.is("Telly"), 0, 0, 5,0.1);
+    private final NumberValue maxTellyTicks = new NumberValue("Max Telly Ticks", () -> mode.is("Telly"), 1, 0, 5,0.1);
     public final BoolValue biggestStack = new BoolValue("Biggest Stack", false);
     private final NumberValue yaws = new NumberValue("Telly yaw", () -> mode.is("Telly"), 125, 1, 360,0.1);
     public final BoolValue pitchfix = new BoolValue("pitchfix", true);
@@ -100,15 +100,13 @@ public class Scaffold extends Module {
 
     @EventTarget
     public void onStrafe(StrafeEvent event){
-        if (mc.thePlayer.onGround && mode.is("Telly") && !mc.thePlayer.isJumping && MovementUtil.isMoving()) {
+        if (mc.thePlayer.onGround && mode.is("Telly") && MovementUtil.canSprint(true) && !mc.thePlayer.isJumping && MovementUtil.isMoving()) {
            tellyStage = !tellyStage;
            mc.thePlayer.jump();
         }
     }
     @EventTarget
     public void onUpdate(UpdateEvent event) {
-        data = null;
-
         if (ScaffoldUtil.getBlockSlot() == -1)
             return;
         switch (switchBlock.getValue()) {
@@ -124,16 +122,15 @@ public class Scaffold extends Module {
                 break;
         }
         if (sprint.get()) {
-            Sprint.keepSprinting = true;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
         } else {
-            Sprint.keepSprinting = false;
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), false);
             mc.thePlayer.setSprinting(false);
         }
         if (mode.is("Telly") && mc.thePlayer.onGround) {
             tellyTicks = MathUtils.randomizeInt(minTellyTicks.getValue().intValue(), maxTellyTicks.getValue().intValue());
         }
+        data = null;
         if (mc.thePlayer.onGround) {
             onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
         }
@@ -178,6 +175,13 @@ public class Scaffold extends Module {
                     float pitch = pitchfix.get()? RotationUtil.getRotations(getVec3(data))[1] : pitchs.get().floatValue();
                     rotations = new float[]{yaw, pitch};
                     break;
+            }
+        }else {
+            if (sprint.get()) {
+                KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
+            } else {
+                KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), false);
+                mc.thePlayer.setSprinting(false);
             }
         }
         if (canPlace){

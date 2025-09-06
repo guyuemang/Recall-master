@@ -1,55 +1,86 @@
-#ifdef GL_FRAGMENT_PRECISION_HIGH
+/*
+ * Original shader from: https://www.shadertoy.com/view/DsVSRy
+ */
+
+#ifdef GL_ES
 precision highp float;
-#else
-precision mediump float;
 #endif
-uniform vec2 resolution;
+
+// glslsandbox uniforms
 uniform float time;
-float rand(vec2 co){
-    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453)*100.0;
+uniform vec2 resolution;
+
+// shadertoy emulation
+#define iTime time
+#define iResolution resolution
+
+// --------[ Original ShaderToy begins here ]---------- //
+#define t iTime
+#define SAMPLES 10
+#define FOCAL_DISTANCE 4.0
+#define FOCAL_RANGE 6.0
+mat2 m(float a){float c=cos(a), s=sin(a);return mat2(c,-s,s,c);}
+
+float map(vec3 p){
+    p.xz *= m(t * 0.4);
+    p.xy *= m(t * 0.3);
+    vec3 q = p * 2.0 + t;
+    return length(p + vec3(sin(t * 0.9))) * log(length(p) + 1.0) + cos(q.z + cos(q.y + cos(q.x))) * 0.1 - 0.5;
 }
-vec2 getblock(float res, vec2 loc) {
-    vec2 block = floor((loc) / res)*res;
-    return block;
+
+vec3 hslToRgb(vec3 hsl) {
+    vec3 rgb = clamp(abs(mod(hsl.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+    return hsl.z + hsl.y * (rgb - 0.5) * (1.0 - abs(2.0 * hsl.z - 1.0));
 }
-vec2 getVector(float res, vec2 loc) {
-    float block = rand(getblock(res, loc))*100.0;
-    return vec2(sin(block),cos(block));
+
+vec3 getColor(in vec2 fragCoord, in float depth) {
+    vec2 p = fragCoord.xy / iResolution.y - vec2(1., .5);
+    vec3 cl = vec3(0.);
+    float d = depth;
+
+    for (int i = 0; i <= 2; i++) {
+        vec3 p = vec3(0, 0, 5.0) + normalize(vec3(p, -1.0)) * d;
+        float rz = map(p);
+        float f = clamp((rz - map(p + .1)) * 0.5, -0.1, 1.0);
+
+        // 修改这里，使颜色在指定范围内动态变化
+        float hue = mod(t * 1.0 + float(i) / 4.0, 441.0);
+        float hueRange = 0.2; // 控制颜色范围的参数
+        float hueShift = 0.5; // 控制颜色偏移的参数
+        hue = mix(0.0, 1.0, smoothstep(0.0, hueRange, hue)) + hueShift;
+
+        vec3 color = hslToRgb(vec3(hue, 0.0, 0.7));
+
+        vec3 l = color + vec3(4.0, 1.0, 1.0) * f;
+        cl = cl * l + smoothstep(2.0, 0.0, rz) * 0.8 * l;
+
+        d += min(rz, 1.0);
+    }
+
+    return cl;
 }
-float interpolate(float t) {
-    return 6.0*pow(t,5.0)-15.0*pow(t,4.0)+10.0*pow(t,3.0);
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec3 color = vec3(0.0);
+    float depthSum = 0.0;
+
+    for (int i = 0; i < SAMPLES; i++) {
+        float depth = FOCAL_DISTANCE + (float(i) / float(SAMPLES - 1)) * FOCAL_RANGE;
+        vec3 sampleColor = getColor(fragCoord, depth);
+        float weight = 2.0 / (2.0 + abs(depth - FOCAL_DISTANCE));
+
+        color += sampleColor * weight;
+        depthSum += weight;
+    }
+
+    color /= depthSum;
+
+    fragColor = vec4(color, 1.0);
 }
-float perlin(float res, vec2 loc) {
-    vec2 localCoord = (getblock(res, loc+res)-loc)/res;
-    vec2 vecTL = getVector(res, loc);
-    vec2 vecTR = getVector(res, loc+vec2(res,0));
-    vec2 vecBL = getVector(res, loc+vec2(0,-res));
-    vec2 vecBR = getVector(res, loc+vec2(res,-res));
-    vec2 interp = vec2(interpolate(localCoord.x),interpolate(localCoord.y));
-    localCoord = localCoord*2.0-1.0;
-    vec2 offsettl = vec2(1.0,-1.0);
-    vec2 offsettr = vec2(-1.0,-1.0);
-    vec2 offsetbl = vec2(1.0,1.0);
-    vec2 offsetbr = vec2(-1.0,1.0);
-    float dottl = (dot(vecTL, localCoord-offsettl)+1.4)/2.3;
-    float dottr = (dot(vecTR, localCoord-offsettr)+1.4)/2.3;
-    float dotbl = (dot(vecBL, localCoord-offsetbl)+1.4)/2.3;
-    float dotbr = (dot(vecBR, localCoord-offsetbr)+1.4)/2.3;
-    float horizTop = interp.x*dottl+(1.0-interp.x)*dottr;
-    float horizBottom = interp.x*dotbl+(1.0-interp.x)*dotbr;
-    float vertical = interp.y*horizBottom+(1.0-interp.y)*horizTop;
-    return vertical/1.1;
-}
-void main(void) {
-    float resolution =  100.0;
-    float moveAmount = 1000.0; // Higher = more movement
-    float moveSpeed = 35.0; // Lower = faster
-    float sex1 = perlin(moveSpeed, vec2(time))*moveAmount;
-    float sex2 = perlin(moveSpeed, vec2(time+500.0))*moveAmount;
-    float perlin1 = perlin(resolution, 1.0*(gl_FragCoord.xy+vec2(sex1, sex2)));
-    float perlin3 = perlin(resolution, 4.0*(gl_FragCoord.xy+vec2(sex1, sex2)))/16.0;
-    float value = (perlin1 + perlin3);
-    // change the value to change the color
-    gl_FragColor = vec4(value, value, value, 1.0);
-    gl_FragColor = vec4(vec3(mod(value*10.0, 1.0)/12.0), 1.0);
+
+// --------[ Original ShaderToy ends here ]---------- //
+
+void main(void)
+{
+    mainImage(gl_FragColor, gl_FragCoord.xy);
 }
