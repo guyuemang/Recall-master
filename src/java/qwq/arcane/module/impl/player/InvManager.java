@@ -267,6 +267,7 @@ public class InvManager extends Module {
                     if (item instanceof ItemBucket) {
                         if (bucket == -1) {
                             bucket = i;
+                            throwItem(bucket);
                         }
                         continue;
                     }

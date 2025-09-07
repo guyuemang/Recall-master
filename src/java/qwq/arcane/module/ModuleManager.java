@@ -85,6 +85,7 @@ public class ModuleManager {
         registerModule(new KillEffect());
         registerModule(new NoHurtCam());
         registerModule(new Projectile());
+        registerModule(new MotionBlur());
 
         registerModule(new Disabler());
         registerModule(new FastPlace());

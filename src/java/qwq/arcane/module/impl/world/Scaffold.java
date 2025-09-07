@@ -73,9 +73,9 @@ public class Scaffold extends Module {
         if (ScaffoldUtil.getBlockSlot() == -1){
             Client.Instance.getNotification().add("Module Info", "Block None!!", Notification.Type.INFO);
         }
-        oloSlot = mc.thePlayer.inventory.currentItem;
         timerUtil.reset();
         if (mc.thePlayer != null) {
+            oloSlot = mc.thePlayer.inventory.currentItem;
             onGroundY = mc.thePlayer.getEntityBoundingBox().minY;
         }
         canPlace = true;

@@ -176,7 +176,7 @@ public class EffectHUD extends ModuleWidget {
                         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                         final int statusIconIndex = potion.getStatusIconIndex();
                         mc.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
-                        Gui.drawTexturedModalRect3(x + 5, y + i2 - 14   , statusIconIndex % 8 * 18, 198 + statusIconIndex / 8 * 18, 18, 18);
+                        Gui.drawTexturedModalRect3(x + 5, y + i2 - 13   , statusIconIndex % 8 * 18, 198 + statusIconIndex / 8 * 18, 18, 18);
                         GL11.glDepthMask(true);
                         if (!is3042)
                             GL11.glDisable(3042);
@@ -185,7 +185,7 @@ public class EffectHUD extends ModuleWidget {
                         GL11.glPopMatrix();
                     }
                     Bold.get(18).drawString(s1, x + offsetX + 8, (y + i2) - offsetY + 3, -1);
-                    Bold.get(18).drawString(potioneffect.getDuration() + "", x + offsetX + 8, (y + i2) - offsetY + 12, -1);
+                    Bold.get(18).drawString(Potion.getDurationString(potioneffect), x + offsetX + 8, (y + i2) - offsetY + 12, -1);
 
                     i2 += l;
                 }
