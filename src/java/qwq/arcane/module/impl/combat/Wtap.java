@@ -24,7 +24,7 @@ public class Wtap extends Module {
 
     @EventTarget
     public void onAttack(AttackEvent event) {
-        if (wtapTimer.hasReached(500L)) {
+        if (wtapTimer.hasTimeElapsed(500L)) {
             wtapTimer.reset();
             ticks = 2;
         }

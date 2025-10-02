@@ -20,6 +20,8 @@ import qwq.arcane.utils.player.SelectorDetectionComponent;
 import qwq.arcane.utils.player.SlotSpoofComponent;
 import qwq.arcane.utils.rotation.RotationManager;
 
+import static qwq.arcane.module.ClientApplication.usernameField;
+
 /**
  * @Author：Guyuemang
  * @Date：2025/6/28 19:42

@@ -5,17 +5,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.*;
-import qwq.arcane.module.Mine;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.math.MathConst;
 import qwq.arcane.utils.math.MathUtils;
 import qwq.arcane.utils.math.Vector2f;
+
+import java.util.Arrays;
 import qwq.arcane.utils.math.Vector3d;
 import qwq.arcane.utils.player.Rotation;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static net.minecraft.client.entity.EntityPlayerSP.getNearestPointBB;
 
@@ -34,6 +35,48 @@ public class RotationUtil implements Instance {
             yaw = (float) Math.toDegrees((Math.atan2(-x, z) + MathHelper.PI2) % MathHelper.PI2);
         }
         return yaw - 180f;
+    }
+    public static float[] getRotationsTo(double targetX, double targetY, double targetZ, float currentYaw, float currentPitch) {
+        return RotationUtil.getRotations(targetX, targetY, targetZ, currentYaw, currentPitch, 180.0f, 0.0f);
+    }
+    public static float[] getRotations(double targetX, double targetY, double targetZ, float currentYaw, float currentPitch, float maxAngle, float smoothFactor) {
+        double horizontalDistance = Math.sqrt(targetX * targetX + targetZ * targetZ);
+        float yawDelta = MathHelper.wrapAngleTo180_float((float) (Math.atan2(targetZ, targetX) * 180.0 / Math.PI) - 90.0f - currentYaw);
+        float pitchDelta = MathHelper.wrapAngleTo180_float((float) (-Math.atan2(targetY, horizontalDistance) * 180.0 / Math.PI) - currentPitch);
+        yawDelta = Math.abs(yawDelta) <= 1.0f ? 0.0f : RotationUtil.smoothAngle(RotationUtil.clampAngle(yawDelta, maxAngle), smoothFactor);
+        pitchDelta = Math.abs(pitchDelta) <= 1.0f ? 0.0f : RotationUtil.smoothAngle(RotationUtil.clampAngle(pitchDelta, maxAngle), smoothFactor);
+        return new float[]{RotationUtil.quantizeAngle(currentYaw + yawDelta), RotationUtil.quantizeAngle(currentPitch + pitchDelta)};
+    }
+    public static float clampAngle(float angle, float maxAngle) {
+        maxAngle = Math.max(0.0f, Math.min(180.0f, maxAngle));
+        if (angle > maxAngle) {
+            angle = maxAngle;
+        } else if (angle < -maxAngle) {
+            angle = -maxAngle;
+        }
+        return angle;
+    }
+    public static float smoothAngle(float angle, float smoothFactor) {
+        return angle * (0.5f + 0.5f * (1.0f - Math.max(0.0f, Math.min(1.0f, smoothFactor + nextFloat(-0.1f, 0.1f)))));
+    }
+    private static final Random theRandom = new Random();
+
+    public static long nextLong(long min, long max) {
+        return (long) nextDouble((double) min, (double) (max + 1L));
+    }
+
+    public static float nextFloat(float min, float max) {
+        return theRandom.nextFloat() * (max - min) + min;
+    }
+
+    public static double nextDouble(double min, double max) {
+        return theRandom.nextDouble() * (max - min) + min;
+    }
+    public static float wrapAngleDiff(float angle, float target) {
+        return target + MathHelper.wrapAngleTo180_float(angle - target);
+    }
+    public static float quantizeAngle(float angle) {
+        return (float) ((double) angle - (double) angle % (double) 0.0096f);
     }
     public static Vec3 getBestHitVec(final Entity entity) {
         final Vec3 positionEyes = mc.thePlayer.getPositionEyes(1);
@@ -80,7 +123,7 @@ public class RotationUtil implements Instance {
             return null;
         }
 
-        Mine mc = Mine.getMinecraft();
+        Minecraft mc = Minecraft.getMinecraft();
         double xSize = entity.posX - mc.thePlayer.posX;
         double ySize = (entity.posY + entity.getEyeHeight() / 2) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
         double zSize = entity.posZ - mc.thePlayer.posZ;
@@ -100,6 +143,7 @@ public class RotationUtil implements Instance {
 
         return new float[]{ newYaw % 360.0f, newPitch % 360.0f };
     }
+
     public static MovingObjectPosition rayTrace(float[] rot, double blockReachDistance, float partialTicks) {
         Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
         Vec3 vec31 = mc.thePlayer.getLookCustom(rot[0], rot[1]);
@@ -146,7 +190,7 @@ public class RotationUtil implements Instance {
     }
 
     public static float[] getRotationBlock(BlockPos pos) {
-        return getRotationsByVec(mc.thePlayer.getPositionVector().addVector(0.0D, (double)mc.thePlayer.getEyeHeight(), 0.0D), new net.minecraft.util.Vec3((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D));
+        return getRotationsByVec(mc.thePlayer.getPositionVector().addVector(0.0D, (double)mc.thePlayer.getEyeHeight(), 0.0D), new Vec3((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D));
     }
     public static Vec3 getVectorForRotation(final Rotation rotation) {
         float yawCos = MathHelper.cos(-rotation.getYaw() * 0.017453292F - (float) Math.PI);
@@ -163,10 +207,10 @@ public class RotationUtil implements Instance {
         return new Vec3(yawSin * pitchCos, pitchSin, yawCos * pitchCos);
     }
     public static float[] getRotationBlock2(final BlockPos pos) {
-        return getRotationsByVec(mc.thePlayer.getPositionVector().addVector(0.0, mc.thePlayer.getEyeHeight(), 0.0), new net.minecraft.util.Vec3(pos.getX() + 0.51, pos.getY() + 0.51, pos.getZ() + 0.51));
+        return getRotationsByVec(mc.thePlayer.getPositionVector().addVector(0.0, mc.thePlayer.getEyeHeight(), 0.0), new Vec3(pos.getX() + 0.51, pos.getY() + 0.51, pos.getZ() + 0.51));
     }
-    private static float[] getRotationsByVec(net.minecraft.util.Vec3 origin, net.minecraft.util.Vec3 position) {
-        net.minecraft.util.Vec3 difference = position.subtract(origin);
+    private static float[] getRotationsByVec(Vec3 origin, Vec3 position) {
+        Vec3 difference = position.subtract(origin);
         double distance = difference.flat().lengthVector();
         float yaw = (float)Math.toDegrees(Math.atan2(difference.zCoord, difference.xCoord)) - 90.0F;
         float pitch = (float)(-Math.toDegrees(Math.atan2(difference.yCoord, distance)));
@@ -178,8 +222,8 @@ public class RotationUtil implements Instance {
 
         mc.thePlayer.renderPitchHead = pitch;
     }
-    public static Vector2f toRotation(final net.minecraft.util.Vec3 vec, final boolean predict) {
-        final net.minecraft.util.Vec3 eyesPos = new net.minecraft.util.Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY +
+    public static Vector2f toRotation(final Vec3 vec, final boolean predict) {
+        final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY +
                 mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
         if (predict) eyesPos.addVector(mc.thePlayer.motionX, mc.thePlayer.motionY, mc.thePlayer.motionZ);
@@ -198,8 +242,8 @@ public class RotationUtil implements Instance {
         AxisAlignedBB aabb = entity.getEntityBoundingBox().contract(-0.05, -0.05, -0.05).contract(0.05, 0.05, 0.05);
         range += 0.05;
         wallRange += 0.05;
-        net.minecraft.util.Vec3 eyePos = mc.thePlayer.getPositionEyes(1F);
-        net.minecraft.util.Vec3 nearest = new net.minecraft.util.Vec3(
+        Vec3 eyePos = mc.thePlayer.getPositionEyes(1F);
+        Vec3 nearest = new Vec3(
                 MathUtils.clamp(eyePos.xCoord, aabb.minX, aabb.maxX),
                 MathUtils.clamp(eyePos.yCoord, aabb.minY, aabb.maxY),
                 MathUtils.clamp(eyePos.zCoord, aabb.minZ, aabb.maxZ)
@@ -277,8 +321,8 @@ public class RotationUtil implements Instance {
                             break;
                         }
                     }
-                    net.minecraft.util.Vec3 Vec3 = getVec(entity).add(
-                            new net.minecraft.util.Vec3((entity.getEntityBoundingBox().maxX - entity.getEntityBoundingBox().minX) * xPercent,
+                    Vec3 Vec3 = getVec(entity).add(
+                            new Vec3((entity.getEntityBoundingBox().maxX - entity.getEntityBoundingBox().minX) * xPercent,
                                     (entity.getEntityBoundingBox().maxY - entity.getEntityBoundingBox().minY) * yPercent,
                                     (entity.getEntityBoundingBox().maxZ - entity.getEntityBoundingBox().minZ) * zPercent));
                     double distanceSq = Vec3.squareDistanceTo(mc.thePlayer.getPositionEyes(1F));
@@ -306,11 +350,11 @@ public class RotationUtil implements Instance {
 
         return null;
     }
-    public static net.minecraft.util.Vec3 getVec(Entity entity) {
+    public static Vec3 getVec(Entity entity) {
         return new Vec3(entity.posX, entity.posY, entity.posZ);
     }
-    public static Rotation toRotationRot(final net.minecraft.util.Vec3 vec, final boolean predict) {
-        final net.minecraft.util.Vec3 eyesPos = new net.minecraft.util.Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY +
+    public static Rotation toRotationRot(final Vec3 vec, final boolean predict) {
+        final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY +
                 mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
         if (predict) eyesPos.addVector(mc.thePlayer.motionX, mc.thePlayer.motionY, mc.thePlayer.motionZ);
@@ -331,7 +375,7 @@ public class RotationUtil implements Instance {
         } else {
             double diffX = entity.posX - mc.thePlayer.posX;
             double diffZ = entity.posZ - mc.thePlayer.posZ;
-            net.minecraft.util.Vec3 BestPos = getNearestPointBB(mc.thePlayer.getPositionEyes(1f), entity.getEntityBoundingBox());
+            Vec3 BestPos = getNearestPointBB(mc.thePlayer.getPositionEyes(1f), entity.getEntityBoundingBox());
             Location myEyePos = new Location(mc.thePlayer.posX, mc.thePlayer.posY +
                     mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
@@ -476,7 +520,7 @@ public class RotationUtil implements Instance {
             yaw = lastYaw + moveYaw;
             pitch = lastPitch + movePitch;
 
-            for (int i = 1; i <= (int) (Mine.getDebugFPS() / 20f + Math.random() * 10); ++i) {
+            for (int i = 1; i <= (int) (Minecraft.getDebugFPS() / 20f + Math.random() * 10); ++i) {
 
                 if (Math.abs(moveYaw) + Math.abs(movePitch) > 1) {
                     yaw += (Math.random() - 0.5) / 1000;

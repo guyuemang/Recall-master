@@ -1,14 +1,14 @@
 package qwq.arcane.utils.player;
 
+import cn.rikka.event.impl.events.player.MoveEvent;
+import cn.rikka.event.impl.events.player.MoveInputEvent;
+import cn.rikka.utils.Instance;
+import cn.rikka.utils.math.Vector2f;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
-import qwq.arcane.event.impl.events.player.MoveEvent;
-import qwq.arcane.event.impl.events.player.MoveInputEvent;
-import qwq.arcane.utils.Instance;
-import qwq.arcane.utils.math.Vector2f;
 
 /**
  * @Author：Guyuemang
@@ -21,6 +21,52 @@ public class MovementUtil implements Instance {
 
     public static boolean isMoving(EntityLivingBase player) {
         return player != null && (player.moveForward != 0F || player.moveStrafing != 0F);
+    }
+    public static boolean isForwardPressed() {
+        if (MovementUtil.mc.gameSettings.keyBindForward.isKeyDown() != MovementUtil.mc.gameSettings.keyBindBack.isKeyDown())
+            return true;
+        return MovementUtil.mc.gameSettings.keyBindLeft.isKeyDown() != MovementUtil.mc.gameSettings.keyBindRight.isKeyDown();
+    }
+    public static int getForwardValue() {
+        int forwardValue = 0;
+        if (MovementUtil.mc.gameSettings.keyBindForward.isKeyDown()) {
+            ++forwardValue;
+        }
+        if (MovementUtil.mc.gameSettings.keyBindBack.isKeyDown()) {
+            --forwardValue;
+        }
+        return forwardValue;
+    }
+
+    public static int getLeftValue() {
+        int leftValue = 0;
+        if (MovementUtil.mc.gameSettings.keyBindLeft.isKeyDown()) {
+            ++leftValue;
+        }
+        if (MovementUtil.mc.gameSettings.keyBindRight.isKeyDown()) {
+            --leftValue;
+        }
+        return leftValue;
+    }
+    public static float adjustYaw(float yaw, float forward, float strafe) {
+        if (forward < 0.0f) {
+            yaw += 180.0f;
+        }
+        if (strafe != 0.0f) {
+            float multiplier = forward == 0.0f ? 1.0f : 0.5f * Math.signum(forward);
+            yaw += -90.0f * multiplier * Math.signum(strafe);
+        }
+        return MathHelper.wrapAngleTo180_float(yaw);
+    }
+    public static double predictedMotionY(final double motion, final int ticks) {
+        if (ticks == 0) return motion;
+        double predicted = motion;
+
+        for (int i = 0; i < ticks; i++) {
+            predicted = (predicted - 0.08) * 0.98F;
+        }
+
+        return predicted;
     }
     public static double predictedMotion(final double motion, final int ticks) {
         if (ticks == 0) return motion;

@@ -49,7 +49,7 @@ public class GuiAccountManager extends GuiScreen {
   private final GuiScreen previousScreen;
   private ExecutorService executor = null;
   private Notification notification = null;
-  private CompletableFuture<Void> task = null; // Changed to CompletableFuture<Void> for simplicity with different login types
+  private CompletableFuture<Void> task = null;
   private GuiAccountList guiAccountList = null;
 
   public GuiAccountManager(GuiScreen previousScreen) {
@@ -120,7 +120,7 @@ public class GuiAccountManager extends GuiScreen {
       loginButton.enabled = deleteButton.enabled = selectedAccount >= 0 && (task == null || task.isDone());
     }
     if (notification != null && notification.isExpired()) {
-      notification = null; // Clear expired notification
+      notification = null;
     }
   }
 
@@ -138,7 +138,7 @@ public class GuiAccountManager extends GuiScreen {
       case Keyboard.KEY_UP: {
         if (selectedAccount > 0) {
           --selectedAccount;
-          guiAccountList.scrollBy(-guiAccountList.getSlotHeight()); // Scroll view
+          guiAccountList.scrollBy(-guiAccountList.getSlotHeight());
           if (isCtrlKeyDown()) {
             ConfigManager.swapAccounts(selectedAccount, selectedAccount + 1);
           }
@@ -148,7 +148,7 @@ public class GuiAccountManager extends GuiScreen {
       case Keyboard.KEY_DOWN: {
         if (selectedAccount < ConfigManager.getAccountCount() - 1) {
           ++selectedAccount;
-          guiAccountList.scrollBy(guiAccountList.getSlotHeight()); // Scroll view
+          guiAccountList.scrollBy(guiAccountList.getSlotHeight());
           if (isCtrlKeyDown()) {
             ConfigManager.swapAccounts(selectedAccount, selectedAccount - 1);
           }
