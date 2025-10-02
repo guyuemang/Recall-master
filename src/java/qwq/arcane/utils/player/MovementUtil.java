@@ -1,14 +1,14 @@
 package qwq.arcane.utils.player;
 
-import cn.rikka.event.impl.events.player.MoveEvent;
-import cn.rikka.event.impl.events.player.MoveInputEvent;
-import cn.rikka.utils.Instance;
-import cn.rikka.utils.math.Vector2f;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
+import qwq.arcane.event.impl.events.player.MoveEvent;
+import qwq.arcane.event.impl.events.player.MoveInputEvent;
+import qwq.arcane.utils.Instance;
+import qwq.arcane.utils.math.Vector2f;
 
 /**
  * @Author：Guyuemang
