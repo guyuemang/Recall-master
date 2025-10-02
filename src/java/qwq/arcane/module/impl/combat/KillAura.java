@@ -366,47 +366,11 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onSlow(SlowDownEvent e){
-        if (blocking && blockmode.is("Blink") && !mc.thePlayer.isInWeb){
-            //mc.thePlayer.movementInput.moveStrafe *= 0.2f;
-            //mc.thePlayer.movementInput.moveForward *= 0.2f;
-        }
+
     }
 
     public void preTickBlock() {
-        if (this.tick1) {
-            BlinkComponent.blinking = true;
-            if (blocking && !swapped) {
-                mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem % 8 + 1));
-                mc.getNetHandler().addToSendQueue(new C17PacketCustomPayload("喵喵喵我是可爱猫猫226", new PacketBuffer(Unpooled.buffer())));
-                blocking = false;
-                swapped = true;
-            }
-            tick1 = false;
-            tick2 = true;
-        } else if (tick2) {
-            if (swapped){
-                mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-                swapped = false;
-            }
-            tick2 = false;
-            tick3 = true;
-        } else if(tick3) {
-            Attack();
-            MovingObjectPosition result = RayCastUtil.rayCast(Client.Instance.getRotationManager().lastRotation ,range.getValue().floatValue());
-            if (result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && result.entityHit == target) {
-                if (!mc.playerController.isPlayerRightClickingOnEntity(mc.thePlayer, result.entityHit, result)) {
-                    mc.playerController.interactWithEntitySendPacket(mc.thePlayer, result.entityHit);
-                }
-                if (!blocking) {
-                    blocking = true;
-                    qwq.arcane.utils.pack.PacketUtil.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
-                }
-            }
-            tick3 = false;
-            tick1 = true;
-            BlinkComponent.dispatch();
-            blink = false;
-        }
+
     }
 
     public void StopAutoBlock(){
@@ -426,18 +390,7 @@ public class KillAura extends Module {
                 case "LEGIT":
                     mc.gameSettings.keyBindUseItem.setPressed(false);
                     blocking = false;
-                case "Blink":
-                    if (this.swapped) {
-                        int currentSlot = mc.thePlayer.inventory.currentItem;
-                        if (this.serverSlot != currentSlot) {
-                            qwq.arcane.utils.pack.PacketUtil.sendPacket(new C09PacketHeldItemChange(this.serverSlot = currentSlot));
-                        }
-                        this.swapped = false;
-                    }
-                    sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-                    BlinkComponent.dispatch();
-                    blocking = false;
-                    break;
+
                 case "Fake":
                     blocking = false;
                     break;
