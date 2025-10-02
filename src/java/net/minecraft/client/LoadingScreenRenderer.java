@@ -13,7 +13,6 @@ import net.minecraft.util.MinecraftError;
 import net.optifine.CustomLoadingScreen;
 import net.optifine.CustomLoadingScreens;
 import net.optifine.reflect.Reflector;
-import qwq.arcane.module.ClientApplication;
 import qwq.arcane.module.Mine;
 
 import javax.swing.*;

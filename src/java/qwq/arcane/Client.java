@@ -3,7 +3,6 @@ package qwq.arcane;
 import de.florianmichael.viamcp.ViaMCP;
 import lombok.Getter;
 import lombok.Setter;
-import qwq.arcane.module.ClientApplication;
 import org.lwjgl.opengl.Display;
 import qwq.arcane.command.CommandManager;
 import qwq.arcane.config.ConfigManager;
@@ -11,7 +10,6 @@ import qwq.arcane.event.EventManager;
 import qwq.arcane.gui.clickgui.arcane.ArcaneClickGui;
 import qwq.arcane.gui.clickgui.dropdown.DropDownClickGui;
 import qwq.arcane.gui.notification.NotificationManager;
-import qwq.arcane.module.IRCClient;
 import qwq.arcane.module.ModuleManager;
 import qwq.arcane.utils.Instance;
 import qwq.arcane.utils.pack.BlinkComponent;
@@ -20,7 +18,6 @@ import qwq.arcane.utils.player.SelectorDetectionComponent;
 import qwq.arcane.utils.player.SlotSpoofComponent;
 import qwq.arcane.utils.rotation.RotationManager;
 
-import static qwq.arcane.module.ClientApplication.usernameField;
 
 /**
  * @Author：Guyuemang
@@ -45,17 +42,11 @@ public class Client implements Instance {
     private PingerUtils pingerUtils;
     private SelectorDetectionComponent selectorDetectionComponent;
     public static boolean debug = true;
-    private IRCClient ircClient;
     int startTime;
 
     public void Init(){
         startTime = (int) System.currentTimeMillis();
-        if (ClientApplication.Hwid){
-            System.exit(0);
-        }
-        if (Client.debug){
-            System.exit(0);
-        }
+
         ViaMCP.create();
         ViaMCP.INSTANCE.initAsyncSlider();
         Display.setTitle(name + " " + version);
@@ -85,9 +76,5 @@ public class Client implements Instance {
 
         arcaneClickGui = new ArcaneClickGui();
         dropDownClickGui = new DropDownClickGui();
-        
-        ircClient = new IRCClient();
-        eventManager.register(ircClient);
-        IRCClient.connect();
     }
 }

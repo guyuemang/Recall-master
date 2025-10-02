@@ -5,7 +5,6 @@ import net.minecraft.client.gui.*;
 import qwq.arcane.Client;
 import qwq.arcane.gui.alt.GuiAccountManager;
 import qwq.arcane.gui.mcgui.GuiMultiplayer;
-import qwq.arcane.module.ClientApplication;
 import qwq.arcane.module.impl.visuals.InterFace;
 import qwq.arcane.utils.animations.Animation;
 import qwq.arcane.utils.animations.Direction;
@@ -191,7 +190,7 @@ public class MainMenu extends GuiScreen {
         RenderUtil.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(0, 0, 0, alpha).getRGB());
         if (fadeInAnimation.getOutput() <= 0.9) {
             FontManager.Bold.get(60).drawString("Arcane " + Client.version, sr.getScaledWidth() / 2 - FontManager.Bold.get(60).getStringWidth("Arcane " + Client.version) / 2, sr.getScaledHeight() / 2 - 20, ColorUtil.applyOpacity(InterFace.color(1).getRGB(),fadeInAnimation.getOutput().floatValue()));
-            FontManager.Bold.get(30).drawString("Welcome!! " + ClientApplication.usernameField.getText(), sr.getScaledWidth() / 2 - FontManager.Bold.get(30).getStringWidth("Welcome!! " + ClientApplication.usernameField.getText()) / 2, sr.getScaledHeight() / 2 + 20, ColorUtil.applyOpacity(InterFace.color(17).getRGB(),fadeInAnimation.getOutput().floatValue()));
+            FontManager.Bold.get(30).drawString("Welcome!! " + "Null", sr.getScaledWidth() / 2 - FontManager.Bold.get(30).getStringWidth("Welcome!! " + "Null") / 2, sr.getScaledHeight() / 2 + 20, ColorUtil.applyOpacity(InterFace.color(17).getRGB(),fadeInAnimation.getOutput().floatValue()));
         }
     }
 

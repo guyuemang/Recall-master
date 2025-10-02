@@ -14,7 +14,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 import qwq.arcane.Client;
-import qwq.arcane.module.ClientApplication;
 import qwq.arcane.module.Mine;
 import qwq.arcane.module.impl.display.IsLand;
 import qwq.arcane.module.impl.player.Stealer;
@@ -276,7 +275,7 @@ public class IslandRender implements Instance {
     private void renderPersistentInfo() {
         x = sr.getScaledWidth() / 2f;
         y = 20;
-        String sb = " - " + ClientApplication.usernameField.getText() + (Client.Instance.getModuleManager().getModule(IsLand.class).island.get() ? " - " : "") + (Client.Instance.getModuleManager().getModule(IsLand.class).island.get() ? getCurrentConnectionInfo() : "" + "") + " - §2"+ InterFace.getPing() + "ms" + "§f - §8" + Mine.getDebugFPS() + "fps";
+        String sb = " - " + "Guyuemang" + (Client.Instance.getModuleManager().getModule(IsLand.class).island.get() ? " - " : "") + (Client.Instance.getModuleManager().getModule(IsLand.class).island.get() ? getCurrentConnectionInfo() : "" + "") + " - §2"+ InterFace.getPing() + "ms" + "§f - §8" + Mine.getDebugFPS() + "fps";
         width = FontManager.Regular.get(20).getStringWidth(sb) + Bold.get(22).getStringWidth("Arcane") + Icon.get(46).getStringWidth("I") + 5;
         height = 10;
         radius = 10;

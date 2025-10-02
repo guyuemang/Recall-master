@@ -98,7 +98,6 @@ import qwq.arcane.event.impl.events.misc.WorldLoadEvent;
 import qwq.arcane.event.impl.events.player.PlaceEvent;
 import qwq.arcane.event.impl.events.player.RightClickerEvent;
 import qwq.arcane.gui.MainMenu;
-import qwq.arcane.module.ClientApplication;
 import qwq.arcane.module.impl.combat.TickBase;
 import qwq.arcane.module.impl.visuals.Animations;
 import qwq.arcane.module.impl.world.Disabler;
@@ -317,35 +316,9 @@ public class Minecraft {
     private static final Condition condition = threadLock.newCondition();
     public static boolean isPaused = true;
 
-    public static void resumeGame() {
-        try {
-            threadLock.lock();
-            isPaused = false;
-            Client.debug = true;
-            condition.signalAll(); // 唤醒所有等待的线程
-        } finally {
-            threadLock.unlock();
-        }
-    }
-    public Minecraft(GameConfiguration gameConfig) {
-        //截断游戏主线程
-        gameThread = Thread.currentThread();
-        gameThread.setPriority(Thread.MAX_PRIORITY);
-        gameThread.setName("Solitude-Client");
 
-        //AmayaD1ck: 启动游戏
-        new Thread(ClientApplication::main).start();
-        try {
-            threadLock.lock();
-            while (isPaused) {
-                // 等待线程被唤醒
-                condition.await();
-            }
-        } catch (InterruptedException e) {
-            // 处理中断异常
-            logger.debug("Game thread interrupted");
-        } finally {
-            threadLock.unlock();
+    public Minecraft(GameConfiguration gameConfig) {
+
             // 游戏逻辑代码
             theMine = this;
             this.mcDataDir = gameConfig.folderInfo.mcDataDir;
@@ -375,7 +348,6 @@ public class Minecraft {
 
             ImageIO.setUseCache(false);
             Bootstrap.register();
-        }
     }
 
     public void run()
@@ -453,21 +425,7 @@ public class Minecraft {
      */
     private void startGame() throws LWJGLException, IOException
     {
-        if (ClientApplication.Hwid){
-            JOptionPane.showMessageDialog(new ClientApplication(), "你还想破解你爹呢 我反反复复抽查你妈 我给你吗操的倒立螺旋升天", "破解你妈逼",
-                    JOptionPane.INFORMATION_MESSAGE);
-            System.exit(0);
-        }
-        this.defaultResourcePacks.add(this.mcDefaultResourcePack);
-        this.startTimerHackThread();
-        if (!ClientApplication.Hwid) {
-            Client.debug = false;
-            if (isPaused) {
-                JOptionPane.showMessageDialog(new ClientApplication(), "你还想破解你爹呢 我反反复复抽查你妈 我给你吗操的倒立螺旋升天", "破解你妈逼",
-                        JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
-            }
-        }
+
         if (this.gameSettings.overrideHeight > 0 && this.gameSettings.overrideWidth > 0)
         {
             this.displayWidth = this.gameSettings.overrideWidth;
