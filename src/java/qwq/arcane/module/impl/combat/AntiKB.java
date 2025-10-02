@@ -178,34 +178,7 @@ public class AntiKB extends Module {
             }
         }
 
-        if (mode.is("Reduce")) {
-            if (mc.thePlayer == null || mc.gameSettings == null) return;
-            Vector2f rotation = Client.Instance.getRotationManager().getRotation();
-            Entity target = RayCastUtil.raycastEntity(KillAura.range.get(),rotation.x,rotation.y, (input) -> true);
-            if (hasReceivedVelocity) {
-                if (MovementUtil.isMoving() && mc.thePlayer.isSprinting()) {
-                    if (target != mc.thePlayer && target instanceof EntityPlayer || KillAura.target instanceof EntityPlayer) {
-                        if (target != null && target != mc.thePlayer) {
-                            Client.Instance.getEventManager().call(new AttackEvent(target));
-                        } else {
-                            Client.Instance.getEventManager().call(new AttackEvent(KillAura.target));
-                        }
-                        mc.getNetHandler().addToSendQueue(new C0APacketAnimation());
-                        ChatUtils.sendMessage("Attack!");
-                        if (target != null && target != mc.thePlayer) {
-                            mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
-                        } else {
-                            mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(Objects.requireNonNull(KillAura.target), C02PacketUseEntity.Action.ATTACK));
-                        }
-                        ChatUtils.sendMessage("Reduce!");
-                        mc.thePlayer.motionX *= 0.6;
-                        mc.thePlayer.motionZ *= 0.6;
-                        mc.thePlayer.setSprinting(false);
-                        hasReceivedVelocity = false;
-                    }
-                }
-            }
-        }
+
 
         if (mode.is("Jump Reset") || mode.is("Reduce")) {
             if (jumpResetMode.is("Advanced")) {
