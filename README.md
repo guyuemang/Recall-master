@@ -1,7 +1,7 @@
 <div align="center">
 <h1>Arcane Reborn</h1>
 <h3> Welcome to the Arcane repository, a fully structured client project.</h3>
-Requirements: Java 17 is required to build and run this project.<br>
+Requirements: Java 17<br>
 QQ : 502801766
 </div>
 
